@@ -4,6 +4,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#4a6c3f" />
+<meta name="description" content="喵喵编辑部 · 猫咪生活报 — 你的个人桌面工作台" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="assets/avatar.jpg" />
 <title>喵喵编辑部 · 猫咪生活报</title>
 <style>
   /* ============================================================
@@ -520,6 +524,28 @@
   .spend-cap { font-size:11.5px; color:var(--text-secondary); }
 
   .hidden { display:none !important; }
+
+  /* ---------- PWA & Sync toolbar ---------- */
+  .sync-toolbar { display:flex; align-items:center; gap:6px; padding:10px 14px; margin-top:14px;
+    border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .sync-toolbar .st-label { font-size:12px; font-weight:700; color:var(--text-secondary); letter-spacing:.04em; }
+  .sync-toolbar .st-spacer { flex:1; }
+  .sync-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; font-size:12px; font-weight:600;
+    border-radius:8px; border:1px solid var(--border-input); background:var(--surface-card); color:var(--text);
+    cursor:pointer; transition:all .12s; }
+  .sync-btn:hover { background:var(--accent-muted); border-color:var(--accent); color:var(--accent); }
+  .sync-btn svg { width:15px; height:15px; }
+  .sync-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:100;
+    background:var(--accent); color:var(--on-accent); padding:10px 20px; border-radius:10px;
+    font-size:13px; font-weight:600; box-shadow:0 8px 20px rgba(0,0,0,.2);
+    animation: toastIn .25s ease; }
+  .sync-toast.error { background:var(--danger); }
+  .sync-toast.warn { background:var(--module-2); }
+  @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(10px); } }
+  .sidebar .sync-bar { display:flex; gap:6px; padding:10px 14px; border-top:1px solid var(--drawer-hover); }
+  .sidebar .sync-bar .sync-btn { flex:1; justify-content:center; padding:7px 10px; font-size:11.5px;
+    background:var(--drawer-hover); border-color:var(--drawer-active); color:var(--drawer-text); }
+  .sidebar .sync-bar .sync-btn:hover { background:var(--drawer-active); color:var(--drawer-text); }
 </style>
 </head>
 <body>
@@ -532,6 +558,17 @@
       <div><h1 id="brandName">小编 · 橘座</h1><p id="brandSlogan">Cat Daily News</p></div>
     </div>
     <nav class="nav" id="nav"></nav>
+    <div class="sync-bar">
+      <button class="sync-btn" id="btn-export" title="导出数据为 JSON 文件">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+        导出
+      </button>
+      <button class="sync-btn" id="btn-import" title="从 JSON 文件导入数据">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M12 4v12"/><path d="M8 9l4-4 4 4"/></svg>
+        导入
+      </button>
+      <input type="file" id="importInput" accept="application/json" hidden/>
+    </div>
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
   <!-- main -->
@@ -1319,6 +1356,91 @@ function attr(s){ return esc(s).replace(/"/g,'&quot;'); }
 
 buildNav();
 render();
+
+/* ---------- PWA: Service Worker 注册 ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => { console.log('SW registered:', reg.scope); })
+      .catch(err => { console.log('SW registration failed:', err); });
+  });
+}
+
+/* ---------- Export / Import ---------- */
+function showToast(msg, type){
+  const t = document.createElement('div');
+  t.className = 'sync-toast' + (type ? ' ' + type : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+function exportData(){
+  const payload = {
+    app: CONFIG.storageKey,
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data: JSON.parse(JSON.stringify(data))
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `cat-news-workbench-backup-${ts}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast('数据已导出 ✓');
+}
+
+function importData(file){
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if(!parsed.data || typeof parsed.data !== 'object'){
+        showToast('文件格式不正确', 'error');
+        return;
+      }
+      const preview = Object.entries(parsed.data)
+        .filter(([k,v]) => Array.isArray(v) && v.length)
+        .map(([k,v]) => `${modOf(k)?.name || k}: ${v.length} 条`)
+        .join('，');
+      const overlay = document.createElement('div');
+      overlay.className = 'overlay';
+      overlay.innerHTML = `<div class="modal" style="width:420px">
+        <h3>导入数据</h3>
+        <div class="sub">检测到以下数据：<br><strong style="color:var(--text)">${preview || '无记录'}</strong><br><br>导入后将覆盖当前所有数据，此操作不可撤销。</div>
+        <div class="modal-actions"><div class="spacer"></div>
+          <button class="btn ghost" id="imp-cancel">取消</button>
+          <button class="btn danger" id="imp-ok">确认导入</button></div></div>`;
+      document.body.appendChild(overlay);
+      const close = () => overlay.remove();
+      overlay.onclick = e => { if(e.target === overlay) close(); };
+      overlay.querySelector('#imp-cancel').onclick = close;
+      overlay.querySelector('#imp-ok').onclick = () => {
+        data = parsed.data;
+        store.save();
+        render();
+        close();
+        showToast('数据已导入 ✓');
+      };
+    } catch(err) {
+      showToast('解析文件失败：' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById('btn-export').onclick = exportData;
+document.getElementById('btn-import').onclick = () => document.getElementById('importInput').click();
+document.getElementById('importInput').onchange = e => {
+  const file = e.target.files && e.target.files[0];
+  if(file) importData(file);
+  e.target.value = '';
+};
 </script>
 </body>
 </html>

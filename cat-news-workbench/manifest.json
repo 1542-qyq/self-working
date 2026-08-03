@@ -1,0 +1,27 @@
+{
+  "name": "喵喵编辑部 · 猫咪生活报",
+  "short_name": "猫咪生活报",
+  "description": "你的个人桌面工作台 — 待办、打卡、阅读、运动、记账、笔记一站式管理",
+  "start_url": "./workbench-desktop.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f5efe0",
+  "theme_color": "#4a6c3f",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "assets/avatar.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/avatar.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "lifestyle"]
+}
