@@ -1,0 +1,66 @@
+name: 部署到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 准备部署文件
+        run: |
+          mkdir -p dist
+          cp cat-news-workbench/workbench-desktop.html dist/index.html
+          cp cat-news-workbench/manifest.json dist/
+          cp cat-news-workbench/service-worker.js dist/
+          cp cat-news-workbench/schema.sql dist/
+          cp cat-news-workbench/README.md dist/
+          cp cat-news-workbench/*.bat dist/
+          cp -r cat-news-workbench/assets dist/assets
+          cp -r cat-news-workbench/electron dist/electron
+          # 创建首页跳转
+          cat > dist/index.html << 'XEOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>猫咪生活报 · 正在加载...</title>
+            <meta http-equiv="refresh" content="0; url=./workbench-desktop.html">
+            <script>location.replace('./workbench-desktop.html');</script>
+          </head>
+          <body></body>
+          </html>
+          XEOF
+          # 再把 workbench-desktop.html 放进去
+          cp cat-news-workbench/workbench-desktop.html dist/
+          echo "文件已准备"
+          ls -la dist/
+
+      - name: 上传 Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
