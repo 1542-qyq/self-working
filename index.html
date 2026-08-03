@@ -581,17 +581,6 @@
       <div><h1 id="brandName">小编 · 橘座</h1><p id="brandSlogan">Cat Daily News</p></div>
     </div>
     <nav class="nav" id="nav"></nav>
-    <div class="sync-bar">
-      <button class="sync-btn" id="btn-export" title="导出数据为 JSON 文件">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-        导出
-      </button>
-      <button class="sync-btn" id="btn-import" title="从 JSON 文件导入数据">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M12 4v12"/><path d="M8 9l4-4 4 4"/></svg>
-        导入
-      </button>
-      <input type="file" id="importInput" accept="application/json" hidden/>
-    </div>
     <div class="cloud-bar" id="cloudBar">
       <div class="cb-status">
         <span class="cb-dot" id="cbDot"></span>
@@ -606,12 +595,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
           拉取
         </button>
-        <button class="cb-btn" id="btn-sync-cfg" title="云同步设置">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m15.5-7.5l-4.2 4.2m-4.6 4.6l-4.2 4.2m13 0l-4.2-4.2M7.7 7.7L3.5 3.5"/></svg>
-          设置
-        </button>
       </div>
-      <div class="cb-logo">点击右侧按钮配置 · 手机电脑平板数据互通</div>
+      <div class="cb-logo">在「其他 → 设置」中配置</div>
     </div>
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
@@ -1484,14 +1469,6 @@ function importData(file){
   reader.readAsText(file);
 }
 
-document.getElementById('btn-export').onclick = exportData;
-document.getElementById('btn-import').onclick = () => document.getElementById('importInput').click();
-document.getElementById('importInput').onchange = e => {
-  const file = e.target.files && e.target.files[0];
-  if(file) importData(file);
-  e.target.value = '';
-};
-
 /* ============================================================
    CLOUD SYNC — Supabase 云端同步模块
    使用前需要在 Supabase 创建数据库表，详见 schema.sql
@@ -1573,15 +1550,12 @@ const CloudSync = {
     const text = document.getElementById('cbStatusText');
 
     if(!this.config?.url || !this.config?.key){
-      // 未配置：只显示状态与「设置」按钮，隐藏推送/拉取
+      // 未配置：只显示状态，隐藏推送/拉取
       statusRow.style.display = 'flex';
-      actionRow.style.display = 'flex';
+      actionRow.style.display = 'none';
       logo.style.display = 'block';
       dot.className = 'cb-dot';
-      text.textContent = '未配置 · 点击右侧「设置」';
-      document.getElementById('btn-sync-push').style.display = 'none';
-      document.getElementById('btn-sync-pull').style.display = 'none';
-      document.getElementById('btn-sync-cfg').style.display = 'flex';
+      text.textContent = '未配置 · 前往「其他 → 设置」';
       return;
     }
     // 已配置：全部显示
@@ -1590,7 +1564,6 @@ const CloudSync = {
     logo.style.display = 'block';
     document.getElementById('btn-sync-push').style.display = 'flex';
     document.getElementById('btn-sync-pull').style.display = 'flex';
-    document.getElementById('btn-sync-cfg').style.display = 'flex';
     if(this.connected){
       dot.className = 'cb-dot online';
       text.textContent = '已连接 · ' + (this.config.user || '默认设备');
@@ -1605,9 +1578,11 @@ const CloudSync = {
 
   async push(){
     if(!this.supabase){ showToast('请先配置云同步', 'warn'); return; }
+    if(!this.connected){ showToast('数据库未连接，请先测试连接', 'warn'); return; }
     this.setSyncing(true);
     try {
       const payload = {
+        id: 'default',
         data: JSON.parse(JSON.stringify(data)),
         updated_at: new Date().toISOString()
       };
@@ -1625,6 +1600,7 @@ const CloudSync = {
 
   async pull(){
     if(!this.supabase){ showToast('请先配置云同步', 'warn'); return; }
+    if(!this.connected){ showToast('数据库未连接，请先测试连接', 'warn'); return; }
     this.setSyncing(true);
     try {
       const { data: remote, error } = await this.supabase
@@ -1655,7 +1631,7 @@ const CloudSync = {
           showToast('已从云端拉取 ✓');
         };
       } else {
-        showToast('云端暂无数据', 'warn');
+        showToast('云端暂无数据，先在本地做一次推送到云端', 'warn');
       }
     } catch(e) {
       showToast('拉取失败: ' + e.message, 'error');
@@ -1794,7 +1770,6 @@ const CloudSync = {
   bindEvents(){
     document.getElementById('btn-sync-push').onclick = () => this.push();
     document.getElementById('btn-sync-pull').onclick = () => this.pull();
-    document.getElementById('btn-sync-cfg').onclick = () => this.openConfig();
   }
 };
 
