@@ -1,0 +1,28 @@
+{
+  "name": "cat-news-workbench",
+  "version": "1.0.0",
+  "description": "喵喵编辑部 · 猫咪生活报 — 桌面工作台",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "author": "1542-qyq",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.catnews.workbench",
+    "productName": "猫咪生活报",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/avatar.jpg"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

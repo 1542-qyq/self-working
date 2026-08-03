@@ -546,6 +546,29 @@
   .sidebar .sync-bar .sync-btn { flex:1; justify-content:center; padding:7px 10px; font-size:11.5px;
     background:var(--drawer-hover); border-color:var(--drawer-active); color:var(--drawer-text); }
   .sidebar .sync-bar .sync-btn:hover { background:var(--drawer-active); color:var(--drawer-text); }
+
+  /* ---------- Cloud Sync ---------- */
+  .cloud-bar { padding: 10px 14px; border-top:1px solid var(--drawer-hover); }
+  .cloud-bar .cb-status { display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--drawer-text-mute); margin-bottom:8px; }
+  .cloud-bar .cb-dot { width:7px; height:7px; border-radius:50%; background:var(--drawer-text-mute); }
+  .cloud-bar .cb-dot.online { background:#4ade80; box-shadow:0 0 6px #4ade80; }
+  .cloud-bar .cb-dot.syncing { background:#facc15; animation:pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity:.4; } }
+  .cloud-bar .cb-row { display:flex; gap:6px; }
+  .cloud-bar .cb-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:4px;
+    padding:7px 8px; font-size:11px; font-weight:600;
+    background:var(--drawer-hover); border:1px solid var(--drawer-active); color:var(--drawer-text);
+    border-radius:8px; cursor:pointer; transition:all .12s; }
+  .cloud-bar .cb-btn:hover { background:var(--drawer-active); }
+  .cloud-bar .cb-btn:disabled { opacity:.5; cursor:not-allowed; }
+  .cloud-bar .cb-btn svg { width:13px; height:13px; }
+  .cloud-bar .cb-logo { font-size:10px; color:var(--drawer-text-mute); text-align:center; margin-top:6px; }
+  .cloud-config { display:flex; flex-direction:column; gap:10px; }
+  .cloud-config .cfg-row { display:flex; flex-direction:column; gap:4px; }
+  .cloud-config label { font-size:12px; font-weight:600; color:var(--text-secondary); }
+  .cloud-config input { font-family:var(--font); font-size:13px; }
+  .cloud-config .cfg-help { font-size:11px; color:var(--text-tertiary); line-height:1.5; }
+  .cloud-config .cfg-help code { background:var(--surface-nested); padding:1px 5px; border-radius:3px; }
 </style>
 </head>
 <body>
@@ -569,12 +592,34 @@
       </button>
       <input type="file" id="importInput" accept="application/json" hidden/>
     </div>
+    <div class="cloud-bar" id="cloudBar" style="display:none">
+      <div class="cb-status">
+        <span class="cb-dot" id="cbDot"></span>
+        <span id="cbStatusText">未连接云同步</span>
+      </div>
+      <div class="cb-row">
+        <button class="cb-btn" id="btn-sync-push" title="推送本地数据到云端">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+          推送
+        </button>
+        <button class="cb-btn" id="btn-sync-pull" title="从云端拉取数据覆盖本地">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+          拉取
+        </button>
+        <button class="cb-btn" id="btn-sync-cfg" title="云同步设置">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m15.5-7.5l-4.2 4.2m-4.6 4.6l-4.2 4.2m13 0l-4.2-4.2M7.7 7.7L3.5 3.5"/></svg>
+          设置
+        </button>
+      </div>
+      <div class="cb-logo">Supabase Cloud Sync</div>
+    </div>
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
   <!-- main -->
   <main class="main"><div id="screen"></div></main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ============================================================
    CONFIG — 唯一需要定制的地方（与手机版结构一致）。
@@ -1441,6 +1486,228 @@ document.getElementById('importInput').onchange = e => {
   if(file) importData(file);
   e.target.value = '';
 };
+
+/* ============================================================
+   CLOUD SYNC — Supabase 云端同步模块
+   使用前需要在 Supabase 创建数据库表，详见 schema.sql
+   ============================================================ */
+const CloudSync = {
+  supabase: null,
+  config: null,
+  syncing: false,
+
+  init(){
+    const saved = localStorage.getItem('cat-news-supabase-config');
+    if(saved){
+      try {
+        this.config = JSON.parse(saved);
+        if(this.config.url && this.config.key){
+          this.connect();
+        }
+      } catch(e){}
+    }
+    this.updateUI();
+    this.bindEvents();
+  },
+
+  connect(){
+    if(!window.supabase || !this.config?.url || !this.config?.key) return;
+    try {
+      this.supabase = window.supabase.createClient(this.config.url, this.config.key);
+      this.updateUI();
+    } catch(e) {
+      console.error('Supabase init failed:', e);
+    }
+  },
+
+  updateUI(){
+    const bar = document.getElementById('cloudBar');
+    if(!this.config?.url || !this.config?.key){
+      bar.style.display = 'none';
+      return;
+    }
+    bar.style.display = 'block';
+    const dot = document.getElementById('cbDot');
+    const text = document.getElementById('cbStatusText');
+    if(this.supabase){
+      dot.className = 'cb-dot online';
+      text.textContent = '已连接 ' + (this.config.user || '');
+    } else {
+      dot.className = 'cb-dot';
+      text.textContent = '连接失败';
+    }
+  },
+
+  async push(){
+    if(!this.supabase){ showToast('请先配置云同步', 'warn'); return; }
+    this.setSyncing(true);
+    try {
+      const payload = {
+        data: JSON.parse(JSON.stringify(data)),
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await this.supabase
+        .from('workbench_data')
+        .upsert(payload, { onConflict: 'id' });
+      if(error){ throw error; }
+      showToast('已推送到云端 ✓');
+    } catch(e) {
+      showToast('推送失败: ' + e.message, 'error');
+    } finally {
+      this.setSyncing(false);
+    }
+  },
+
+  async pull(){
+    if(!this.supabase){ showToast('请先配置云同步', 'warn'); return; }
+    this.setSyncing(true);
+    try {
+      const { data: remote, error } = await this.supabase
+        .from('workbench_data')
+        .select('data, updated_at')
+        .order('updated_at', { ascending: false })
+        .limit(1);
+      if(error){ throw error; }
+      if(remote && remote.length > 0 && remote[0].data){
+        const preview = this.buildPreview(remote[0].data);
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.innerHTML = `<div class="modal" style="width:420px">
+          <h3>从云端拉取</h3>
+          <div class="sub">云端最新数据（${remote[0].updated_at?.slice(0,19).replace('T',' ')||'未知时间'}）：<br><strong style="color:var(--text)">${preview}</strong><br><br>拉取后将覆盖本地数据，此操作不可撤销。</div>
+          <div class="modal-actions"><div class="spacer"></div>
+            <button class="btn ghost" id="pull-cancel">取消</button>
+            <button class="btn danger" id="pull-ok">确认拉取</button></div></div>`;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.onclick = e => { if(e.target === overlay) close(); };
+        overlay.querySelector('#pull-cancel').onclick = close;
+        overlay.querySelector('#pull-ok').onclick = () => {
+          data = remote[0].data;
+          store.save();
+          render();
+          close();
+          showToast('已从云端拉取 ✓');
+        };
+      } else {
+        showToast('云端暂无数据', 'warn');
+      }
+    } catch(e) {
+      showToast('拉取失败: ' + e.message, 'error');
+    } finally {
+      this.setSyncing(false);
+    }
+  },
+
+  buildPreview(d){
+    return Object.entries(d)
+      .filter(([k,v]) => Array.isArray(v) && v.length)
+      .map(([k,v]) => `${modOf(k)?.name || k}: ${v.length} 条`)
+      .join('，') || '无记录';
+  },
+
+  setSyncing(s){
+    this.syncing = s;
+    const dot = document.getElementById('cbDot');
+    const text = document.getElementById('cbStatusText');
+    if(s){
+      dot.className = 'cb-dot syncing';
+      text.textContent = '同步中...';
+    } else {
+      this.updateUI();
+    }
+  },
+
+  async autoSync(){
+    if(!this.supabase || !this.config?.autoSync) return;
+    const payload = {
+      data: JSON.parse(JSON.stringify(data)),
+      updated_at: new Date().toISOString()
+    };
+    try {
+      await this.supabase
+        .from('workbench_data')
+        .upsert(payload, { onConflict: 'id' });
+    } catch(e) { /* silent fail for auto-sync */ }
+  },
+
+  openConfig(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `<div class="modal" style="width:480px">
+      <h3>云同步设置</h3>
+      <div class="sub">配置 Supabase 实现手机电脑数据同步</div>
+      <div class="cloud-config">
+        <div class="cfg-row">
+          <label>Supabase 项目 URL</label>
+          <input id="cfg-url" value="${attr(this.config?.url || '')}" placeholder="https://xxx.supabase.co"/>
+        </div>
+        <div class="cfg-row">
+          <label>Anon Public Key</label>
+          <input id="cfg-key" value="${attr(this.config?.key || '')}" placeholder="eyJhbGciOi..."/>
+        </div>
+        <div class="cfg-row">
+          <label>用户名（可选，用于多设备区分）</label>
+          <input id="cfg-user" value="${attr(this.config?.user || '')}" placeholder="你的昵称"/>
+        </div>
+        <div class="cfg-row">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="cfg-autosync" ${this.config?.autoSync ? 'checked' : ''} style="width:auto"/>
+            自动同步（每次保存时推送到云端）
+          </label>
+        </div>
+        <div class="cfg-help">
+          <strong>使用步骤：</strong><br>
+          1. 在 <a href="https://supabase.com" target="_blank" style="color:var(--accent)">supabase.com</a> 创建免费项目<br>
+          2. 在 SQL Editor 执行 <code>schema.sql</code> 建表<br>
+          3. 复制 Project URL 和 Anon Key 填入上方<br>
+          4. 两台设备配置相同的项目，即可同步数据
+        </div>
+      </div>
+      <div class="modal-actions"><div class="spacer"></div>
+        <button class="btn ghost" id="cfg-cancel">取消</button>
+        <button class="btn" id="cfg-save">保存</button></div></div>`;
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.onclick = e => { if(e.target === overlay) close(); };
+    overlay.querySelector('#cfg-cancel').onclick = close;
+    overlay.querySelector('#cfg-save').onclick = () => {
+      const url = overlay.querySelector('#cfg-url').value.trim();
+      const key = overlay.querySelector('#cfg-key').value.trim();
+      const user = overlay.querySelector('#cfg-user').value.trim();
+      const autoSync = overlay.querySelector('#cfg-autosync').checked;
+      if(!url || !key){ showToast('请填写 URL 和 Key', 'warn'); return; }
+      this.config = { url, key, user, autoSync, id: 'default' };
+      localStorage.setItem('cat-news-supabase-config', JSON.stringify(this.config));
+      this.connect();
+      close();
+      showToast('云同步配置已保存 ✓');
+    };
+  },
+
+  bindEvents(){
+    document.getElementById('btn-sync-push').onclick = () => this.push();
+    document.getElementById('btn-sync-pull').onclick = () => this.pull();
+    document.getElementById('btn-sync-cfg').onclick = () => this.openConfig();
+  }
+};
+
+/* 初始化云同步 */
+CloudSync.init();
+
+/* 包装 store.save 以支持自动同步 */
+const _origSave = store.save.bind(store);
+store.save = function(){
+  _origSave();
+  if(CloudSync.config?.autoSync && CloudSync.supabase){
+    debounce(() => CloudSync.autoSync(), 2000);
+  }
+};
+
+function debounce(fn, ms){
+  clearTimeout(fn._t);
+  fn._t = setTimeout(() => fn(), ms);
+}
 </script>
 </body>
 </html>
