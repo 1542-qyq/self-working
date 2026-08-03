@@ -1500,6 +1500,8 @@ const CloudSync = {
   supabase: null,
   config: null,
   syncing: false,
+  connected: false,
+  lastError: null,
 
   init(){
     const saved = localStorage.getItem('cat-news-supabase-config');
@@ -1516,12 +1518,49 @@ const CloudSync = {
   },
 
   connect(){
-    if(!window.supabase || !this.config?.url || !this.config?.key) return;
+    if(!window.supabase || !this.config?.url || !this.config?.key){
+      this.connected = false;
+      this.updateUI();
+      return;
+    }
     try {
       this.supabase = window.supabase.createClient(this.config.url, this.config.key);
-      this.updateUI();
+      this.testConnection();
     } catch(e) {
       console.error('Supabase init failed:', e);
+      this.connected = false;
+      this.updateUI();
+    }
+  },
+
+  async testConnection(){
+    if(!this.supabase){
+      this.connected = false;
+      this.updateUI();
+      return { ok:false, msg:'客户端未初始化' };
+    }
+    try {
+      const start = Date.now();
+      const { data, error, count } = await this.supabase
+        .from('workbench_data')
+        .select('id', { count:'exact', head:true })
+        .limit(1);
+      const latency = Date.now() - start;
+      if(error){
+        this.connected = false;
+        this.lastError = error.message;
+        this.updateUI();
+        return { ok:false, msg:'查询失败: ' + error.message, latency };
+      }
+      this.connected = true;
+      this.lastError = null;
+      this.updateUI();
+      return { ok:true, msg:`连接成功 · 延迟 ${latency}ms`, latency, count: count ?? 0 };
+    } catch(e) {
+      this.connected = false;
+      this.lastError = e.message;
+      this.updateUI();
+      return { ok:false, msg:'网络错误: ' + e.message };
     }
   },
 
@@ -1552,12 +1591,15 @@ const CloudSync = {
     document.getElementById('btn-sync-push').style.display = 'flex';
     document.getElementById('btn-sync-pull').style.display = 'flex';
     document.getElementById('btn-sync-cfg').style.display = 'flex';
-    if(this.supabase){
+    if(this.connected){
       dot.className = 'cb-dot online';
       text.textContent = '已连接 · ' + (this.config.user || '默认设备');
+    } else if(this.lastError){
+      dot.className = 'cb-dot';
+      text.textContent = '连接失败: ' + this.lastError.slice(0, 30);
     } else {
       dot.className = 'cb-dot';
-      text.textContent = '连接失败，请检查 Key';
+      text.textContent = '正在检测连接...';
     }
   },
 
@@ -1679,21 +1721,62 @@ const CloudSync = {
             自动同步（每次保存时推送到云端）
           </label>
         </div>
+        <div id="cfg-test-result" style="display:none;padding:10px 12px;border-radius:8px;font-size:13px;margin-top:4px"></div>
         <div class="cfg-help">
           <strong>使用步骤：</strong><br>
           1. 在 <a href="https://supabase.com" target="_blank" style="color:var(--accent)">supabase.com</a> 创建免费项目<br>
           2. 在 SQL Editor 执行 <code>schema.sql</code> 建表<br>
-          3. 复制 Project URL 和 Anon Key 填入上方<br>
-          4. 两台设备配置相同的项目，即可同步数据
+          3. 左侧菜单 → Data API → 复制 Project URL 和 Anon Key 填入上方<br>
+          4. 点「测试连接」验证无误后保存<br>
+          5. 两台设备配置相同的项目，即可同步数据
         </div>
       </div>
       <div class="modal-actions"><div class="spacer"></div>
+        <button class="btn ghost" id="cfg-test">测试连接</button>
         <button class="btn ghost" id="cfg-cancel">取消</button>
         <button class="btn" id="cfg-save">保存</button></div></div>`;
     document.body.appendChild(overlay);
     const close = () => overlay.remove();
     overlay.onclick = e => { if(e.target === overlay) close(); };
     overlay.querySelector('#cfg-cancel').onclick = close;
+    overlay.querySelector('#cfg-test').onclick = async () => {
+      const url = overlay.querySelector('#cfg-url').value.trim();
+      const key = overlay.querySelector('#cfg-key').value.trim();
+      const resultEl = overlay.querySelector('#cfg-test-result');
+      if(!url || !key){
+        resultEl.style.display = 'block';
+        resultEl.style.background = 'var(--danger-muted)';
+        resultEl.style.color = 'var(--danger)';
+        resultEl.innerHTML = '⚠️ 请先填写 URL 和 Key';
+        return;
+      }
+      resultEl.style.display = 'block';
+      resultEl.style.background = 'var(--surface-nested)';
+      resultEl.style.color = 'var(--text-secondary)';
+      resultEl.innerHTML = '⏳ 正在连接数据库...';
+      const tempClient = window.supabase.createClient(url, key);
+      try {
+        const start = Date.now();
+        const { error, count } = await tempClient
+          .from('workbench_data')
+          .select('id', { count:'exact', head:true })
+          .limit(1);
+        const latency = Date.now() - start;
+        if(error){
+          resultEl.style.background = 'var(--danger-muted)';
+          resultEl.style.color = 'var(--danger)';
+          resultEl.innerHTML = `❌ 连接失败：${attr(error.message)}<br><span style="color:var(--text-tertiary);font-size:12px">请检查 URL、Key 是否正确，以及是否已在 SQL Editor 执行 schema.sql 建表</span>`;
+        } else {
+          resultEl.style.background = 'var(--accent-muted)';
+          resultEl.style.color = 'var(--accent)';
+          resultEl.innerHTML = `✅ 连接成功！延迟 ${latency}ms，表中已有 ${count ?? 0} 条记录<br><span style="color:var(--text-tertiary);font-size:12px">可以安全保存配置</span>`;
+        }
+      } catch(e) {
+        resultEl.style.background = 'var(--danger-muted)';
+        resultEl.style.color = 'var(--danger)';
+        resultEl.innerHTML = `❌ 网络错误：${attr(e.message)}`;
+      }
+    };
     overlay.querySelector('#cfg-save').onclick = () => {
       const url = overlay.querySelector('#cfg-url').value.trim();
       const key = overlay.querySelector('#cfg-key').value.trim();
