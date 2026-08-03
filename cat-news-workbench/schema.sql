@@ -32,6 +32,57 @@ CREATE POLICY "允许所有人插入更新"
   USING (true)
   WITH CHECK (true);
 
+-- Notion 同步日志表（可选，用于追踪同步历史）
+CREATE TABLE IF NOT EXISTS public.notion_sync_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  action TEXT NOT NULL,        -- 'pull' | 'push'
+  module_key TEXT NOT NULL,    -- 模块名: todo, checkin, read, sport, money, note, hot
+  database_id TEXT NOT NULL,
+  item_count INTEGER NOT NULL DEFAULT 0,
+  success_count INTEGER NOT NULL DEFAULT 0,
+  error_count INTEGER NOT NULL DEFAULT 0,
+  error_message TEXT,
+  synced_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- 开启 RLS
+ALTER TABLE public.notion_sync_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "允许所有人读取同步日志" ON public.notion_sync_logs;
+CREATE POLICY "允许所有人读取同步日志"
+  ON public.notion_sync_logs FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "允许所有人插入同步日志" ON public.notion_sync_logs;
+CREATE POLICY "允许所有人插入同步日志"
+  ON public.notion_sync_logs FOR INSERT
+  USING (true);
+
+-- Notion 配置表（存储加密的 API Key 和数据库映射）
+-- 注意：API Key 在生产环境中应使用 Edge Function Secrets 存储
+CREATE TABLE IF NOT EXISTS public.notion_configs (
+  id TEXT PRIMARY KEY DEFAULT 'default',
+  edge_function_url TEXT,
+  notion_api_key TEXT,  -- 仅在 Edge Function 中使用，前端传参即可
+  mappings JSONB NOT NULL DEFAULT '{}'::jsonb,
+  pull_mode TEXT NOT NULL DEFAULT 'merge',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.notion_configs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "允许所有人读取 Notion 配置" ON public.notion_configs;
+CREATE POLICY "允许所有人读取 Notion 配置"
+  ON public.notion_configs FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "允许所有人更新 Notion 配置" ON public.notion_configs;
+CREATE POLICY "允许所有人更新 Notion 配置"
+  ON public.notion_configs FOR ALL
+  USING (true)
+  WITH CHECK (true);
+
 -- 可选：如果需要认证，取消以下注释并移除上面的策略
 -- CREATE POLICY "仅认证用户可访问"
 --   ON public.workbench_data FOR ALL

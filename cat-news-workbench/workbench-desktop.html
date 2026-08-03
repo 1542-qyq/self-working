@@ -563,12 +563,44 @@
   .cloud-bar .cb-btn:disabled { opacity:.5; cursor:not-allowed; }
   .cloud-bar .cb-btn svg { width:13px; height:13px; }
   .cloud-bar .cb-logo { font-size:10px; color:var(--drawer-text-mute); text-align:center; margin-top:6px; }
+  .notion-bar { padding: 10px 14px; border-top:1px solid var(--drawer-hover); }
+  .notion-bar .nb-header { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .notion-bar .nb-icon { display:flex; align-items:center; color:var(--drawer-text-mute); }
+  .notion-bar .nb-icon svg { width:13px; height:13px; }
+  .notion-bar .nb-title { font-size:11.5px; font-weight:600; color:var(--drawer-text); flex:1; }
+  .notion-bar .nb-cfg { background:none; border:none; color:var(--drawer-text-mute); cursor:pointer; padding:2px; border-radius:4px; display:flex; }
+  .notion-bar .nb-cfg:hover { color:var(--drawer-text); background:var(--drawer-hover); }
+  .notion-bar .nb-status { font-size:11px; color:var(--drawer-text-mute); margin-bottom:6px; }
+  .notion-bar .nb-status.connected { color:#4ade80; }
+  .notion-bar .nb-status.error { color:#f87171; }
+  .notion-bar .nb-modules { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px; }
+  .notion-bar .nb-module { font-size:10px; padding:2px 6px; background:var(--drawer-hover); border:1px solid var(--drawer-active); border-radius:6px; color:var(--drawer-text-mute); cursor:pointer; }
+  .notion-bar .nb-module.active { background:var(--accent-muted); color:var(--accent); border-color:var(--accent); }
+  .notion-bar .nb-actions { display:flex; gap:6px; }
+  .notion-bar .nb-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:4px;
+    padding:6px 8px; font-size:11px; font-weight:600;
+    background:var(--drawer-hover); border:1px solid var(--drawer-active); color:var(--drawer-text);
+    border-radius:8px; cursor:pointer; transition:all .12s; }
+  .notion-bar .nb-btn:hover { background:var(--drawer-active); }
+  .notion-bar .nb-btn:disabled { opacity:.5; cursor:not-allowed; }
+  .notion-bar .nb-last { font-size:10px; color:var(--drawer-text-mute); text-align:center; margin-top:5px; }
+  .notion-bar .nb-last.success { color:var(--accent); }
+  .notion-bar .nb-last.error { color:var(--danger); }
   .cloud-config { display:flex; flex-direction:column; gap:10px; }
   .cloud-config .cfg-row { display:flex; flex-direction:column; gap:4px; }
   .cloud-config label { font-size:12px; font-weight:600; color:var(--text-secondary); }
   .cloud-config input { font-family:var(--font); font-size:13px; }
   .cloud-config .cfg-help { font-size:11px; color:var(--text-tertiary); line-height:1.5; }
   .cloud-config .cfg-help code { background:var(--surface-nested); padding:1px 5px; border-radius:3px; }
+  /* Notion config modal styles */
+  .notion-config .nc-row { display:flex; flex-direction:column; gap:4px; }
+  .notion-config .nc-row label { font-size:12px; font-weight:600; color:var(--text-secondary); }
+  .notion-config .nc-input { font-family:var(--font); font-size:13px; }
+  .notion-config .nc-help { font-size:11px; color:var(--text-tertiary); line-height:1.5; }
+  .notion-config .nc-section-title { font-size:13px; font-weight:700; color:var(--text); margin:8px 0 4px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  .notion-config .nc-mod-row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .notion-config .nc-mod-name { font-size:12px; font-weight:600; color:var(--text); width:90px; }
+  .notion-config .nc-field-select { font-family:var(--font); font-size:12px; }
 </style>
 </head>
 <body>
@@ -578,7 +610,7 @@
     <div class="brand">
       <div class="ava" id="ava" title="点击更换头像"><img src="assets/avatar.jpg" alt="头像" id="avaImg"/><span class="cam" id="avaCam"></span></div>
       <input type="file" id="avatarInput" accept="image/*" hidden/>
-      <div><h1 id="brandName">小编 · 橘座</h1><p id="brandSlogan">Cat Daily News</p></div>
+      <div><h1 id="brandName">乌绒 · 黑团</h1><p id="brandSlogan">Cat Daily News</p></div>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="cloud-bar" id="cloudBar">
@@ -597,6 +629,30 @@
         </button>
       </div>
       <div class="cb-logo" id="cbLogo"></div>
+    </div>
+    <div class="notion-bar" id="notionBar">
+      <div class="nb-header">
+        <span class="nb-icon" id="nbIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 4v16"/><path d="M8 12h12"/></svg>
+        </span>
+        <span class="nb-title">Notion 同步</span>
+        <button class="nb-cfg" id="btn-notion-cfg" title="Notion 配置">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1"/></svg>
+        </button>
+      </div>
+      <div class="nb-status" id="nbStatus">未配置</div>
+      <div class="nb-modules" id="nbModules" style="display:none"></div>
+      <div class="nb-actions" id="nbActions" style="display:none">
+        <button class="nb-btn" id="btn-notion-pull" title="从 Notion 拉取数据">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+          拉取
+        </button>
+        <button class="nb-btn" id="btn-notion-push" title="推送到 Notion">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+          推送
+        </button>
+      </div>
+      <div class="nb-last" id="nbLast"></div>
     </div>
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
@@ -619,7 +675,7 @@
    ============================================================ */
 const CONFIG = {
   storageKey: "cat-news-workbench-v1",
-  owner: "小编 · 橘座",
+  owner: "乌绒 · 黑团",
   slogan: "Cat Daily News",
 
   quotes: [
@@ -1815,8 +1871,448 @@ const CloudSync = {
   }
 };
 
+/* ============================================================
+   NOTION SYNC — Notion 数据库同步模块
+   通过 Supabase Edge Function 代理 Notion API 调用
+   ============================================================ */
+const NotionSync = {
+  config: null,
+  connected: false,
+  syncing: false,
+  activeModule: null,
+
+  init(){
+    const saved = localStorage.getItem('cat-news-notion-config');
+    if(saved){
+      try {
+        this.config = JSON.parse(saved);
+        if(this.config?.edgeUrl){
+          this.testConnection(true);
+        }
+      } catch(e){}
+    }
+    this.updateUI();
+    this.bindEvents();
+  },
+
+  bindEvents(){
+    document.getElementById('btn-notion-cfg').onclick = () => this.openConfig();
+    document.getElementById('btn-notion-pull').onclick = () => this.pull();
+    document.getElementById('btn-notion-push').onclick = () => this.push();
+  },
+
+  updateUI(){
+    const status = document.getElementById('nbStatus');
+    const modules = document.getElementById('nbModules');
+    const actions = document.getElementById('nbActions');
+    const last = document.getElementById('nbLast');
+
+    if(!this.config?.edgeUrl){
+      status.textContent = '未配置 · 点击齿轮图标';
+      status.className = 'nb-status';
+      modules.style.display = 'none';
+      actions.style.display = 'none';
+      last.textContent = '';
+      return;
+    }
+
+    status.textContent = this.connected ? `已连接 · ${this.config.apiKey ? 'API Key 已设置' : '仅 Edge Function'}` : '正在检测连接...';
+    status.className = 'nb-status' + (this.connected ? ' connected' : '');
+
+    // 显示已配置的模块映射
+    const mappings = this.config.mappings || {};
+    const mappedModules = Object.keys(mappings).filter(k => mappings[k]?.databaseId);
+    if(mappedModules.length > 0){
+      modules.style.display = 'flex';
+      modules.innerHTML = mappedModules.map(k => {
+        const mod = CONFIG.modules.find(m => m.key === k);
+        const active = this.activeModule === k;
+        return `<div class="nb-module${active ? ' active' : ''}" data-module="${k}">${mod?.name || k}</div>`;
+      }).join('');
+      modules.querySelectorAll('.nb-module').forEach(el => {
+        el.onclick = () => {
+          this.activeModule = el.dataset.module;
+          this.updateUI();
+        };
+      });
+      this.activeModule = this.activeModule || mappedModules[0];
+      modules.querySelectorAll('.nb-module').forEach(el => {
+        if(el.dataset.module === this.activeModule) el.classList.add('active');
+      });
+    } else {
+      modules.style.display = 'none';
+    }
+
+    actions.style.display = mappedModules.length > 0 ? 'flex' : 'none';
+    if(this.lastSync){
+      last.textContent = `上次同步: ${this.lastSync}`;
+      last.className = 'nb-last ' + (this.lastSyncOk ? 'success' : 'error');
+    } else {
+      last.textContent = '';
+    }
+  },
+
+  async testConnection(silent){
+    if(!this.config?.edgeUrl) return false;
+    try {
+      const body = { action: 'test' };
+      if(this.config.apiKey) body.apiKey = this.config.apiKey;
+      const res = await fetch(this.config.edgeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json();
+      if(result.ok){
+        this.connected = true;
+        if(!silent) showToast(`Notion 连接成功 ✓ (${result.user})`);
+      } else {
+        this.connected = false;
+        if(!silent) showToast('Notion 连接失败: ' + result.error, 'error');
+      }
+    } catch(e) {
+      this.connected = false;
+      if(!silent) showToast('Notion 连接失败: ' + e.message, 'error');
+    }
+    this.updateUI();
+    return this.connected;
+  },
+
+  async getDatabaseSchema(databaseId){
+    if(!this.config?.edgeUrl || !databaseId) return null;
+    try {
+      const body = { action: 'schema', databaseId };
+      if(this.config.apiKey) body.apiKey = this.config.apiKey;
+      const res = await fetch(this.config.edgeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json();
+      return result.ok ? result.schema : null;
+    } catch(e) { return null; }
+  },
+
+  async pull(){
+    if(!this.activeModule){ showToast('请先配置 Notion 映射', 'warn'); return; }
+    const mapping = this.config?.mappings?.[this.activeModule];
+    if(!mapping?.databaseId){ showToast('未配置数据库 ID', 'warn'); return; }
+
+    this.syncing = true;
+    this.updateUI();
+    try {
+      const body = {
+        action: 'pull',
+        databaseId: mapping.databaseId,
+        moduleKey: this.activeModule,
+        mappings: mapping,
+      };
+      if(this.config.apiKey) body.apiKey = this.config.apiKey;
+
+      const res = await fetch(this.config.edgeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json();
+
+      if(!result.ok) throw new Error(result.error || '拉取失败');
+
+      const moduleData = data[this.activeModule] || [];
+      const notExisting = result.items.filter(item => !moduleData.find(x => x._notionId === item._notionId));
+
+      let imported = 0;
+      if(this.config.pullMode === 'merge'){
+        // 合并模式：仅导入新条目
+        notExisting.forEach(item => {
+          item.id = item.id || Date.now() + Math.random();
+          moduleData.push(item);
+          imported++;
+        });
+      } else {
+        // 覆盖模式：用 Notion 数据完全替换
+        result.items.forEach(item => {
+          if(!item.id) item.id = Date.now() + Math.random();
+        });
+        data[this.activeModule] = result.items;
+        imported = result.items.length;
+      }
+
+      store.save();
+      render();
+      this.lastSync = new Date().toLocaleString('zh-CN', { hour12: false });
+      this.lastSyncOk = true;
+      showToast(`从 Notion 拉取 ${imported} 条数据 ✓`);
+    } catch(e) {
+      this.lastSync = new Date().toLocaleString('zh-CN', { hour12: false });
+      this.lastSyncOk = false;
+      showToast('拉取失败: ' + e.message, 'error');
+    } finally {
+      this.syncing = false;
+      this.updateUI();
+    }
+  },
+
+  async push(){
+    if(!this.activeModule){ showToast('请先配置 Notion 映射', 'warn'); return; }
+    const mapping = this.config?.mappings?.[this.activeModule];
+    if(!mapping?.databaseId){ showToast('未配置数据库 ID', 'warn'); return; }
+
+    const moduleData = data[this.activeModule] || [];
+    if(moduleData.length === 0){ showToast('没有可推送的数据', 'warn'); return; }
+
+    this.syncing = true;
+    this.updateUI();
+    try {
+      const body = {
+        action: 'push',
+        databaseId: mapping.databaseId,
+        moduleKey: this.activeModule,
+        mappings: mapping,
+        items: moduleData,
+      };
+      if(this.config.apiKey) body.apiKey = this.config.apiKey;
+
+      const res = await fetch(this.config.edgeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const result = await res.json();
+
+      if(!result.ok) throw new Error(result.error || '推送失败');
+
+      // 更新本地 _notionId
+      result.results.forEach(r => {
+        if(r.ok && r.data && r.data.id){
+          const item = moduleData.find(x => String(x.id) === String(r.data.id) || x._notionId === r.data.id);
+          if(item) item._notionId = r.data.id;
+        }
+      });
+      store.save();
+      this.lastSync = new Date().toLocaleString('zh-CN', { hour12: false });
+      this.lastSyncOk = true;
+      const successCount = result.results.filter(r => r.ok).length;
+      showToast(`推送到 Notion: ${successCount}/${result.results.length} 条 ✓`);
+    } catch(e) {
+      this.lastSync = new Date().toLocaleString('zh-CN', { hour12: false });
+      this.lastSyncOk = false;
+      showToast('推送失败: ' + e.message, 'error');
+    } finally {
+      this.syncing = false;
+      this.updateUI();
+    }
+  },
+
+  openConfig(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    const modules = CONFIG.modules.map(m => {
+      const mapping = this.config?.mappings?.[m.key] || {};
+      const hasDb = mapping.databaseId ? '✓' : '';
+      return `<div class="nc-mod-row">
+        <div class="nc-mod-name">${m.name}</div>
+        <input type="text" class="nc-input" data-mod="${m.key}" data-field="databaseId"
+          value="${mapping.databaseId || ''}" placeholder="Notion 数据库 ID"
+          style="flex:1; min-width:100px"/>
+        <button class="btn ghost" data-test="${m.key}" ${!mapping.databaseId ? 'disabled' : ''}>获取结构</button>
+      </div>`;
+    }).join('');
+
+    overlay.innerHTML = `<div class="modal" style="width:640px; max-height:85vh; overflow-y:auto">
+      <h3>Notion 同步配置</h3>
+      <div class="sub">连接到你的 Notion 工作区，将数据库映射到工作台模块。<br>
+      需要先在 Supabase 创建 <a href="#" onclick="alert('创建步骤：\\n1. Supabase → Edge Functions → Create\\n2. 部署 notion-sync 函数\\n3. 复制函数 URL 填入下方'); return false;">Edge Function</a> 代理</div>
+      <div class="notion-config" style="display:flex; flex-direction:column; gap:14px; margin-top:16px">
+        <div class="nc-row">
+          <label>Edge Function URL</label>
+          <input type="text" class="nc-input" id="nc-edge-url"
+            value="${attr(this.config?.edgeUrl || '')}"
+            placeholder="https://xxx.supabase.co/functions/v1/notion-sync"
+            style="flex:1"/>
+        </div>
+        <div class="nc-row">
+          <label>Notion API Key</label>
+          <input type="password" class="nc-input" id="nc-api-key"
+            value="${attr(this.config?.apiKey || '')}"
+            placeholder="ntn_xxxxxxxxxxxxxxxx"
+            style="flex:1"/>
+          <span class="nc-help">可选。若 Key 已配置在 Edge Function Secrets 中则留空</span>
+        </div>
+        <div class="nc-row">
+          <label>拉取模式</label>
+          <select class="nc-input" id="nc-pull-mode" style="flex:1">
+            <option value="merge" ${this.config?.pullMode === 'merge' ? 'selected' : ''}>合并（仅导入新条目）</option>
+            <option value="overwrite" ${(!this.config?.pullMode || this.config?.pullMode === 'overwrite') ? 'selected' : ''}>覆盖（用 Notion 数据完全替换）</option>
+          </select>
+        </div>
+        <div class="nc-section-title">模块映射</div>
+        ${modules}
+        <div id="nc-schema" style="display:none; margin-top:12px"></div>
+        <div id="nc-test-result" style="display:none"></div>
+      </div>
+      <div class="modal-actions"><div class="spacer"></div>
+        <button class="btn ghost" id="nc-cancel">取消</button>
+        <button class="btn" id="nc-test">测试连接</button>
+        <button class="btn primary" id="nc-save">保存</button></div></div>`;
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.onclick = e => { if(e.target === overlay) close(); };
+    overlay.querySelector('#nc-cancel').onclick = close;
+
+    // 测试连接
+    overlay.querySelector('#nc-test').onclick = async () => {
+      const url = overlay.querySelector('#nc-edge-url').value.trim();
+      const key = overlay.querySelector('#nc-api-key').value.trim();
+      const resultEl = overlay.querySelector('#nc-test-result');
+      resultEl.style.display = 'block';
+      resultEl.style.background = 'var(--surface-nested)';
+      resultEl.style.color = 'var(--text-secondary)';
+      resultEl.innerHTML = '⏳ 正在连接...';
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'test', apiKey: key }),
+        });
+        const result = await res.json();
+        if(result.ok){
+          resultEl.style.background = 'var(--accent-muted)';
+          resultEl.style.color = 'var(--accent)';
+          resultEl.innerHTML = `✅ 连接成功！Notion 用户: ${attr(result.user)}<br><span style="color:var(--text-tertiary);font-size:12px">可以配置模块映射了</span>`;
+        } else {
+          resultEl.style.background = 'var(--danger-muted)';
+          resultEl.style.color = 'var(--danger)';
+          resultEl.innerHTML = `❌ 连接失败: ${attr(result.error)}`;
+        }
+      } catch(e) {
+        resultEl.style.background = 'var(--danger-muted)';
+        resultEl.style.color = 'var(--danger)';
+        resultEl.innerHTML = `❌ 请求失败: ${attr(e.message)}<br><span style="color:var(--text-tertiary);font-size:12px">请检查 Edge Function URL 是否正确</span>`;
+      }
+    };
+
+    // 获取数据库结构
+    overlay.querySelectorAll('[data-test]').forEach(btn => {
+      btn.onclick = async () => {
+        const modKey = btn.dataset.test;
+        const dbInput = overlay.querySelector(`input[data-mod="${modKey}"][data-field="databaseId"]`);
+        const dbId = dbInput.value.trim();
+        if(!dbId){ showToast('请先填写数据库 ID', 'warn'); return; }
+
+        const url = overlay.querySelector('#nc-edge-url').value.trim();
+        const key = overlay.querySelector('#nc-api-key').value.trim();
+        const schemaEl = overlay.querySelector('#nc-schema');
+        schemaEl.style.display = 'block';
+        schemaEl.innerHTML = '⏳ 获取结构中...';
+
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'schema', databaseId: dbId, apiKey: key }),
+          });
+          const result = await res.json();
+          if(result.ok){
+            const props = result.schema || {};
+            const propList = Object.entries(props).map(([name, def]) =>
+              `<div style="display:flex;align-items:center;gap:8px;padding:4px 8px;background:var(--surface);border-radius:6px;margin:2px 0">
+                <span style="font-weight:600">${attr(name)}</span>
+                <span style="font-size:11px;color:var(--text-tertiary)">${def.type}</span>
+                <span style="flex:1"></span>
+                <select data-prop="${name}" class="nc-field-select">
+                  <option value="">→ 选择映射字段</option>
+                  <optgroup label="工作台字段">
+                    <option value="title">标题</option>
+                    <option value="content">内容/备注</option>
+                    <option value="done">状态(完成)</option>
+                    <option value="priority">优先级</option>
+                    <option value="date">日期</option>
+                    <option value="amount">金额/数值</option>
+                    <option value="current">当前进度</option>
+                    <option value="target">目标进度</option>
+                    <option value="tags">标签</option>
+                    <option value="mood">心情</option>
+                  </optgroup>
+                </select>
+              </div>`
+            ).join('');
+
+            schemaEl.innerHTML = `<div style="margin-bottom:8px;font-weight:600">数据库属性 → 工作台字段</div>${propList}`;
+
+            // 恢复已保存的映射
+            const saved = this.config?.mappings?.[modKey] || {};
+            schemaEl.querySelectorAll('.nc-field-select').forEach(sel => {
+              const propName = sel.dataset.prop;
+              const savedMapping = Object.entries(saved).find(([_, v]) => v === propName);
+              if(savedMapping){
+                // saved stores reverse mapping: workbench_field -> notion_property
+                // Here we need: notion_property -> workbench_field
+                sel.value = savedMapping[propName] || '';
+              }
+            });
+
+            // 保存映射
+            btn.onclick = null;
+            btn.textContent = '✓ 已获取';
+            setTimeout(() => { btn.textContent = '重新获取'; btn.onclick = arguments.callee; }, 3000);
+          } else {
+            schemaEl.innerHTML = `❌ 获取失败: ${attr(result.error)}`;
+          }
+        } catch(e) {
+          schemaEl.innerHTML = `❌ 请求失败: ${attr(e.message)}`;
+        }
+      };
+    });
+
+    // 保存
+    overlay.querySelector('#nc-save').onclick = () => {
+      const edgeUrl = overlay.querySelector('#nc-edge-url').value.trim();
+      const apiKey = overlay.querySelector('#nc-api-key').value.trim();
+      const pullMode = overlay.querySelector('#nc-pull-mode').value;
+
+      if(!edgeUrl){ showToast('请填写 Edge Function URL', 'warn'); return; }
+
+      // 收集模块映射
+      const mappings = {};
+      overlay.querySelectorAll('.nc-mod-row').forEach(row => {
+        const modKey = row.querySelector('input').dataset.mod;
+        const dbId = row.querySelector('input').value.trim();
+        if(dbId){
+          mappings[modKey] = { databaseId: dbId };
+
+          // 收集字段映射
+          const fieldMaps = {};
+          overlay.querySelectorAll('#nc-schema .nc-field-select').forEach(sel => {
+            if(sel.value){
+              fieldMaps[sel.dataset.prop] = sel.value;
+            }
+          });
+          Object.assign(mappings[modKey], { fields: fieldMaps });
+        }
+      });
+
+      this.config = {
+        edgeUrl,
+        apiKey,
+        pullMode,
+        mappings,
+      };
+      localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
+      this.updateUI();
+      close();
+      showToast('Notion 配置已保存 ✓');
+      this.testConnection(true);
+    };
+  },
+};
+
 /* 初始化云同步 */
 CloudSync.init();
+
+/* 初始化 Notion 同步 */
+NotionSync.init();
 
 /* 包装 store.save 以支持自动同步 */
 const _origSave = store.save.bind(store);
