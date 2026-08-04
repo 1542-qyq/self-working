@@ -1296,12 +1296,13 @@ function renderModule(key){
     const done=habItems.filter(x=>x.log&&x.log[t]).length;
     const wordItem=all.find(x=>x.type==="word");
     let headLabel=`今日 ${done}/${habItems.length} 习惯打卡`;
+    let headNum=`${done}`;
     if(wordItem){
       const wT=(wordItem.log&&wordItem.log[t])||{};
       const wTot=(wT.newWords||0)+(wT.reviewWords||0);
-      if(wTot>0) headLabel+=` · ${wTot} 词`;
+      if(wTot>0){ headLabel+=` · ${wTot} 词`; headNum=`${done} · ${wTot} 词`; }
     }
-    head=headHero(m, `${done + (wordItem&&wordItem.log&&wordItem.log[t]?(wordItem.log[t].newWords||0)+(wordItem.log[t].reviewWords||0):0)}`, headLabel);
+    head=headHero(m, headNum, headLabel);
   } else if(m.type==="progress"){
     const p=avgProgress(all);
     head=headHero(m, `${p.value}%`, `平均进度 · ${all.length} 项`);
@@ -1651,6 +1652,7 @@ function wireModule(key){ const m=modOf(key);
     }
     persist();
     renderModule(key);
+  });
   $("#screen").querySelectorAll("[data-edit]").forEach(el=>el.onclick=()=>openEditor(key,(data[key]).find(i=>i.id==el.dataset.edit)));
   $("#screen").querySelectorAll(".js-del").forEach(el=>el.onclick=e=>{ e.stopPropagation(); confirmDelete(key, el.dataset.id); });
   $("#screen").querySelectorAll(".js-pin").forEach(el=>el.onclick=e=>{ e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id); x.pinned=!x.pinned; persist(); });
