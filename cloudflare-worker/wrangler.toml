@@ -1,0 +1,8 @@
+name = "notion-proxy"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# 可选: 绑定自定义路由
+# routes = [
+#   { pattern = "your-domain.com/notion/*", zone_name = "your-domain.com" }
+# ]
