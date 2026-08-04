@@ -1292,8 +1292,16 @@ function renderModule(key){
     const done=all.filter(x=>x.done).length;
     head=headHero(m, `${done}/${all.length}`, "今日已完成");
   } else if(m.type==="checkin"){
-    const done=all.filter(x=>x.log&&x.log[t]).length;
-    head=headHero(m, `${done}/${all.length}`, "今日已打卡");
+    const habItems=all.filter(x=>x.type!=="word");
+    const done=habItems.filter(x=>x.log&&x.log[t]).length;
+    const wordItem=all.find(x=>x.type==="word");
+    let headLabel=`今日 ${done}/${habItems.length} 习惯打卡`;
+    if(wordItem){
+      const wT=(wordItem.log&&wordItem.log[t])||{};
+      const wTot=(wT.newWords||0)+(wT.reviewWords||0);
+      if(wTot>0) headLabel+=` · ${wTot} 词`;
+    }
+    head=headHero(m, `${done + (wordItem&&wordItem.log&&wordItem.log[t]?(wordItem.log[t].newWords||0)+(wordItem.log[t].reviewWords||0):0)}`, headLabel);
   } else if(m.type==="progress"){
     const p=avgProgress(all);
     head=headHero(m, `${p.value}%`, `平均进度 · ${all.length} 项`);
@@ -1544,7 +1552,7 @@ function recHTML(m,x){
       const totalToday=(todayLog.newWords||0)+(todayLog.reviewWords||0);
       const pct=Math.min(100,Math.round(totalToday/(x.target||50)*100));
       const st=streak(x.log);
-      return `<div class="word-card rec">
+      return `<div class="word-card rec">${acts}
         <div class="wc-head">
           <div class="wc-title">${icon("book",16)} ${esc(x.title||"背单词")}</div>
           <div class="wc-target">目标 <b>${x.target||50}</b> 词/天</div>
@@ -1673,12 +1681,17 @@ function openEditor(key,item){
       <div class="field"><label>优先级</label><div class="seg" id="f-prio">${(m.priorities||[]).map(p=>`<div class="opt ${p.key===d.priority?'on':''}" data-v="${p.key}">${p.label}</div>`).join("")}</div></div>
       <div class="field"><label>备注</label><textarea id="f-note" placeholder="补充说明">${esc(d.note||'')}</textarea></div>`;
   } else if(m.type==="checkin"){
+    const typeSeg=`<div class="seg" id="f-ctype">
+      <div class="opt ${d.type!=="word"?'on':''}" data-v="habit">习惯打卡</div>
+      <div class="opt ${d.type==="word"?'on':''}" data-v="word">单词打卡</div></div>`;
     if(d.type==="word"){
-      fields=`<div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="背单词"/></div>
+      fields=`<div class="field"><label>类型</label>${typeSeg}</div>
+        <div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="背单词"/></div>
         <div class="field"><label>每日目标(词)</label><input id="f-target" type="number" min="1" value="${d.target||50}"/></div>
         <p class="sub" style="margin:0">保存后可在卡片快速打卡，记录每天的学习时间、新词和复习量。</p>`;
     } else {
-      fields=`<div class="field"><label>打卡项</label><input id="f-title" value="${attr(d.title)}" placeholder="例如：喝够 8 杯水"/></div>
+      fields=`<div class="field"><label>类型</label>${typeSeg}</div>
+        <div class="field"><label>打卡项</label><input id="f-title" value="${attr(d.title)}" placeholder="例如：喝够 8 杯水"/></div>
         <p class="sub" style="margin:0">保存后可在卡片点击左侧方块打卡；连续天数自动统计，每天从零开始。</p>`;
     }
   } else if(m.type==="progress"){
@@ -1808,7 +1821,9 @@ function openEditor(key,item){
     if(m.type==="todo"){ d.priority=seg("#f-prio")||d.priority; d.note=(val("#f-note")||"").trim(); }
     else if(m.type==="progress"){ d.current=Math.max(0,+val("#f-cur")||0); d.target=Math.max(1,+val("#f-tgt")||1); d.unit=(val("#f-unit")||"").trim(); d.note=(val("#f-note")||"").trim(); }
     else if(m.type==="checkin"){
-      if(d.type==="word"){ d.target=Math.max(1,+val("#f-target")||50); }
+      const ctype=seg("#f-ctype")||"habit";
+      if(ctype==="word"){ d.type="word"; d.target=Math.max(1,+val("#f-target")||50); }
+      else { delete d.type; }
     }
     else if(m.type==="finance"){ d.type=seg("#f-ftype")||"expense"; d.amount=Math.max(0,+val("#f-amt")||0); d.category=seg("#f-cat")||(m.categories&&m.categories[0])||"其他"; d.date=val("#f-date"); }
     else if(m.type==="note"){ d.mood=seg("#f-mood")||d.mood||""; d.content=(val("#f-content")||"").trim(); d.date=val("#f-date"); }
