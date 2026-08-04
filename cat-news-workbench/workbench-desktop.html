@@ -1873,22 +1873,28 @@ const CloudSync = {
 
 /* ============================================================
    NOTION SYNC — Notion 数据库同步模块
-   通过本地 Python 代理服务器转发请求（绕过浏览器 CORS 限制）
-   若直连失败，会自动回退到代理模式
+   通过代理服务器转发请求（绕过浏览器 CORS 限制）
    ============================================================ */
 const NOTION_DIRECT_API = 'https://api.notion.com/v1';
-const NOTION_PROXY_PATH = '/notion';
 const NOTION_VERSION = '2022-06-28';
 
-let useProxy = null;
+let _notionProxyUrl = null;
 
 function notionBaseUrl(){
-  if(useProxy === null){
-    useProxy = window.location.protocol === 'http:' ||
-               window.location.hostname === 'localhost' ||
-               window.location.hostname === '127.0.0.1';
+  if(_notionProxyUrl){
+    const proxyBase = _notionProxyUrl.replace(/\/$/, '');
+    if(proxyBase === '/notion'){
+      return '/notion';
+    }
+    try {
+      const u = new URL(proxyBase, window.location.origin);
+      if(u.origin === window.location.origin && u.pathname === '/notion'){
+        return '/notion';
+      }
+    } catch(e) {}
+    return proxyBase;
   }
-  return useProxy ? NOTION_PROXY_PATH : NOTION_DIRECT_API;
+  return NOTION_DIRECT_API;
 }
 
 function notionUrl(path){
@@ -1901,6 +1907,10 @@ function notionHeaders(apiKey){
     'Notion-Version': NOTION_VERSION,
     'Content-Type': 'application/json',
   };
+}
+
+function isProxyMode(){
+  return !!_notionProxyUrl;
 }
 
 function extractNotionProperties(page){
@@ -2086,6 +2096,9 @@ const NotionSync = {
     if(saved){
       try {
         this.config = JSON.parse(saved);
+        if(this.config?.proxyUrl){
+          _notionProxyUrl = this.config.proxyUrl;
+        }
         if(this.config?.apiKey){
           this.testConnection(true);
         }
@@ -2344,6 +2357,14 @@ const NotionSync = {
           <span class="nc-help">在 <a href="https://www.notion.so/my-integrations" target="_blank">Notion Developers</a> 创建 Integration 后获取</span>
         </div>
         <div class="nc-row">
+          <label>代理服务器 URL</label>
+          <input type="text" class="nc-input" id="nc-proxy-url"
+            value="${attr(this.config?.proxyUrl || '')}"
+            placeholder="/notion 或 http://localhost:8081/notion"
+            style="flex:1"/>
+          <span class="nc-help">如果工作台由代理服务器提供（python3 notion-proxy.py），填 /notion 即可；否则填完整 URL</span>
+        </div>
+        <div class="nc-row">
           <label>拉取模式</label>
           <select class="nc-input" id="nc-pull-mode" style="flex:1">
             <option value="merge" ${this.config?.pullMode === 'merge' ? 'selected' : ''}>合并（仅导入新条目）</option>
@@ -2367,11 +2388,13 @@ const NotionSync = {
     // 测试连接
     overlay.querySelector('#nc-test').onclick = async () => {
       const key = overlay.querySelector('#nc-api-key').value.trim();
+      const proxyUrl = overlay.querySelector('#nc-proxy-url').value.trim();
+      _notionProxyUrl = proxyUrl || null;
       const resultEl = overlay.querySelector('#nc-test-result');
       resultEl.style.display = 'block';
       resultEl.style.background = 'var(--surface-nested)';
       resultEl.style.color = 'var(--text-secondary)';
-      resultEl.innerHTML = '⏳ 正在连接 Notion API...';
+      resultEl.innerHTML = `⏳ 正在连接 Notion API${isProxyMode() ? ' (代理模式: ' + proxyUrl + ')' : ' (直连模式)'}...`;
 
       try {
         const res = await fetch(notionUrl('/users/me'), {
@@ -2381,13 +2404,13 @@ const NotionSync = {
         const result = await res.json();
         resultEl.style.background = 'var(--accent-muted)';
         resultEl.style.color = 'var(--accent)';
-        resultEl.innerHTML = `✅ 连接成功！Notion 用户: ${attr(result.name || result.bot_name || 'Bot')}<br><span style="color:var(--text-tertiary);font-size:12px">${useProxy ? '(代理模式)' : '(直连模式)'} 现在可以配置模块映射了</span>`;
+        resultEl.innerHTML = `✅ 连接成功！Notion 用户: ${attr(result.name || result.bot_name || 'Bot')}<br><span style="color:var(--text-tertiary);font-size:12px">${isProxyMode() ? '(代理模式)' : '(直连模式)'} 现在可以配置模块映射了</span>`;
       } catch(e) {
         resultEl.style.background = 'var(--danger-muted)';
         resultEl.style.color = 'var(--danger)';
         let errMsg = e.message;
         if(e.message === 'Failed to fetch'){
-          errMsg = useProxy ? '代理服务器无响应，请确认已启动 python3 notion-proxy.py' : '网络连接失败或 CORS 被阻止，建议使用代理模式';
+          errMsg = isProxyMode() ? '代理服务器无响应，请确认已启动 python3 notion-proxy.py' : '网络连接失败或 CORS 被阻止，建议使用代理模式';
         }
         resultEl.innerHTML = `❌ 连接失败: ${attr(errMsg)}<br><span style="color:var(--text-tertiary);font-size:12px">请检查 API Key 是否正确</span>`;
       }
@@ -2474,9 +2497,12 @@ const NotionSync = {
     // 保存
     overlay.querySelector('#nc-save').onclick = () => {
       const apiKey = overlay.querySelector('#nc-api-key').value.trim();
+      const proxyUrl = overlay.querySelector('#nc-proxy-url').value.trim();
       const pullMode = overlay.querySelector('#nc-pull-mode').value;
 
       if(!apiKey){ showToast('请填写 Notion API Key', 'warn'); return; }
+
+      _notionProxyUrl = proxyUrl || null;
 
       const mappings = {};
       overlay.querySelectorAll('.nc-mod-row').forEach(row => {
@@ -2494,7 +2520,7 @@ const NotionSync = {
         }
       });
 
-      this.config = { apiKey, pullMode, mappings };
+      this.config = { apiKey, proxyUrl: proxyUrl || '', pullMode, mappings };
       localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
       this.updateUI();
       close();
