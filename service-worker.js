@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cat-news-workbench-v1';
+const CACHE_NAME = 'cat-news-workbench-v2';
 const ASSETS = [
   './',
   './workbench-desktop.html',
