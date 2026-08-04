@@ -103,7 +103,12 @@ function mapToWorkbench(page, moduleKey, mappings) {
 
   // 内容/备注
   if (mapping.contentField && props[mapping.contentField]) {
-    result.note = props[mapping.contentField];
+    // note/hot 模块用 content 字段，其他用 note 字段
+    if (moduleKey === 'note' || moduleKey === 'hot') {
+      result.content = props[mapping.contentField];
+    } else {
+      result.note = props[mapping.contentField];
+    }
   }
 
   // 状态/完成
@@ -122,6 +127,26 @@ function mapToWorkbench(page, moduleKey, mappings) {
     result.priority = String(props[mapping.priorityField]).toUpperCase();
   }
 
+  // 类型（收入/支出）
+  if (mapping.typeField && props[mapping.typeField]) {
+    result.type = props[mapping.typeField];
+  }
+
+  // 分类
+  if (mapping.categoryField && props[mapping.categoryField]) {
+    result.category = props[mapping.categoryField];
+  }
+
+  // 单位
+  if (mapping.unitField && props[mapping.unitField]) {
+    result.unit = props[mapping.unitField];
+  }
+
+  // 心情
+  if (mapping.moodField && props[mapping.moodField]) {
+    result.mood = props[mapping.moodField];
+  }
+
   // 日期
   if (mapping.dateField && props[mapping.dateField]) {
     result.date = props[mapping.dateField];
@@ -130,13 +155,13 @@ function mapToWorkbench(page, moduleKey, mappings) {
   }
 
   // 数字类型（金额/进度）
-  if (mapping.amountField && props[mapping.amountField]) {
+  if (mapping.amountField && props[mapping.amountField] !== undefined) {
     result.amount = props[mapping.amountField];
   }
-  if (mapping.currentField && props[mapping.currentField]) {
+  if (mapping.currentField && props[mapping.currentField] !== undefined) {
     result.current = props[mapping.currentField];
   }
-  if (mapping.targetField && props[mapping.targetField]) {
+  if (mapping.targetField && props[mapping.targetField] !== undefined) {
     result.target = props[mapping.targetField];
   }
 
@@ -144,21 +169,6 @@ function mapToWorkbench(page, moduleKey, mappings) {
   if (mapping.tagField && props[mapping.tagField]) {
     const tags = props[mapping.tagField];
     result.tags = Array.isArray(tags) ? tags : [tags];
-  }
-
-  // 心情
-  if (mapping.moodField && props[mapping.moodField]) {
-    result.mood = props[mapping.moodField];
-  }
-
-  // 打卡日志
-  if (mapping.logField && props[mapping.logField]) {
-    result.log = {};
-    if (Array.isArray(props[mapping.logField])) {
-      props[mapping.logField].forEach(date => {
-        result.log[date] = true;
-      });
-    }
   }
 
   return result;
@@ -177,28 +187,36 @@ function mapToNotion(item, moduleKey, mappings, schema) {
     };
   }
 
-  // 内容
+  // 内容/备注
   if (mapping.contentField && item.note) {
     properties[mapping.contentField] = {
       rich_text: [{ type: 'text', text: { content: item.note } }]
     };
+  } else if (mapping.contentField && item.content) {
+    properties[mapping.contentField] = {
+      rich_text: [{ type: 'text', text: { content: item.content } }]
+    };
   }
 
-  // 状态
-  if (mapping.statusField) {
-    const propSchema = schema?.[mapping.statusField];
-    if (propSchema?.type === 'checkbox') {
-      properties[mapping.statusField] = { checkbox: item.done || false };
-    } else if (propSchema?.type === 'select') {
-      const options = propSchema.select?.options || [];
-      const doneOpt = options.find(o =>
-        ['done', 'complete', 'completed', '已完成', '完成', 'yes', 'true']
-          .includes(o.name.toLowerCase())
-      );
-      properties[mapping.statusField] = {
-        select: doneOpt || options.find(o => o.name === 'Not done') || options[0] || { name: 'Not done' }
-      };
-    }
+  // 类型（收入/支出等）
+  if (mapping.typeField && item.type) {
+    properties[mapping.typeField] = {
+      select: { name: item.type }
+    };
+  }
+
+  // 分类
+  if (mapping.categoryField && item.category) {
+    properties[mapping.categoryField] = {
+      select: { name: item.category }
+    };
+  }
+
+  // 单位
+  if (mapping.unitField && item.unit) {
+    properties[mapping.unitField] = {
+      rich_text: [{ type: 'text', text: { content: item.unit } }]
+    };
   }
 
   // 优先级
@@ -216,8 +234,23 @@ function mapToNotion(item, moduleKey, mappings, schema) {
   }
 
   // 数字
-  if (mapping.amountField && item.amount) {
+  if (mapping.amountField && item.amount !== undefined && item.amount !== null) {
     properties[mapping.amountField] = { number: item.amount };
+  }
+
+  // 进度字段
+  if (mapping.currentField && item.current !== undefined) {
+    properties[mapping.currentField] = { number: item.current };
+  }
+  if (mapping.targetField && item.target !== undefined) {
+    properties[mapping.targetField] = { number: item.target };
+  }
+
+  // 心情
+  if (mapping.moodField && item.mood) {
+    properties[mapping.moodField] = {
+      select: { name: item.mood }
+    };
   }
 
   // 标签

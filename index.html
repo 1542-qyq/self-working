@@ -2223,17 +2223,28 @@ const NotionSync = {
                 <span style="flex:1"></span>
                 <select data-prop="${name}" class="nc-field-select">
                   <option value="">→ 选择映射字段</option>
-                  <optgroup label="工作台字段">
+                  <optgroup label="通用字段">
                     <option value="title">标题</option>
                     <option value="content">内容/备注</option>
+                    <option value="date">日期</option>
+                    <option value="tags">标签</option>
+                  </optgroup>
+                  <optgroup label="任务字段 (todo)">
                     <option value="done">状态(完成)</option>
                     <option value="priority">优先级</option>
-                    <option value="date">日期</option>
-                    <option value="amount">金额/数值</option>
+                  </optgroup>
+                  <optgroup label="进度字段 (read/sport)">
                     <option value="current">当前进度</option>
                     <option value="target">目标进度</option>
-                    <option value="tags">标签</option>
-                    <option value="mood">心情</option>
+                    <option value="unit">单位</option>
+                  </optgroup>
+                  <optgroup label="财经字段 (money)">
+                    <option value="amount">金额</option>
+                    <option value="type">类型(收入/支出)</option>
+                    <option value="category">分类</option>
+                  </optgroup>
+                  <optgroup label="笔记字段 (note/hot)">
+                    <option value="mood">心情/标签</option>
                   </optgroup>
                 </select>
               </div>`
