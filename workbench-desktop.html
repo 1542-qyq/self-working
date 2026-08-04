@@ -638,6 +638,42 @@
   .ielts-rec .ielts-link:hover { text-decoration:underline; }
   .ielts-rec .rname.done { text-decoration:line-through; color:var(--text-tertiary); }
   .ielts-rec .gauge { width:28px; height:28px; display:block; }
+
+  /* word checkin card */
+  .word-card { background:linear-gradient(135deg,#d8e5d0 0%,#e6dfd0 100%); border:1px solid var(--border); border-radius:var(--radius-card); padding:16px; }
+  .word-card .wc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .word-card .wc-title { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:var(--text); }
+  .word-card .wc-title svg { color:var(--module-1); }
+  .word-card .wc-target { font-size:12px; color:var(--text-secondary); }
+  .word-card .wc-target b { color:var(--module-1); font-weight:800; }
+  .word-card .wc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+  .word-card .wc-field { background:rgba(255,255,255,.5); border:1px solid var(--border); border-radius:var(--radius-tile); padding:8px 10px; text-align:center; }
+  .word-card .wc-field label { font-size:11px; color:var(--text-tertiary); display:block; margin-bottom:3px; }
+  .word-card .wc-field input { width:100%; border:none; background:transparent; font-size:18px; font-weight:800; color:var(--text); text-align:center; outline:none; font-family:var(--font); }
+  .word-card .wc-field input::-webkit-outer-spin-button, .word-card .wc-field input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .word-card .wc-field input[type=number] { -moz-appearance:textfield; }
+  .word-card .wc-actions { display:flex; gap:8px; }
+  .word-card .wc-btn { flex:1; padding:9px 12px; border-radius:var(--radius-tile); border:1px solid var(--border); background:var(--surface-card); font-size:13px; font-weight:700; cursor:pointer; transition:all .15s; font-family:var(--font); display:flex; align-items:center; justify-content:center; gap:5px; }
+  .word-card .wc-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow-card); }
+  .word-card .wc-btn.primary { background:var(--module-1); color:#fff; border-color:var(--module-1); }
+  .word-card .wc-btn.primary:hover { filter:brightness(1.05); }
+  .word-card .wc-btn.ghost { background:transparent; color:var(--text-secondary); }
+  .word-card .wc-summary { display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:12px; color:var(--text-secondary); }
+  .word-card .wc-summary b { color:var(--module-1); font-weight:800; }
+
+  /* word weekly bar */
+  .word-weekly { display:flex; align-items:flex-end; gap:6px; padding:4px 0; }
+  .word-weekly .ww-day { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .word-weekly .ww-bar { width:100%; height:60px; background:var(--border); border-radius:4px; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; }
+  .word-weekly .ww-bar i { display:block; background:var(--module-1); border-radius:4px; transition:height .3s; }
+  .word-weekly .ww-label { font-size:10px; color:var(--text-tertiary); }
+  .word-weekly .ww-label.active { color:var(--text); font-weight:700; }
+
+  /* word stats card */
+  .word-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  .word-stats .ws-item { background:rgba(255,255,255,.5); border:1px solid var(--border); border-radius:var(--radius-tile); padding:10px 12px; }
+  .word-stats .ws-item .ws-label { font-size:11px; color:var(--text-tertiary); }
+  .word-stats .ws-item .ws-val { font-size:18px; font-weight:800; color:var(--module-1); }
 </style>
 </head>
 <body>
@@ -729,7 +765,7 @@ const CONFIG = {
     { key:"todo", label:"今日选题", icon:"list", color:"var(--accent)",
       calc: d => { const it=d.todo||[]; const done=it.filter(x=>x.done).length; return { value: it.length?Math.round(done/it.length*100):0, sub:`${done}/${it.length} 项` }; } },
     { key:"checkin", label:"打卡", icon:"leaf", color:"var(--module-1)",
-      calc: d => { const it=d.checkin||[]; const t=today(); const done=it.filter(x=>x.log&&x.log[t]).length; return { value: it.length?Math.round(done/it.length*100):0, sub:`${done}/${it.length} 项` }; } },
+      calc: d => { const it=(d.checkin||[]).filter(x=>x.type!=="word"); const t=today(); const done=it.filter(x=>x.log&&x.log[t]).length; return { value: it.length?Math.round(done/it.length*100):0, sub:`${done}/${it.length} 项` }; } },
     { key:"read", label:"阅读", icon:"book", color:"var(--module-2)", calc: d => avgProgress(d.read) },
     { key:"sport", label:"运动", icon:"activity", color:"var(--module-3)", calc: d => avgProgress(d.sport) },
     { key:"ielts_read", label:"雅思阅读", icon:"book", color:"#4a6c3f",
@@ -763,7 +799,8 @@ const CONFIG = {
              {id:12,title:"拍摄封面写真",priority:"P1",done:false,note:"阳光下的窗台"},
              {id:13,title:"给人类留个便签",priority:"P2",done:true,note:""} ] },
     { key:"checkin", name:"日常打卡", icon:"leaf", tint:"#d8e5d0", color:"var(--module-1)", type:"checkin", desc:"每日例行公事",
-      seed:[ {id:21,title:"喝够 8 杯水（其实是罐头汤）",log:{}}, {id:22,title:"23:00 前睡觉",log:{}}, {id:23,title:"舔毛 3 分钟",log:{}} ] },
+      seed:[ {id:21,title:"喝够 8 杯水（其实是罐头汤）",log:{}}, {id:22,title:"23:00 前睡觉",log:{}}, {id:23,title:"舔毛 3 分钟",log:{}},
+             {id:91,title:"背单词",type:"word",target:50,log:{}} ] },
     { key:"read", name:"阅读专栏", icon:"book", tint:"#f6efe8", color:"var(--module-2)", type:"progress", unit:"页", desc:"书籍·文章·猫生感悟",
       seed:[ {id:31,title:"《如何与人类沟通》",current:168,target:300,unit:"页",note:"第 7 章：关于人类听不懂呼噜声的研究"}, {id:32,title:"《纸箱建筑学》",current:90,target:260,unit:"页",note:"经典之作，常读常新"} ] },
     { key:"sport", name:"运动版面", icon:"activity", tint:"#f3e3dd", color:"var(--module-3)", type:"progress", unit:"分钟", desc:"奔跑·跳跃·偷袭训练",
@@ -1220,7 +1257,7 @@ function wireHome(){
 function renderInsight(){
   const cards=CONFIG.modules.map(m=>{ const it=data[m.key]||[]; let main="", pct=0;
     if(m.type==="todo"){ main=`${it.filter(x=>x.done).length}/${it.length} 已完成`; pct=it.length?Math.round(it.filter(x=>x.done).length/it.length*100):0; }
-    else if(m.type==="checkin"){ const t=today(); main=`今日 ${it.filter(x=>x.log&&x.log[t]).length}/${it.length} 打卡`; pct=it.length?Math.round(it.filter(x=>x.log&&x.log[t]).length/it.length*100):0; }
+    else if(m.type==="checkin"){ const t=today(); const hab=it.filter(x=>x.type!=="word"); main=`今日 ${hab.filter(x=>x.log&&x.log[t]).length}/${hab.length} 打卡`; pct=hab.length?Math.round(hab.filter(x=>x.log&&x.log[t]).length/hab.length*100):0; }
     else if(m.type==="progress"){ pct=avgProgress(it).value; main=`平均进度 ${pct}%`; }
     else if(m.type==="finance"){ const e=it.filter(x=>x.type==="expense").reduce((a,x)=>a+ +x.amount,0); const inc=it.filter(x=>x.type==="income").reduce((a,x)=>a+ +x.amount,0); main=`收 ¥${inc} · 支 ¥${e}`; }
     else if(m.type==="ielts"){ const done=it.filter(x=>x.status==='✅ 已完成').length; pct=it.length?Math.round(done/it.length*100):0; main=`${done}/${it.length} 完成`; }
@@ -1352,16 +1389,64 @@ function sideStats(m, all){
   }
 
   if(m.type==="checkin"){
-    const done=all.filter(x=>x.log&&x.log[t]).length; const pct=all.length?Math.round(done/all.length*100):0;
-    const streaks=all.map(x=>({title:x.title,s:streak(x.log)})).sort((a,b)=>b.s-a.s);
+    const wordItem=all.find(x=>x.type==="word");
+    const habitItems=all.filter(x=>x.type!=="word");
+    const done=habitItems.filter(x=>x.log&&x.log[t]).length;
+    const habitPct=habitItems.length?Math.round(done/habitItems.length*100):0;
+    const streaks=habitItems.map(x=>({title:x.title,s:streak(x.log)})).sort((a,b)=>b.s-a.s);
     const best=streaks[0]?streaks[0].s:0;
     const list=streaks.slice(0,6).map(x=>`<div class="stat-row"><span class="k">${esc(x.title)}</span><span class="val" style="color:var(--module-3)">${x.s} 天</span></div>`).join("");
-    return `<div class="side-card"><div class="sh">${icon("leaf",15)} 今日打卡</div>
-        <div class="side-ring"><div class="dial">${ringSVG(pct,m.color)}<span class="mid"><span class="big" style="color:${m.color}">${done}/${all.length}</span><span class="cap">已完成</span></span></div></div></div>
+
+    let wordPanel="";
+    if(wordItem){
+      const wLog=wordItem.log||{};
+      const todayLog=wLog[t]||{};
+      const totalToday=(todayLog.newWords||0)+(todayLog.reviewWords||0);
+      const target=wordItem.target||50;
+      const wordPct=Math.min(100,Math.round(totalToday/target*100));
+      const wordStreak=streak(wLog);
+
+      const wk=weekDates();
+      const weekData=wk.map(d=>{
+        const l=wLog[d]||{}; const tot=(l.newWords||0)+(l.reviewWords||0);
+        return {date:d,total:tot,time:l.time||0,newWords:l.newWords||0,reviewWords:l.reviewWords||0};
+      });
+      const maxWords=Math.max(target,...weekData.map(w=>w.total));
+      const weekTotal=weekData.reduce((a,w)=>a+w.total,0);
+      const weekTime=weekData.reduce((a,w)=>a+w.time,0);
+      const weekNew=weekData.reduce((a,w)=>a+w.newWords,0);
+      const weekReview=weekData.reduce((a,w)=>a+w.reviewWords,0);
+      const dayNames=["一","二","三","四","五","六","日"];
+      const todayIdx=wk.indexOf(t);
+
+      const barsHTML=weekData.map((w,i)=>{
+        const h=maxWords>0?(w.total/maxWords*100):0;
+        const activeClass=(i===todayIdx)?"active":"";
+        return `<div class="ww-day"><div class="ww-bar"><i style="height:${h}%"></i></div><span class="ww-label ${activeClass}">${dayNames[i]}</span></div>`;
+      }).join("");
+
+      wordPanel=`<div class="side-card"><div class="sh">${icon("book",15)} 单词打卡</div>
+        <div class="side-ring"><div class="dial">${ringSVG(wordPct,m.color)}<span class="mid"><span class="big" style="color:${m.color}">${totalToday}</span><span class="cap">今日 ${wordPct}% · 目标 ${target}</span></span></div></div></div>
+        <div class="side-card"><div class="sh">${icon("flame",15)} 单词统计</div>
+          <div class="word-stats">
+            <div class="ws-item"><div class="ws-label">连续天数</div><div class="ws-val">${wordStreak}</div></div>
+            <div class="ws-item"><div class="ws-label">本周总数</div><div class="ws-val">${weekTotal}</div></div>
+            <div class="ws-item"><div class="ws-label">本周新词</div><div class="ws-val">${weekNew}</div></div>
+            <div class="ws-item"><div class="ws-label">本周复习</div><div class="ws-val">${weekReview}</div></div>
+          </div></div>
+        <div class="side-card"><div class="sh">${icon("bar-chart",15)} 本周单词量</div>
+          <div class="word-weekly">${barsHTML}</div>
+          <div class="sub" style="text-align:center;margin-top:6px">本周累计 ${weekTotal} 词 · ${weekTime} 分钟</div></div>`;
+    }
+
+    let habitPanel=`<div class="side-card"><div class="sh">${icon("leaf",15)} 今日打卡</div>
+      <div class="side-ring"><div class="dial">${ringSVG(habitPct,m.color)}<span class="mid"><span class="big" style="color:${m.color}">${done}/${habitItems.length}</span><span class="cap">已完成</span></span></div></div></div>
       <div class="side-card"><div class="sh">${icon("flame",15)} 连续天数</div>
         ${row("最长连续",`<span style="color:var(--module-3)">${best} 天</span>`)}
-        ${row("习惯总数",`${all.length} 个`)}
+        ${row("习惯总数",`${habitItems.length} 个`)}
         <div style="margin-top:6px">${list}</div></div>`;
+
+    return wordPanel+habitPanel;
   }
 
   if(m.type==="todo"){
@@ -1453,7 +1538,33 @@ function recHTML(m,x){
       <div class="body" data-edit="${x.id}"><span class="rname ${x.done?'done':''}">${esc(x.title)}</span>
       ${p?`<span class="badge" style="background:${p.color};color:${p.text}"><span class="dot"></span>${p.label}</span>`:''}
       ${x.note?`<span class="rdate" style="margin-left:0;color:var(--text-tertiary)">${esc(x.note).slice(0,40)}</span>`:''}${customBlock}</div></div></div>`; }
-  if(m.type==="checkin"){ const on=!!(x.log&&x.log[today()]); const st=streak(x.log);
+  if(m.type==="checkin"){
+    if(x.type==="word"){
+      const t=today(); const todayLog=(x.log&&x.log[t])||{};
+      const totalToday=(todayLog.newWords||0)+(todayLog.reviewWords||0);
+      const pct=Math.min(100,Math.round(totalToday/(x.target||50)*100));
+      const st=streak(x.log);
+      return `<div class="word-card rec">
+        <div class="wc-head">
+          <div class="wc-title">${icon("book",16)} ${esc(x.title||"背单词")}</div>
+          <div class="wc-target">目标 <b>${x.target||50}</b> 词/天</div>
+        </div>
+        <div class="wc-grid">
+          <div class="wc-field"><label>时间(分钟)</label><input type="number" id="wc-time" min="0" value="${todayLog.time||0}"/></div>
+          <div class="wc-field"><label>新词</label><input type="number" id="wc-new" min="0" value="${todayLog.newWords||0}"/></div>
+          <div class="wc-field"><label>复习</label><input type="number" id="wc-review" min="0" value="${todayLog.reviewWords||0}"/></div>
+        </div>
+        <div class="wc-actions">
+          <button class="wc-btn primary js-word-save" data-id="${x.id}">${icon("check",14)} 保存打卡</button>
+          <button class="wc-btn ghost js-word-reset" data-id="${x.id}">重置</button>
+        </div>
+        <div class="wc-summary">
+          <span>今日：<b>${totalToday}</b> 词 · ${todayLog.time||0} 分钟</span>
+          <span>连续 <b>${st}</b> 天 · 完成 <b>${pct}%</b></span>
+        </div>
+      </div>`;
+    }
+    const on=!!(x.log&&x.log[today()]); const st=streak(x.log);
     return `<div class="rec ${layoutCls}">${acts}<div class="top" style="padding-right:60px"><div class="chk js-chk ${on?'on':''}" data-id="${x.id}">${chkMark}</div>
       ${thumb}
       <div class="body" data-edit="${x.id}"><span class="rname">${esc(x.title)}</span>
@@ -1520,11 +1631,37 @@ function wireModule(key){ const m=modOf(key);
       x.status = states[(cur+1) % states.length];
       x.done = (x.status === '✅ 已完成');
     }
-    else if(m.type==="checkin"){ x.log=x.log||{}; const t=today(); x.log[t]?delete x.log[t]:x.log[t]=true; }
-    persist(); });
+    else if(m.type==="checkin"){
+      if(x.type==="word"){
+        x.log=x.log||{}; const t=today();
+        const existing=x.log[t]||{};
+        const newTime=+x.__wcTime||0, newWords=+x.__wcNew||0, newReview=+x.__wcReview||0;
+        x.log[t]={time:newTime,newWords:newWords,reviewWords:newReview};
+      } else {
+        x.log=x.log||{}; const t=today(); x.log[t]?delete x.log[t]:x.log[t]=true;
+      }
+    }
+    persist();
+    renderModule(key);
   $("#screen").querySelectorAll("[data-edit]").forEach(el=>el.onclick=()=>openEditor(key,(data[key]).find(i=>i.id==el.dataset.edit)));
   $("#screen").querySelectorAll(".js-del").forEach(el=>el.onclick=e=>{ e.stopPropagation(); confirmDelete(key, el.dataset.id); });
   $("#screen").querySelectorAll(".js-pin").forEach(el=>el.onclick=e=>{ e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id); x.pinned=!x.pinned; persist(); });
+  // word card buttons
+  $("#screen").querySelectorAll(".js-word-save").forEach(el=>el.onclick=e=>{
+    e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id); if(!x) return;
+    const card=el.closest(".word-card");
+    x.__wcTime=card.querySelector("#wc-time")?.value||0;
+    x.__wcNew=card.querySelector("#wc-new")?.value||0;
+    x.__wcReview=card.querySelector("#wc-review")?.value||0;
+    x.log=x.log||{}; const t=today();
+    x.log[t]={time:+x.__wcTime,newWords:+x.__wcNew,reviewWords:+x.__wcReview};
+    persist(); renderModule(key);
+  });
+  $("#screen").querySelectorAll(".js-word-reset").forEach(el=>el.onclick=e=>{
+    e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id); if(!x) return;
+    x.log=x.log||{}; const t=today(); delete x.log[t];
+    persist(); renderModule(key);
+  });
 }
 
 /* ---------- EDITOR MODAL (per type) ---------- */
@@ -1536,8 +1673,14 @@ function openEditor(key,item){
       <div class="field"><label>优先级</label><div class="seg" id="f-prio">${(m.priorities||[]).map(p=>`<div class="opt ${p.key===d.priority?'on':''}" data-v="${p.key}">${p.label}</div>`).join("")}</div></div>
       <div class="field"><label>备注</label><textarea id="f-note" placeholder="补充说明">${esc(d.note||'')}</textarea></div>`;
   } else if(m.type==="checkin"){
-    fields=`<div class="field"><label>打卡项</label><input id="f-title" value="${attr(d.title)}" placeholder="例如：喝够 8 杯水"/></div>
-      <p class="sub" style="margin:0">保存后可在卡片点击左侧方块打卡；连续天数自动统计，每天从零开始。</p>`;
+    if(d.type==="word"){
+      fields=`<div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="背单词"/></div>
+        <div class="field"><label>每日目标(词)</label><input id="f-target" type="number" min="1" value="${d.target||50}"/></div>
+        <p class="sub" style="margin:0">保存后可在卡片快速打卡，记录每天的学习时间、新词和复习量。</p>`;
+    } else {
+      fields=`<div class="field"><label>打卡项</label><input id="f-title" value="${attr(d.title)}" placeholder="例如：喝够 8 杯水"/></div>
+        <p class="sub" style="margin:0">保存后可在卡片点击左侧方块打卡；连续天数自动统计，每天从零开始。</p>`;
+    }
   } else if(m.type==="progress"){
     fields=`<div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="书名 / 目标"/></div>
       <div class="frow"><div class="field"><label>当前</label><input id="f-cur" type="number" value="${d.current??0}"/></div>
@@ -1664,6 +1807,9 @@ function openEditor(key,item){
     d.layout=seg("#f-layout")||'default';
     if(m.type==="todo"){ d.priority=seg("#f-prio")||d.priority; d.note=(val("#f-note")||"").trim(); }
     else if(m.type==="progress"){ d.current=Math.max(0,+val("#f-cur")||0); d.target=Math.max(1,+val("#f-tgt")||1); d.unit=(val("#f-unit")||"").trim(); d.note=(val("#f-note")||"").trim(); }
+    else if(m.type==="checkin"){
+      if(d.type==="word"){ d.target=Math.max(1,+val("#f-target")||50); }
+    }
     else if(m.type==="finance"){ d.type=seg("#f-ftype")||"expense"; d.amount=Math.max(0,+val("#f-amt")||0); d.category=seg("#f-cat")||(m.categories&&m.categories[0])||"其他"; d.date=val("#f-date"); }
     else if(m.type==="note"){ d.mood=seg("#f-mood")||d.mood||""; d.content=(val("#f-content")||"").trim(); d.date=val("#f-date"); }
     else if(m.type==="ielts"){
@@ -1712,6 +1858,7 @@ function openEditor(key,item){
 function newItem(m){ const base={id:Date.now()}; let item;
   if(m.type==="todo") item={...base,title:"",priority:(m.priorities&&m.priorities[1]?m.priorities[1].key:"P1"),done:false,note:""};
   else if(m.type==="checkin") item={...base,title:"",log:{}};
+  else if(m.type==="word") item={...base,title:"",type:"word",target:50,log:{}};
   else if(m.type==="progress") item={...base,title:"",current:0,target:(m.unit==="页"?100:20),unit:m.unit||"",note:""};
   else if(m.type==="finance") item={...base,title:"",type:"expense",amount:"",category:(m.categories&&m.categories[0])||"其他",date:isoToday()};
   else if(m.type==="ielts"){ item={...base,title:"",status:"☐ 未练习",date:isoToday()};
