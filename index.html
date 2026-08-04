@@ -2623,8 +2623,8 @@ const NotionSync = {
       let msg = e.message;
       if(e.message === 'Failed to fetch'){
         msg = isProxyMode()
-          ? '代理服务器无响应，请确认已启动 python3 notion-proxy.py'
-          : '网络无法连接到 api.notion.com。建议使用代理模式（在设置中填写代理服务器地址）';
+          ? '代理无响应。本地: python3 notion-proxy.py；线上: 检查 Cloudflare Workers 是否正常运行'
+          : '网络无法连接到 api.notion.com。建议使用代理模式（在设置中填写代理地址）';
       }
       if(!silent) showToast('Notion 连接失败: ' + msg, 'error');
     }
@@ -2806,7 +2806,7 @@ const NotionSync = {
             value="${attr(this.config?.proxyUrl || '')}"
             placeholder="/notion 或 http://localhost:8081/notion"
             style="flex:1"/>
-          <span class="nc-help">如果工作台由代理服务器提供（python3 notion-proxy.py），填 /notion 即可；否则填完整 URL</span>
+          <span class="nc-help">本地代理填 /notion；Cloudflare Workers 填 https://你的域名.workers.dev/notion；直连模式需自建代理</span>
         </div>
         <div class="nc-row">
           <label>拉取模式</label>
