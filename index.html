@@ -1873,10 +1873,27 @@ const CloudSync = {
 
 /* ============================================================
    NOTION SYNC — Notion 数据库同步模块
-   通过 Supabase Edge Function 代理 Notion API 调用
+   通过本地 Python 代理服务器转发请求（绕过浏览器 CORS 限制）
+   若直连失败，会自动回退到代理模式
    ============================================================ */
-const NOTION_API = 'https://api.notion.com/v1';
+const NOTION_DIRECT_API = 'https://api.notion.com/v1';
+const NOTION_PROXY_PATH = '/notion';
 const NOTION_VERSION = '2022-06-28';
+
+let useProxy = null;
+
+function notionBaseUrl(){
+  if(useProxy === null){
+    useProxy = window.location.protocol === 'http:' ||
+               window.location.hostname === 'localhost' ||
+               window.location.hostname === '127.0.0.1';
+  }
+  return useProxy ? NOTION_PROXY_PATH : NOTION_DIRECT_API;
+}
+
+function notionUrl(path){
+  return notionBaseUrl() + path;
+}
 
 function notionHeaders(apiKey){
   return {
@@ -2142,16 +2159,32 @@ const NotionSync = {
   async testConnection(silent){
     if(!this.config?.apiKey) return false;
     try {
-      const res = await fetch(`${NOTION_API}/users/me`, {
+      const probeRes = await fetch(notionUrl('/users/me'), {
+        method: 'GET',
         headers: notionHeaders(this.config.apiKey),
       });
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      const result = await res.json();
+      if(!probeRes.ok){
+        const text = await probeRes.text();
+        if(probeRes.status === 401 || probeRes.status === 403){
+          throw new Error(`API Key 无效 (HTTP ${probeRes.status})`);
+        } else if(probeRes.status === 404){
+          throw new Error(`端点不存在 (HTTP 404)`);
+        } else {
+          throw new Error(`HTTP ${probeRes.status}: ${text.slice(0, 100)}`);
+        }
+      }
+      const result = await probeRes.json();
       this.connected = true;
       if(!silent) showToast(`Notion 连接成功 ✓ (${result.name || result.bot_name || 'Bot'})`);
     } catch(e) {
       this.connected = false;
-      if(!silent) showToast('Notion 连接失败: ' + e.message, 'error');
+      let msg = e.message;
+      if(e.message === 'Failed to fetch'){
+        msg = useProxy
+          ? '代理服务器无响应。请确认已运行 python3 notion-proxy.py 启动本地代理服务器'
+          : '网络无法连接到 api.notion.com。请使用代理模式：python3 notion-proxy.py';
+      }
+      if(!silent) showToast('Notion 连接失败: ' + msg, 'error');
     }
     this.updateUI();
     return this.connected;
@@ -2160,7 +2193,7 @@ const NotionSync = {
   async getDatabaseSchema(databaseId){
     if(!this.config?.apiKey || !databaseId) return null;
     try {
-      const res = await fetch(`${NOTION_API}/databases/${databaseId}`, {
+      const res = await fetch(notionUrl(`/databases/${databaseId}`), {
         headers: notionHeaders(this.config.apiKey),
       });
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -2175,7 +2208,7 @@ const NotionSync = {
     do {
       const body = { page_size: 100 };
       if(cursor) body.start_cursor = cursor;
-      const res = await fetch(`${NOTION_API}/databases/${databaseId}/query`, {
+      const res = await fetch(notionUrl(`/databases/${databaseId}/query`), {
         method: 'POST',
         headers: notionHeaders(this.config.apiKey),
         body: JSON.stringify(body),
@@ -2189,7 +2222,7 @@ const NotionSync = {
   },
 
   async createPage(databaseId, properties){
-    const res = await fetch(`${NOTION_API}/pages`, {
+    const res = await fetch(notionUrl('/pages'), {
       method: 'POST',
       headers: notionHeaders(this.config.apiKey),
       body: JSON.stringify({ parent: { database_id: databaseId }, properties }),
@@ -2199,7 +2232,7 @@ const NotionSync = {
   },
 
   async updatePage(pageId, properties){
-    const res = await fetch(`${NOTION_API}/pages/${pageId}`, {
+    const res = await fetch(notionUrl(`/pages/${pageId}`), {
       method: 'PATCH',
       headers: notionHeaders(this.config.apiKey),
       body: JSON.stringify({ properties }),
@@ -2356,18 +2389,22 @@ const NotionSync = {
       resultEl.innerHTML = '⏳ 正在连接 Notion API...';
 
       try {
-        const res = await fetch(`${NOTION_API}/users/me`, {
+        const res = await fetch(notionUrl('/users/me'), {
           headers: notionHeaders(key),
         });
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
         const result = await res.json();
         resultEl.style.background = 'var(--accent-muted)';
         resultEl.style.color = 'var(--accent)';
-        resultEl.innerHTML = `✅ 连接成功！Notion 用户: ${attr(result.name || result.bot_name || 'Bot')}<br><span style="color:var(--text-tertiary);font-size:12px">现在可以配置模块映射了</span>`;
+        resultEl.innerHTML = `✅ 连接成功！Notion 用户: ${attr(result.name || result.bot_name || 'Bot')}<br><span style="color:var(--text-tertiary);font-size:12px">${useProxy ? '(代理模式)' : '(直连模式)'} 现在可以配置模块映射了</span>`;
       } catch(e) {
         resultEl.style.background = 'var(--danger-muted)';
         resultEl.style.color = 'var(--danger)';
-        resultEl.innerHTML = `❌ 连接失败: ${attr(e.message)}<br><span style="color:var(--text-tertiary);font-size:12px">请检查 API Key 是否正确</span>`;
+        let errMsg = e.message;
+        if(e.message === 'Failed to fetch'){
+          errMsg = useProxy ? '代理服务器无响应，请确认已启动 python3 notion-proxy.py' : '网络连接失败或 CORS 被阻止，建议使用代理模式';
+        }
+        resultEl.innerHTML = `❌ 连接失败: ${attr(errMsg)}<br><span style="color:var(--text-tertiary);font-size:12px">请检查 API Key 是否正确</span>`;
       }
     };
 
@@ -2386,7 +2423,7 @@ const NotionSync = {
         schemaEl.innerHTML = '⏳ 获取结构中...';
 
         try {
-          const res = await fetch(`${NOTION_API}/databases/${dbId}`, {
+          const res = await fetch(notionUrl(`/databases/${dbId}`), {
             headers: notionHeaders(key),
           });
           if(!res.ok) throw new Error(`HTTP ${res.status}`);
