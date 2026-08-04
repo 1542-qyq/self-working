@@ -913,8 +913,7 @@ function weekDates(){
   const arr=[]; for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); arr.push(d.toISOString().slice(0,10)); }
   return arr;
 }
-function weekNum(){ const n=new Date(); const s=new Date(n.getFullYear(),0,1);
-  return Math.ceil(((n-s)/86400000 + s.getDay()+1)/7); }
+function weekNum(){ return 1; }
 
 /* 秒级心跳：更新时钟；番茄钟运行时倒计时 */
 function startClock(){ if(clockTimer) return; clockTimer=setInterval(heartbeat,1000); heartbeat(); }
