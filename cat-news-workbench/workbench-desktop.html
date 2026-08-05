@@ -2388,44 +2388,28 @@ function isProxyMode(){
 /* 智能自动映射 Notion 字段到工作台字段 */
 function autoMapField(propName, propType, moduleKey){
   const rules = [
-    // 通用映射（所有模块）
-    { kw: ['title','标题','name','名称'], val: 'title', modules: null },
-    { kw: ['content','内容','note','备注','笔记','description','描述'], val: 'content', modules: null },
-    { kw: ['date','日期','created','创建','deadline','截止'], val: 'date', modules: null },
-    { kw: ['tag','标签','category','分类'], val: 'tags', modules: null },
-    { kw: ['status','状态','完成'], val: 'statusField', modules: null },
-    { kw: ['done','完成','completed'], val: 'done', modules: null },
-    { kw: ['priority','优先级'], val: 'priorityField', modules: null },
-    { kw: ['type','类型'], val: 'typeField', modules: null },
-    { kw: ['count','次数','times','次数'], val: 'timesField', modules: null },
-    { kw: ['amount','金额','cost','花费'], val: 'amountField', modules: null },
-    { kw: ['current','当前','progress','进度'], val: 'currentField', modules: null },
-    { kw: ['target','目标','goal'], val: 'targetField', modules: null },
-    { kw: ['unit','单位'], val: 'unitField', modules: null },
-    { kw: ['mood','心情'], val: 'moodField', modules: null },
-    { kw: ['color','颜色'], val: 'color', modules: null },
-
-    // IELTS 通用
+    // IELTS 模块特定规则（优先级高，先匹配）
     { kw: ['accuracy','正确率','正确'], val: 'accuracyField', modules: ['ielts'] },
     { kw: ['difficulty','难度'], val: 'difficultyField', modules: ['ielts'] },
     { kw: ['frequency','频次','频率'], val: 'frequencyField', modules: ['ielts'] },
     { kw: ['weakness','薄弱','问题','不足'], val: 'weaknessField', modules: ['ielts'] },
     { kw: ['tomorrow','明日','计划','plan'], val: 'tomorrowPlanField', modules: ['ielts'] },
+    { kw: ['question','题型'], val: 'questionTypeField', modules: ['ielts'] },
+    { kw: ['source','来源'], val: 'sourceField', modules: ['ielts'] },
 
     // IELTS 阅读
     { kw: ['section','部分','passage','段'], val: 'sectionField', modules: ['ielts_read'] },
     { kw: ['p1','p2','p3'], val: 'sectionField', modules: ['ielts_read'] },
 
     // IELTS 听力
+    { kw: ['section','部分'], val: 'listeningSectionField', modules: ['ielts_listening'] },
     { kw: ['s1','s2','s3','s4'], val: 'listeningSectionField', modules: ['ielts_listening'] },
 
     // IELTS 写作
     { kw: ['task','任务'], val: 'taskField', modules: ['ielts_writing'] },
     { kw: ['score','分数','estimated','预估'], val: 'estimatedScoreField', modules: ['ielts_writing','ielts_record'] },
     { kw: ['cn','中文','题目中'], val: 'titleCnField', modules: ['ielts_writing','ielts_listening'] },
-    { kw: ['source','来源'], val: 'sourceField', modules: ['ielts'] },
     { kw: ['correction','批改','report'], val: 'correctionLinkField', modules: ['ielts_writing'] },
-    { kw: ['question','题型','type'], val: 'questionTypeField', modules: ['ielts'] },
 
     // IELTS 口语
     { kw: ['part','部分'], val: 'partField', modules: ['ielts_speaking'] },
@@ -2435,9 +2419,26 @@ function autoMapField(propName, propType, moduleKey){
 
     // IELTS 备考记录
     { kw: ['subject','学科','科目'], val: 'subjectField', modules: ['ielts_record'] },
+
+    // 通用映射（所有模块，优先级低）
+    { kw: ['title','标题','name','名称'], val: 'title', modules: null },
+    { kw: ['content','内容','note','备注','笔记','description','描述'], val: 'content', modules: null },
+    { kw: ['date','日期','created','创建','deadline','截止'], val: 'date', modules: null },
+    { kw: ['tag','标签','category','分类'], val: 'tags', modules: null },
+    { kw: ['status','状态','完成'], val: 'statusField', modules: null },
+    { kw: ['done','完成','completed'], val: 'done', modules: null },
+    { kw: ['priority','优先级'], val: 'priorityField', modules: null },
+    { kw: ['type','类型'], val: 'typeField', modules: null },
+    { kw: ['count','次数','times','次数','word','单词'], val: 'timesField', modules: null },
+    { kw: ['amount','金额','cost','花费'], val: 'amountField', modules: null },
+    { kw: ['current','当前','progress','进度'], val: 'currentField', modules: null },
+    { kw: ['target','目标','goal'], val: 'targetField', modules: null },
+    { kw: ['unit','单位'], val: 'unitField', modules: null },
+    { kw: ['mood','心情'], val: 'moodField', modules: null },
+    { kw: ['color','颜色'], val: 'color', modules: null },
   ];
 
-  // 优先级：模块特定 > 通用
+  // 优先级：模块特定 > 通用（规则已按优先级排序）
   for(const r of rules){
     const kwMatch = r.kw.some(k => propName.toLowerCase().includes(k.toLowerCase()));
     if(!kwMatch) continue;
@@ -2457,7 +2458,7 @@ function autoMapField(propName, propType, moduleKey){
     'checkbox': propName.includes('status') || propName.includes('完成') ? 'done' : null,
     'number': propName.includes('score') || propName.includes('分数') ? 'estimatedScoreField' :
               propName.includes('accuracy') || propName.includes('正确') ? 'accuracyField' :
-              propName.includes('count') || propName.includes('次数') ? 'timesField' : null,
+              propName.includes('count') || propName.includes('次数') || propName.includes('word') || propName.includes('单词') ? 'timesField' : null,
     'select': propName.includes('section') || propName.includes('部分') ? 'sectionField' :
               propName.includes('task') ? 'taskField' :
               propName.includes('part') ? 'partField' : null,
