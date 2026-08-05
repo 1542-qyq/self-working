@@ -1556,7 +1556,6 @@ function recHTML(m,x){
       return `<div class="word-card rec">${acts}
         <div class="wc-head">
           <div class="wc-title">${icon("book",16)} ${esc(x.title||"背单词")}</div>
-          <div class="wc-target">目标 <b>${x.target||50}</b> 词/天</div>
         </div>
         <div class="wc-grid">
           <div class="wc-field"><label>时间(分钟)</label><input type="number" id="wc-time" min="0" value="${todayLog.time||0}"/></div>
