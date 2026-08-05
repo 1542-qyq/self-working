@@ -1435,7 +1435,7 @@ function sideStats(m, all){
       }).join("");
 
       wordPanel=`<div class="side-card"><div class="sh">${icon("book",15)} 单词打卡</div>
-        <div class="side-ring"><div class="dial">${ringSVG(wordPct,m.color)}<span class="mid"><span class="big" style="color:${m.color}">${wordPct}%</span><span class="cap">今日 ${totalToday} 词 · 目标 ${target}</span></span></div></div></div>
+        <div class="side-ring"><div class="dial">${ringSVG(wordPct,m.color)}<span class="mid"><span class="big" style="color:${m.color}">${wordPct}%</span><span class="cap">今日 ${totalToday} 词</span></span></div></div></div>
         <div class="side-card"><div class="sh">${icon("flame",15)} 单词统计</div>
           <div class="word-stats">
             <div class="ws-item"><div class="ws-label">连续天数</div><div class="ws-val">${wordStreak}</div></div>
