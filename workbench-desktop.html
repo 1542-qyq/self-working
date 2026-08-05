@@ -602,7 +602,7 @@
   .notion-config .nc-mod-name { font-size:12px; font-weight:600; color:var(--text); width:90px; }
   .notion-config .nc-field-select { font-family:var(--font); font-size:12px; }
   /* IELTS tile & card styles */
-  .ielts-tile { grid-column: span 1; min-height: 300px; }
+  .ielts-tile { grid-column: span 2; min-height: 300px; }
   .ielts-tile .ielts-overview { display:flex; align-items:center; gap:14px; margin:12px 0; }
   .ielts-tile .ielts-ring-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:52px; height:52px; }
   .ielts-tile .ielts-ring-wrap svg.gauge { width:100%; height:100%; }
@@ -1268,7 +1268,7 @@ function renderInsight(){
       ${['progress','todo','checkin','ielts'].includes(m.type)?`<div class="hero-bar" style="margin-top:9px"><i style="width:${pct}%;background:${m.color}"></i></div>`:''}</div>
       <span class="arw" style="color:var(--text-tertiary)">${icon("chevron",16,2)}</span></div>`; }).join("");
   $("#screen").innerHTML=`<div class="header"><div><h2>洞察</h2><p>各模块进展一览 · 记录—执行—统计—反馈</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
-    <div class="sec-title">模块概况</div><div class="pin-list" style="grid-template-columns:repeat(3,1fr)">${cards}</div>`;
+    <div class="sec-title">模块概况</div><div class="pin-list" style="grid-template-columns:repeat(4,1fr)">${cards}</div>`;
   $("#screen").querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>go(el.dataset.open));
 }
 
