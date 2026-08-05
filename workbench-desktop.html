@@ -1553,7 +1553,7 @@ function recHTML(m,x){
       const totalToday=(todayLog.newWords||0)+(todayLog.reviewWords||0);
       const pct=Math.min(100,Math.round(totalToday/(x.target||50)*100));
       const st=streak(x.log);
-      return `<div class="word-card rec">${acts}
+      return `<div class="word-card rec">
         <div class="wc-head">
           <div class="wc-title">${icon("book",16)} ${esc(x.title||"背单词")}</div>
         </div>
