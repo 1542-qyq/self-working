@@ -203,7 +203,8 @@
     color: var(--text-tertiary); font-size: 13px; margin-top: 8px; }
 
   /* ---------- pinned tasks ---------- */
-  .pin-list { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .pin-list { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-items:start; }
+  .pin-list .ielts-tile { grid-column: 1 / -1; }
   .pin { display:flex; align-items:center; gap: 13px; padding: 15px 16px; border-radius: var(--radius-tile);
     background: var(--surface-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); transition: box-shadow .15s, transform .12s; }
   .pin:hover { box-shadow: var(--shadow-overlay); transform: translateY(-1px); }
@@ -602,7 +603,7 @@
   .notion-config .nc-mod-name { font-size:12px; font-weight:600; color:var(--text); width:90px; }
   .notion-config .nc-field-select { font-family:var(--font); font-size:12px; }
   /* IELTS tile & card styles */
-  .ielts-tile { grid-column: 1 / -1; min-height: 160px; }
+  .ielts-tile { min-height: 160px; grid-column: 1 / -1 !important; }
   .ielts-tile .tile-h { margin-bottom: 10px; }
   .ielts-tile .ielts-body { display:flex; gap:20px; align-items:stretch; }
   .ielts-tile .ielts-overview { display:flex; align-items:center; gap:14px; flex-shrink:0; margin:0; }
