@@ -908,6 +908,27 @@ const store = {
         }
       });
     });
+    // Migrate: populate missing IELTS fields from _rawProps
+    ['ielts_read','ielts_listening','ielts_writing','ielts_speaking','ielts_record'].forEach(key=>{
+      (d[key]||[]).forEach(item=>{
+        const rp = item._rawProps || {};
+        if(!item.section){
+          item.section = rp['部分'] || rp['Section'] || rp['section'] || rp['P1'] || rp['P2'] || rp['P3'] || rp['S1'] || rp['S2'] || rp['S3'] || rp['S4'] || '';
+        }
+        if(!item.frequency){
+          item.frequency = rp['频次'] || rp['Frequency'] || rp['frequency'] || rp['频率'] || '';
+        }
+        if(!item.part){
+          item.part = rp['Part'] || rp['part'] || '';
+        }
+        if(!item.task){
+          item.task = rp['Task'] || rp['task'] || '';
+        }
+        if(!item.questionType){
+          item.questionType = rp['题型'] || rp['Question Type'] || rp['questionType'] || '';
+        }
+      });
+    });
     return d;
   },
   save(){ localStorage.setItem(CONFIG.storageKey, JSON.stringify(data)); },
@@ -1571,9 +1592,13 @@ function recHTML(m,x){
     const isDone = x.status === '✅ 已完成';
     const statusBadge = `<span class="badge" style="background:${m.tint};color:${m.color}">${esc(x.status||'☐ 未练习')}</span>`;
     const accRing = x.accuracy != null ? ringSVG(x.accuracy, m.color, 28) : '';
+    // Fallback: try top-level field first, then _rawProps (for legacy data)
+    const rp = x._rawProps || {};
+    const sectionVal = x.section || rp['部分'] || rp['Section'] || rp['section'] || rp['P1'] || rp['P2'] || rp['P3'] || rp['S1'] || rp['S2'] || rp['S3'] || rp['S4'];
+    const freqVal = x.frequency || rp['频次'] || rp['Frequency'] || rp['frequency'] || rp['频率'];
     const infoChips = [];
-    if(x.section) infoChips.push(`<span class="ielts-info-chip section"><span class="icn">📍</span><span class="lbl">部分</span>${esc(x.section)}</span>`);
-    if(x.frequency) infoChips.push(`<span class="ielts-info-chip frequency"><span class="icn">🔤</span><span class="lbl">频次</span>${esc(x.frequency)}</span>`);
+    if(sectionVal) infoChips.push(`<span class="ielts-info-chip section"><span class="icn">📍</span><span class="lbl">部分</span>${esc(sectionVal)}</span>`);
+    if(freqVal) infoChips.push(`<span class="ielts-info-chip frequency"><span class="icn">🔤</span><span class="lbl">频次</span>${esc(freqVal)}</span>`);
     const tags = [];
     if(x.part) tags.push(x.part);
     if(x.task) tags.push(x.task);
