@@ -629,6 +629,12 @@
   .ielts-tile .ielts-action:hover { background:#6b8e5a; color:#fff; }
   /* IELTS card in module view */
   .ielts-rec .ielts-sub { font-size:12px; color:var(--text-tertiary); margin-top:2px; }
+  .ielts-rec .ielts-info-row { display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap; }
+  .ielts-rec .ielts-info-chip { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:600; }
+  .ielts-rec .ielts-info-chip .icn { font-size:13px; line-height:1; }
+  .ielts-rec .ielts-info-chip.section { background:var(--surface-nested); color:var(--text-secondary); }
+  .ielts-rec .ielts-info-chip.frequency { background:var(--accent-muted); color:var(--accent); }
+  .ielts-rec .ielts-info-chip .lbl { font-weight:500; color:var(--text-tertiary); margin-right:2px; font-size:11px; }
   .ielts-rec .meta-line { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
   .ielts-rec .meta-tag { font-size:10px; padding:1px 6px; border-radius:4px; background:var(--drawer-hover); color:var(--text-secondary); }
   .ielts-rec .ielts-meta { display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap; }
@@ -1565,16 +1571,18 @@ function recHTML(m,x){
     const isDone = x.status === '✅ 已完成';
     const statusBadge = `<span class="badge" style="background:${m.tint};color:${m.color}">${esc(x.status||'☐ 未练习')}</span>`;
     const accRing = x.accuracy != null ? ringSVG(x.accuracy, m.color, 28) : '';
+    const infoChips = [];
+    if(x.section) infoChips.push(`<span class="ielts-info-chip section"><span class="icn">📍</span><span class="lbl">部分</span>${esc(x.section)}</span>`);
+    if(x.frequency) infoChips.push(`<span class="ielts-info-chip frequency"><span class="icn">🔤</span><span class="lbl">频次</span>${esc(x.frequency)}</span>`);
     const tags = [];
-    if(x.section) tags.push(x.section);
     if(x.part) tags.push(x.part);
     if(x.task) tags.push(x.task);
-    if(x.frequency) tags.push(x.frequency);
     if(x.questionType) tags.push(x.questionType);
     return `<div class="rec ielts-rec ${layoutCls}">${acts}<div class="top" style="padding-right:60px">
       <div class="body" data-edit="${x.id}">
         <span class="rname ${isDone?'done':''}">${esc(x.title)}</span>
         ${x.titleCn?`<div class="ielts-sub">${esc(x.titleCn)}</div>`:''}
+        ${infoChips.length?`<div class="ielts-info-row">${infoChips.join('')}</div>`:''}
         ${tags.length?`<div class="meta-line">${tags.map(t=>`<span class="meta-tag">${esc(t)}</span>`).join('')}</div>`:''}
         <div class="ielts-meta">
           ${accRing}
