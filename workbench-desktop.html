@@ -816,7 +816,7 @@ const CONFIG = {
     { key:"hot", name:"热点追踪", icon:"flame", tint:"#f3e3dd", color:"var(--danger)", type:"note", desc:"喵星动态·热搜·稍后关注",
       moods:["收藏","稍后读","已读"],
       seed:[ {id:71,title:"纸箱新品发布会",content:"隔壁小区的纸箱新品，值得关注。",mood:"收藏",date:isoToday()} ] },
-    { key:"ielts_read", name:"📖 阅读题库", icon:"book", tint:"#d6e4d0", color:"#4a6c3f", type:"ielts", desc:"IELTS Reading · 阅读文章与正确率追踪",
+    { key:"ielts_read", name:"阅读题库", icon:"book", tint:"#d6e4d0", color:"#4a6c3f", type:"ielts", desc:"IELTS Reading · 阅读文章与正确率追踪",
       fields:[
         {key:"section", label:"部分", type:"select", options:["P1","P2","P3"]},
         {key:"accuracy", label:"正确率(%)", type:"number"},
@@ -824,7 +824,7 @@ const CONFIG = {
         {key:"frequency", label:"频次", type:"select", options:["高频","中频","低频"]}
       ],
       seed:[] },
-    { key:"ielts_listening", name:"🎧 听力题库", icon:"headphones", tint:"#e6dcd0", color:"#8b7355", type:"ielts", desc:"IELTS Listening · Section 与正确率",
+    { key:"ielts_listening", name:"听力题库", icon:"headphones", tint:"#e6dcd0", color:"#8b7355", type:"ielts", desc:"IELTS Listening · Section 与正确率",
       fields:[
         {key:"titleCn", label:"标题(中)", type:"text"},
         {key:"section", label:"Section", type:"select", options:["S1","S2","S3","S4"]},
@@ -832,7 +832,7 @@ const CONFIG = {
         {key:"difficulty", label:"难度", type:"text"}
       ],
       seed:[] },
-    { key:"ielts_writing", name:"✍️ 写作题库", icon:"pen", tint:"#d0dde5", color:"#3d5a6c", type:"ielts", desc:"IELTS Writing · Task 1/2 练习",
+    { key:"ielts_writing", name:"写作题库", icon:"pen", tint:"#d0dde5", color:"#3d5a6c", type:"ielts", desc:"IELTS Writing · Task 1/2 练习",
       fields:[
         {key:"titleEn", label:"题目英文", type:"textarea"},
         {key:"task", label:"Task", type:"select", options:["Task 1","Task 2"]},
@@ -841,7 +841,7 @@ const CONFIG = {
         {key:"correctionLink", label:"批改报告链接", type:"text"}
       ],
       seed:[] },
-    { key:"ielts_speaking", name:"🎤 口语题库", icon:"mic", tint:"#f0ddd0", color:"#a0522d", type:"ielts", desc:"IELTS Speaking · Part 1/2/3",
+    { key:"ielts_speaking", name:"口语题库", icon:"mic", tint:"#f0ddd0", color:"#a0522d", type:"ielts", desc:"IELTS Speaking · Part 1/2/3",
       fields:[
         {key:"part", label:"Part", type:"select", options:["Part 1","Part 2","Part 3"]},
         {key:"selfAssessment", label:"自我评估", type:"select", options:["流利","一般","需加强"]},
@@ -849,7 +849,7 @@ const CONFIG = {
         {key:"topicCategory", label:"话题分类", type:"text"}
       ],
       seed:[] },
-    { key:"ielts_record", name:"📋 备考记录", icon:"file-text", tint:"#ece0c8", color:"#9c7a3c", type:"ielts", desc:"IELTS 备考 · 错题与薄弱点记录",
+    { key:"ielts_record", name:"备考记录", icon:"file-text", tint:"#ece0c8", color:"#9c7a3c", type:"ielts", desc:"IELTS 备考 · 错题与薄弱点记录",
       fields:[
         {key:"subject", label:"科目", type:"select", options:["听力","阅读","写作","口语"]},
         {key:"accuracy", label:"正确率(%)", type:"number"},
