@@ -2436,6 +2436,10 @@ function autoMapField(propName, propType, moduleKey){
     { kw: ['unit','单位'], val: 'unitField', modules: null },
     { kw: ['mood','心情'], val: 'moodField', modules: null },
     { kw: ['color','颜色'], val: 'color', modules: null },
+    { kw: ['section','部分','passage','段'], val: 'sectionField', modules: null },
+    { kw: ['frequency','频次','频率'], val: 'frequencyField', modules: null },
+    { kw: ['source','来源'], val: 'sourceField', modules: null },
+    { kw: ['question','题型','type'], val: 'questionTypeField', modules: null },
   ];
 
   // 优先级：模块特定 > 通用（规则已按优先级排序）
@@ -2458,10 +2462,12 @@ function autoMapField(propName, propType, moduleKey){
     'checkbox': propName.includes('status') || propName.includes('完成') ? 'done' : null,
     'number': propName.includes('score') || propName.includes('分数') ? 'estimatedScoreField' :
               propName.includes('accuracy') || propName.includes('正确') ? 'accuracyField' :
-              propName.includes('count') || propName.includes('次数') || propName.includes('word') || propName.includes('单词') ? 'timesField' : null,
+              propName.includes('count') || propName.includes('次数') || propName.includes('word') || propName.includes('单词') ? 'timesField' :
+              propName.includes('frequency') || propName.includes('频次') || propName.includes('频率') ? 'frequencyField' : null,
     'select': propName.includes('section') || propName.includes('部分') ? 'sectionField' :
               propName.includes('task') ? 'taskField' :
-              propName.includes('part') ? 'partField' : null,
+              propName.includes('part') ? 'partField' :
+              propName.includes('frequency') || propName.includes('频次') || propName.includes('频率') ? 'frequencyField' : null,
     'multi_select': 'tags',
   };
   return typeMap[propType] || null;
@@ -2910,24 +2916,30 @@ const NotionSync = {
     this.syncing = true;
     this.updateUI();
     try {
-      // 自动获取 Schema 并智能映射字段（如果尚未配置）
-      if(!mapping.fields || Object.keys(mapping.fields).length === 0){
-        const schema = await this.getDatabaseSchema(mapping.databaseId);
-        if(schema){
-          const autoFields = {};
-          for(const [propName, propDef] of Object.entries(schema)){
-            const mapped = autoMapField(propName, propDef.type, this.activeModule);
-            if(mapped){
-              autoFields[propName] = mapped;
-            }
+      // 自动获取 Schema 并智能映射字段（补全未映射的字段）
+      const schema = await this.getDatabaseSchema(mapping.databaseId);
+      if(schema){
+        const existingFields = mapping.fields || {};
+        const autoFields = {};
+        let newCount = 0;
+        for(const [propName, propDef] of Object.entries(schema)){
+          // 只自动映射尚未配置的字段
+          if(existingFields[propName]){
+            autoFields[propName] = existingFields[propName];
+            continue;
           }
-          mapping.fields = autoFields;
-          // 保存配置
-          this.config.mappings[this.activeModule] = mapping;
-          localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
-          if(Object.keys(autoFields).length > 0){
-            showToast(`✨ 自动映射 ${Object.keys(autoFields).length} 个字段`);
+          const mapped = autoMapField(propName, propDef.type, this.activeModule);
+          if(mapped){
+            autoFields[propName] = mapped;
+            newCount++;
           }
+        }
+        mapping.fields = autoFields;
+        // 保存配置
+        this.config.mappings[this.activeModule] = mapping;
+        localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
+        if(newCount > 0){
+          showToast(`✨ 自动映射 ${newCount} 个新字段`);
         }
       }
 
