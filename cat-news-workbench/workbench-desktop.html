@@ -606,12 +606,12 @@
   .ielts-tile { min-height: 160px; grid-column: 1 / -1 !important; }
   .ielts-tile .tile-h { margin-bottom: 10px; }
   .ielts-tile .ielts-body { display:flex; gap:20px; align-items:stretch; }
-  .ielts-tile .ielts-overview { display:flex; align-items:center; gap:14px; flex-shrink:0; margin:0; }
-  .ielts-tile .ielts-ring-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:64px; height:64px; }
+  .ielts-tile .ielts-overview { display:flex; align-items:center; gap:16px; flex-shrink:0; margin:0; }
+  .ielts-tile .ielts-ring-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:80px; height:80px; }
   .ielts-tile .ielts-ring-wrap svg.gauge { width:100%; height:100%; }
-  .ielts-tile .ielts-ring-label { position:absolute; text-align:center; }
-  .ielts-tile .ielts-ring-label b { font-size:17px; display:block; color:#6b8e5a; }
-  .ielts-tile .ielts-ring-label span { font-size:10px; color:var(--text-tertiary); }
+  .ielts-tile .ielts-ring-label { position:absolute; text-align:center; line-height:1.1; }
+  .ielts-tile .ielts-ring-label b { font-size:18px; display:block; color:#6b8e5a; font-weight:800; }
+  .ielts-tile .ielts-ring-label span { font-size:9px; color:var(--text-tertiary); }
   .ielts-tile .ielts-stats { display:flex; gap:12px; }
   .ielts-tile .ielts-stat { text-align:center; min-width:56px; }
   .ielts-tile .ielts-stat b { font-size:17px; display:block; }
@@ -1168,7 +1168,7 @@ function ieltsTileHTML(){
   return `<div class="tile ielts-tile"><div class="tile-h"><span class="tic" style="background:linear-gradient(135deg,#6b8e5a,#8fbc8f);color:#fff">${icon("book",16)}</span><div class="tt"><span class="en">IELTS PREP</span><span class="zh">雅思备考</span></div><span class="r" style="color:#6b8e5a">${doneItems}/${totalItems} 完成</span></div>
     <div class="ielts-body">
       <div class="ielts-overview">
-        <div class="ielts-ring-wrap">${ringSVG(overallPct,'#6b8e5a',64)}<div class="ielts-ring-label"><b>${overallPct}%</b><span>完成率</span></div></div>
+        <div class="ielts-ring-wrap">${ringSVG(overallPct,'#6b8e5a',80)}<div class="ielts-ring-label"><b>${overallPct}%</b><span>完成率</span></div></div>
         <div class="ielts-stats">
           <div class="ielts-stat"><b style="color:#6b8e5a">${avgAcc}%</b><span>平均正确率</span></div>
           <div class="ielts-stat"><b>${todayPlan}</b><span>今日计划</span></div>
