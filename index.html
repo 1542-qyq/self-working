@@ -602,27 +602,29 @@
   .notion-config .nc-mod-name { font-size:12px; font-weight:600; color:var(--text); width:90px; }
   .notion-config .nc-field-select { font-family:var(--font); font-size:12px; }
   /* IELTS tile & card styles */
-  .ielts-tile { grid-column: span 2; min-height: 300px; }
-  .ielts-tile .ielts-overview { display:flex; align-items:center; gap:14px; margin:12px 0; }
-  .ielts-tile .ielts-ring-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:52px; height:52px; }
+  .ielts-tile { grid-column: 1 / -1; min-height: 160px; }
+  .ielts-tile .tile-h { margin-bottom: 10px; }
+  .ielts-tile .ielts-body { display:flex; gap:20px; align-items:stretch; }
+  .ielts-tile .ielts-overview { display:flex; align-items:center; gap:14px; flex-shrink:0; margin:0; }
+  .ielts-tile .ielts-ring-wrap { position:relative; display:flex; align-items:center; justify-content:center; width:64px; height:64px; }
   .ielts-tile .ielts-ring-wrap svg.gauge { width:100%; height:100%; }
   .ielts-tile .ielts-ring-label { position:absolute; text-align:center; }
-  .ielts-tile .ielts-ring-label b { font-size:15px; display:block; color:#6b8e5a; }
+  .ielts-tile .ielts-ring-label b { font-size:17px; display:block; color:#6b8e5a; }
   .ielts-tile .ielts-ring-label span { font-size:10px; color:var(--text-tertiary); }
-  .ielts-tile .ielts-stats { display:flex; gap:10px; flex:1; }
-  .ielts-tile .ielts-stat { text-align:center; flex:1; }
-  .ielts-tile .ielts-stat b { font-size:16px; display:block; }
+  .ielts-tile .ielts-stats { display:flex; gap:12px; }
+  .ielts-tile .ielts-stat { text-align:center; min-width:56px; }
+  .ielts-tile .ielts-stat b { font-size:17px; display:block; }
   .ielts-tile .ielts-stat span { font-size:10px; color:var(--text-tertiary); }
-  .ielts-tile .ielts-subjects { display:flex; flex-direction:column; gap:6px; margin-top:10px; }
-  .ielts-tile .ielts-sub-row { display:flex; align-items:center; gap:8px; padding:5px 6px; border-radius:6px; transition:background .12s; }
+  .ielts-tile .ielts-subjects { display:flex; flex-direction:row; gap:12px; flex:1; align-items:center; }
+  .ielts-tile .ielts-sub-row { display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 12px; border-radius:10px; background:var(--surface-nested); text-align:center; min-width:80px; flex:1; }
   .ielts-tile .ielts-sub-row:hover { background:var(--accent-muted); }
-  .ielts-tile .ielts-sub-name { font-size:11px; font-weight:600; width:72px; flex-shrink:0; display:flex; align-items:center; gap:3px; }
-  .ielts-tile .ielts-sub-bar { flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
-  .ielts-tile .ielts-sub-bar i { display:block; height:100%; border-radius:3px; transition:width .3s; }
-  .ielts-tile .ielts-sub-pct { font-size:11px; font-weight:600; width:32px; text-align:right; }
+  .ielts-tile .ielts-sub-name { font-size:12px; font-weight:600; width:auto; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .ielts-tile .ielts-sub-bar { width:100%; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .ielts-tile .ielts-sub-bar i { display:block; height:100%; border-radius:2px; transition:width .3s; }
+  .ielts-tile .ielts-sub-pct { font-size:13px; font-weight:700; }
   .ielts-tile .ielts-sub-today { font-size:10px; color:var(--accent); }
-  .ielts-tile .ielts-tile-actions { display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
-  .ielts-tile .ielts-action { font-size:11px; padding:4px 8px; border-radius:6px; background:var(--surface-nested); color:var(--text-secondary); cursor:pointer; transition:all .12s; }
+  .ielts-tile .ielts-tile-actions { display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+  .ielts-tile .ielts-action { font-size:11px; padding:6px 10px; border-radius:8px; background:var(--surface-nested); color:var(--text-secondary); cursor:pointer; transition:all .12s; text-align:center; white-space:nowrap; }
   .ielts-tile .ielts-action:hover { background:#6b8e5a; color:#fff; }
   /* IELTS card in module view */
   .ielts-rec .ielts-sub { font-size:12px; color:var(--text-tertiary); margin-top:2px; }
@@ -1156,28 +1158,30 @@ function ieltsTileHTML(){
     const pct=items.length?Math.round(done/items.length*100):0;
     const today=items.filter(x=>x.status==='📋 今日任务').length;
     return `<div class="ielts-sub-row" data-open="${m.key}" style="cursor:pointer">
-      <span class="ielts-sub-name" style="color:${m.color}">${icon(m.icon,14)} ${m.name.replace(/^[^\s]+\s/,'')}</span>
+      <span class="ielts-sub-name" style="color:${m.color}">${icon(m.icon,16)} ${m.name.replace(/^[^\s]+\s/,'')}</span>
       <div class="ielts-sub-bar"><i style="width:${pct}%;background:${m.color}"></i></div>
       <span class="ielts-sub-pct">${pct}%</span>
       <span class="ielts-sub-today">${today?`📋${today}`:''}</span>
     </div>`;
   }).join("");
   return `<div class="tile ielts-tile"><div class="tile-h"><span class="tic" style="background:linear-gradient(135deg,#6b8e5a,#8fbc8f);color:#fff">${icon("book",16)}</span><div class="tt"><span class="en">IELTS PREP</span><span class="zh">雅思备考</span></div><span class="r" style="color:#6b8e5a">${doneItems}/${totalItems} 完成</span></div>
-    <div class="ielts-overview">
-      <div class="ielts-ring-wrap">${ringSVG(overallPct,'#6b8e5a',48)}<div class="ielts-ring-label"><b>${overallPct}%</b><span>完成率</span></div></div>
-      <div class="ielts-stats">
-        <div class="ielts-stat"><b style="color:#6b8e5a">${avgAcc}%</b><span>平均正确率</span></div>
-        <div class="ielts-stat"><b>${todayPlan}</b><span>今日计划</span></div>
-        <div class="ielts-stat"><b>${doneItems}</b><span>已完成项</span></div>
+    <div class="ielts-body">
+      <div class="ielts-overview">
+        <div class="ielts-ring-wrap">${ringSVG(overallPct,'#6b8e5a',64)}<div class="ielts-ring-label"><b>${overallPct}%</b><span>完成率</span></div></div>
+        <div class="ielts-stats">
+          <div class="ielts-stat"><b style="color:#6b8e5a">${avgAcc}%</b><span>平均正确率</span></div>
+          <div class="ielts-stat"><b>${todayPlan}</b><span>今日计划</span></div>
+          <div class="ielts-stat"><b>${doneItems}</b><span>已完成项</span></div>
+        </div>
       </div>
-    </div>
-    <div class="ielts-subjects">${subjectRows}</div>
-    <div class="ielts-tile-actions">
-      <span class="ielts-action" data-open="ielts_read">📖 阅读</span>
-      <span class="ielts-action" data-open="ielts_listening">🎧 听力</span>
-      <span class="ielts-action" data-open="ielts_writing">✍️ 写作</span>
-      <span class="ielts-action" data-open="ielts_speaking">🗣️ 口语</span>
-      <span class="ielts-action" data-open="ielts_record">📊 记录</span>
+      <div class="ielts-subjects">${subjectRows}</div>
+      <div class="ielts-tile-actions">
+        <span class="ielts-action" data-open="ielts_read">📖 阅读</span>
+        <span class="ielts-action" data-open="ielts_listening">🎧 听力</span>
+        <span class="ielts-action" data-open="ielts_writing">✍️ 写作</span>
+        <span class="ielts-action" data-open="ielts_speaking">🗣️ 口语</span>
+        <span class="ielts-action" data-open="ielts_record">📊 记录</span>
+      </div>
     </div></div>`;
 }
 
@@ -1268,7 +1272,7 @@ function renderInsight(){
       ${['progress','todo','checkin','ielts'].includes(m.type)?`<div class="hero-bar" style="margin-top:9px"><i style="width:${pct}%;background:${m.color}"></i></div>`:''}</div>
       <span class="arw" style="color:var(--text-tertiary)">${icon("chevron",16,2)}</span></div>`; }).join("");
   $("#screen").innerHTML=`<div class="header"><div><h2>洞察</h2><p>各模块进展一览 · 记录—执行—统计—反馈</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
-    <div class="sec-title">模块概况</div><div class="pin-list" style="grid-template-columns:repeat(4,1fr)">${cards}</div>`;
+    <div class="sec-title">模块概况</div><div class="pin-list" style="grid-template-columns:repeat(3,1fr)">${cards}</div>`;
   $("#screen").querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>go(el.dataset.open));
 }
 
