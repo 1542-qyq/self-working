@@ -2411,6 +2411,9 @@ function isRemoteDeployment(){
 // 预检代理端点是否可达
 async function checkProxyAvailable(timeoutMs = 5000){
   if(!_notionProxyUrl) return { ok: true, mode: 'direct' };
+  const proxyUrl = _notionProxyUrl;
+  const isLocalPath = proxyUrl === '/notion' || proxyUrl === 'http://localhost:8081/notion';
+  const remoteEnv = isRemoteDeployment();
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -2420,21 +2423,39 @@ async function checkProxyAvailable(timeoutMs = 5000){
       signal: controller.signal,
     });
     clearTimeout(timer);
+    // 404: 代理端点不存在
+    if(res.status === 404){
+      return { ok: false, mode: 'proxy', diagnosis: getProxyDiagnosis(proxyUrl, remoteEnv, 'not_found') };
+    }
+    // 401/403: 代理可达，只是 API Key 无效
+    if(res.status === 401 || res.status === 403){
+      return { ok: true, mode: 'proxy', status: res.status };
+    }
+    // 2xx/3xx: 代理正常工作
     return { ok: true, mode: 'proxy', status: res.status };
   } catch(e) {
-    const proxyUrl = _notionProxyUrl;
-    const isLocalPath = proxyUrl === '/notion' || proxyUrl === 'http://localhost:8081/notion';
-    const remoteEnv = isRemoteDeployment();
-    let diagnosis = '';
-    if(isLocalPath && remoteEnv){
-      diagnosis = '当前在远程服务器上访问，代理地址是本地路径 /notion。请填写 Cloudflare Worker 的完整 URL（如 https://your-worker.workers.dev/notion），或在本地运行 python3 notion-proxy.py';
-    } else if(proxyUrl.includes('localhost') || proxyUrl.includes('127.0.0.1')){
-      diagnosis = '本地代理服务器未启动。请运行: python3 notion-proxy.py';
-    } else {
-      diagnosis = `代理服务器 ${proxyUrl} 不可达。请检查代理服务是否正常运行。`;
-    }
-    return { ok: false, mode: 'proxy', diagnosis, error: e.message };
+    return { ok: false, mode: 'proxy', diagnosis: getProxyDiagnosis(proxyUrl, remoteEnv, e.message), error: e.message };
   }
+}
+
+function getProxyDiagnosis(proxyUrl, remoteEnv, reason){
+  const isLocalPath = proxyUrl === '/notion' || proxyUrl === 'http://localhost:8081/notion';
+  if(reason === 'not_found'){
+    if(isLocalPath && remoteEnv){
+      return '当前在远程服务器上访问，代理地址是本地路径 /notion。请填写 Cloudflare Worker 的完整 URL（如 https://your-worker.workers.dev/notion）';
+    }
+    if(isLocalPath){
+      return '代理端点 /notion 不存在。请确认 python3 notion-proxy.py 已启动且端口正确';
+    }
+    return `代理服务器 ${proxyUrl} 的 /notion 端点不存在。请检查代理服务配置`;
+  }
+  if(isLocalPath && remoteEnv){
+    return '当前在远程服务器上访问，代理地址是本地路径 /notion。请填写 Cloudflare Worker 的完整 URL（如 https://your-worker.workers.dev/notion），或在本地运行 python3 notion-proxy.py';
+  }
+  if(proxyUrl.includes('localhost') || proxyUrl.includes('127.0.0.1')){
+    return '本地代理服务器未启动。请运行: python3 notion-proxy.py';
+  }
+  return `代理服务器 ${proxyUrl} 不可达。请检查代理服务是否正常运行。`;
 }
 
 function notionUrl(path){
