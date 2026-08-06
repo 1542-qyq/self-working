@@ -2393,7 +2393,12 @@ function notionBaseUrl(){
     // 如果代理 URL 的 origin 与页面相同，也使用相对路径
     try {
       const u = new URL(proxyBase, window.location.origin);
-      if(u.origin === window.location.origin && u.pathname === '/notion'){
+      const pageUrl = new URL(window.location.href);
+      // 本地代理（localhost/127.0.0.1）特殊处理：只要 pathname 是 /notion，就使用相对路径
+      const isLocalProxy = ['localhost', '127.0.0.1'].includes(u.hostname);
+      const sameOrigin = (u.origin === window.location.origin) ||
+        (isLocalProxy && u.pathname === '/notion');
+      if(sameOrigin){
         return '/notion';
       }
     } catch(e) {}
