@@ -685,7 +685,7 @@
   .word-stats .ws-item .ws-val { font-size:18px; font-weight:800; color:var(--module-1); }
 
   /* ============================================================
-     COZE AI 助手样式
+     MiaoAI 喵喵助手样式
      ============================================================ */
   /* AI规划瓷砖 */
   .ai-planner { background:linear-gradient(135deg,#f5efe0 0%,#e8e0d0 50%,#d8e5d0 100%); position:relative; overflow:hidden; }
@@ -727,36 +727,36 @@
   @keyframes bounce { 0%,80%,100% { transform:scale(.6); opacity:.4; } 40% { transform:scale(1); opacity:1; } }
 
   /* 悬浮AI助手按钮 */
-  .coze-fab { position:fixed; right:28px; bottom:28px; width:58px; height:58px; border-radius:50%;
+  .miao-fab { position:fixed; right:28px; bottom:28px; width:58px; height:58px; border-radius:50%;
     background:linear-gradient(135deg,var(--accent) 0%,#5a7c4f 100%); color:#fff; border:none; cursor:pointer;
     box-shadow:0 8px 28px rgba(74,108,63,.4); z-index:70; display:grid; place-items:center; font-size:26px;
     transition:transform .2s, box-shadow .2s; }
-  .coze-fab:hover { transform:scale(1.08); box-shadow:0 12px 36px rgba(74,108,63,.5); }
-  .coze-fab:active { transform:scale(.96); }
-  .coze-fab .fab-pulse { position:absolute; inset:0; border-radius:50%; border:2px solid var(--accent); animation:pulseRing 2s infinite; }
+  .miao-fab:hover { transform:scale(1.08); box-shadow:0 12px 36px rgba(74,108,63,.5); }
+  .miao-fab:active { transform:scale(.96); }
+  .miao-fab .fab-pulse { position:absolute; inset:0; border-radius:50%; border:2px solid var(--accent); animation:pulseRing 2s infinite; }
   @keyframes pulseRing { 0% { transform:scale(1); opacity:.6; } 100% { transform:scale(1.5); opacity:0; } }
 
   /* AI聊天面板 */
-  .coze-chat { position:fixed; right:28px; bottom:100px; width:380px; max-width:calc(100vw - 56px); max-height:560px;
+  .miao-chat { position:fixed; right:28px; bottom:100px; width:380px; max-width:calc(100vw - 56px); max-height:560px;
     background:var(--surface-card); border:1px solid var(--border); border-radius:20px; box-shadow:0 20px 60px rgba(92,74,46,.25);
     z-index:75; display:flex; flex-direction:column; overflow:hidden; transform-origin:bottom right;
     transform:scale(.9) translateY(20px); opacity:0; pointer-events:none; transition:all .22s cubic-bezier(.2,.8,.3,1); }
-  .coze-chat.open { transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
-  .coze-chat-head { background:linear-gradient(135deg,#4a6c3f 0%,#3d5a33 100%); color:#fff; padding:16px 18px; display:flex; align-items:center; gap:12px; }
-  .coze-chat-head .c-ava { width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.15); display:grid; place-items:center; font-size:22px; flex:0 0 auto; }
-  .coze-chat-head .c-info { flex:1; }
-  .coze-chat-head .c-name { font-size:15px; font-weight:700; }
-  .coze-chat-head .c-status { font-size:11px; opacity:.75; display:flex; align-items:center; gap:5px; margin-top:2px; }
-  .coze-chat-head .c-status .dot { width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 6px #4ade80; }
-  .coze-chat-head .c-cfg { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:#fff; cursor:pointer;
+  .miao-chat.open { transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
+  .miao-chat-head { background:linear-gradient(135deg,#4a6c3f 0%,#3d5a33 100%); color:#fff; padding:16px 18px; display:flex; align-items:center; gap:12px; }
+  .miao-chat-head .c-ava { width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.15); display:grid; place-items:center; font-size:22px; flex:0 0 auto; }
+  .miao-chat-head .c-info { flex:1; }
+  .miao-chat-head .c-name { font-size:15px; font-weight:700; }
+  .miao-chat-head .c-status { font-size:11px; opacity:.75; display:flex; align-items:center; gap:5px; margin-top:2px; }
+  .miao-chat-head .c-status .dot { width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 6px #4ade80; }
+  .miao-chat-head .c-cfg { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:#fff; cursor:pointer;
     display:grid; place-items:center; transition:background .12s; }
-  .coze-chat-head .c-cfg:hover { background:rgba(255,255,255,.2); }
-  .coze-chat-head .c-close { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:#fff; cursor:pointer;
+  .miao-chat-head .c-cfg:hover { background:rgba(255,255,255,.2); }
+  .miao-chat-head .c-close { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:#fff; cursor:pointer;
     display:grid; place-items:center; transition:background .12s; }
-  .coze-chat-head .c-close:hover { background:rgba(255,255,255,.2); }
-  .coze-chat-body { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; background:var(--page-bg); }
-  .coze-chat-body::-webkit-scrollbar { width:5px; }
-  .coze-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:5px; }
+  .miao-chat-head .c-close:hover { background:rgba(255,255,255,.2); }
+  .miao-chat-body { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; background:var(--page-bg); }
+  .miao-chat-body::-webkit-scrollbar { width:5px; }
+  .miao-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:5px; }
   .c-msg { display:flex; gap:8px; max-width:85%; }
   .c-msg.bot { align-self:flex-start; }
   .c-msg.user { align-self:flex-end; flex-direction:row-reverse; }
@@ -772,13 +772,13 @@
   .c-quick .cq { font-size:11.5px; padding:6px 12px; border-radius:999px; background:#fff; border:1px solid var(--border);
     color:var(--text-secondary); cursor:pointer; font-family:var(--font); transition:all .12s; }
   .c-quick .cq:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-muted); }
-  .coze-chat-input { padding:12px 14px; background:#fff; border-top:1px solid var(--border); display:flex; gap:8px; }
-  .coze-chat-input input { flex:1; border:1px solid var(--border-input); border-radius:12px; padding:10px 14px; font-size:13px; font-family:var(--font); outline:none; }
-  .coze-chat-input input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-muted); }
-  .coze-chat-input button { width:40px; height:40px; border-radius:12px; background:var(--accent); color:#fff; border:none; cursor:pointer;
+  .miao-chat-input { padding:12px 14px; background:#fff; border-top:1px solid var(--border); display:flex; gap:8px; }
+  .miao-chat-input input { flex:1; border:1px solid var(--border-input); border-radius:12px; padding:10px 14px; font-size:13px; font-family:var(--font); outline:none; }
+  .miao-chat-input input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-muted); }
+  .miao-chat-input button { width:40px; height:40px; border-radius:12px; background:var(--accent); color:#fff; border:none; cursor:pointer;
     display:grid; place-items:center; transition:filter .12s; flex:0 0 auto; }
-  .coze-chat-input button:hover { filter:brightness(1.1); }
-  .coze-chat-input button:disabled { opacity:.5; cursor:not-allowed; }
+  .miao-chat-input button:hover { filter:brightness(1.1); }
+  .miao-chat-input button:disabled { opacity:.5; cursor:not-allowed; }
   .c-typing { display:none; gap:4px; padding:4px 0; }
   .c-typing.show { display:flex; }
   .c-typing i { width:7px; height:7px; border-radius:50%; background:var(--text-tertiary); animation: bounce 1.2s infinite ease-in-out; }
@@ -925,24 +925,24 @@
   <main class="main"><div id="screen"></div></main>
 </div>
 
-<!-- Coze AI 悬浮助手 -->
-<button class="coze-fab" id="cozeFab" title="喵喵智能助手">
+<!-- MiaoAI 喵喵智能助手 -->
+<button class="miao-fab" id="miaoFab" title="喵喵智能助手">
   <span class="fab-pulse"></span>
   🤖
 </button>
 
-<!-- Coze AI 聊天面板 -->
-<div class="coze-chat" id="cozeChat">
-  <div class="coze-chat-head">
+<!-- MiaoAI 聊天面板 -->
+<div class="miao-chat" id="miaoChat">
+  <div class="miao-chat-head">
     <div class="c-ava">🤖</div>
     <div class="c-info">
       <div class="c-name">喵喵智能助手</div>
-      <div class="c-status"><span class="dot"></span>在线 · 由 Coze 驱动</div>
+      <div class="c-status"><span class="dot"></span>在线 · MiaoAI 多模型驱动</div>
     </div>
-    <button class="c-cfg" id="cozeCfg" title="配置">⚙️</button>
-    <button class="c-close" id="cozeClose">✕</button>
+    <button class="c-cfg" id="miaoCfg" title="配置">⚙️</button>
+    <button class="c-close" id="miaoClose">✕</button>
   </div>
-  <div class="coze-chat-body" id="cozeMsgs">
+  <div class="miao-chat-body" id="miaoMsgs">
     <div class="c-msg bot">
       <div class="m-ava">🤖</div>
       <div>
@@ -956,15 +956,15 @@
       </div>
     </div>
   </div>
-  <div class="c-typing" id="cozeTyping"><i></i><i></i><i></i></div>
+  <div class="c-typing" id="miaoTyping"><i></i><i></i><i></i></div>
   <div class="c-quick">
     <button class="cq" data-q="帮我拆解秋招准备计划">🎯 秋招计划</button>
     <button class="cq" data-q="我今天的待办完成率如何">📊 今日分析</button>
     <button class="cq" data-q="给我一些AI Agent产品设计建议">💡 产品建议</button>
   </div>
-  <div class="coze-chat-input">
-    <input type="text" id="cozeInput" placeholder="输入你的问题或目标..." />
-    <button id="cozeSend">
+  <div class="miao-chat-input">
+    <input type="text" id="miaoInput" placeholder="输入你的问题或目标..." />
+    <button id="miaoSend">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
     </button>
   </div>
@@ -1451,12 +1451,12 @@ function renderHome(){
     ${grp("收支与成长","MONEY&nbsp;&nbsp;&&nbsp;&nbsp;GROWTH")}
     <div class="bento">${spendTileHTML()}${booksTileHTML()}${goalsTileHTML()}${MiaoAI.ragTileHTML()}</div>
 
-    ${grp("AI Agent能力展示","COZE&nbsp;&nbsp;AI&nbsp;&nbsp;FEATURES")}
+    ${grp("AI Agent能力展示","MIAO AI FEATURES")}
     <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:16px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
         <span style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;display:grid;place-items:center;font-size:18px;">🤖</span>
         <div>
-          <div style="font-size:15px;font-weight:700;">Coze AI 集成能力展示</div>
+          <div style="font-size:15px;font-weight:700;">MiaoAI 多模型集成能力展示</div>
           <div style="font-size:11.5px;color:var(--text-secondary);">为字节AI Agent PM面试准备 — 展示工具调用、RAG、多Agent、工作流</div>
         </div>
         <div style="flex:1"></div>
@@ -2389,7 +2389,7 @@ const MiaoAI = {
     apiKey: localStorage.getItem('cat-news-miao-api-key') || localStorage.getItem('cat-news-ai-api-key') || '',
     proxyUrl: localStorage.getItem('cat-news-miao-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787',
     model: localStorage.getItem('cat-news-miao-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-chat',
-    botId: localStorage.getItem('cat-news-coze-bot-id') || '', // 保留兼容旧Coze配置
+    botId: localStorage.getItem('cat-news-coze-bot-id') || '', // 保留兼容旧版本Coze配置
     useMock: true  // 兼容旧字段，自动根据provider判断
   },
 
@@ -2417,7 +2417,7 @@ const MiaoAI = {
       <div class="tile-h">
         <span class="tic">${icon("bolt",16)}</span>
         <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
-        <span class="r" style="cursor:pointer" id="cozeSettingsBtn">⚙️</span>
+        <span class="r" style="cursor:pointer" id="miaoSettingsBtn">⚙️</span>
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
       <div class="ai-input-wrap">
@@ -2486,16 +2486,16 @@ const MiaoAI = {
     return answers.default;
   },
 
-  // Mock AI规划（演示用，真实场景调用Coze API）
+  // Mock AI规划（演示用，真实场景调用大模型API）
   mockPlan(goal){
     const plans = {
       "秋招": [
-        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写Coze工作台集成项目"},
+        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写MiaoAI个人工作台集成项目"},
         {type:"todo", title:"刷产品Case题库", priority:"P1", note:"每天2道，重点是AI产品类Case"},
         {type:"todo", title:"整理AI Agent产品知识体系", priority:"P0", note:"RAG/Agent工作流/工具调用/多Agent"},
         {type:"checkin", title:"背诵产品八股文", target:30, note:"每天30分钟"},
         {type:"read", title:"《启示录：打造用户喜爱的产品》", target:200, unit:"页", note:"重点读产品规划章节"},
-        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：Coze工作台可以讲"},
+        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：MiaoAI工作台可以讲"},
       ],
       "雅思": [
         {type:"todo", title:"完成剑18 Test 1 阅读", priority:"P0", note:"计时20分钟，做完分析错题"},
@@ -2902,8 +2902,8 @@ ${dataSummary}
 
   // 聊天发送消息
   async chatSend(text){
-    const msgsEl = document.getElementById('cozeMsgs');
-    const typing = document.getElementById('cozeTyping');
+    const msgsEl = document.getElementById('miaoMsgs');
+    const typing = document.getElementById('miaoTyping');
     if(!text.trim()) return;
 
     // 初始化聊天历史（简单版，只保存最近10轮）
@@ -3094,12 +3094,12 @@ ${dataSummary}
   // 初始化
   init(){
     // 悬浮按钮
-    const fab = document.getElementById('cozeFab');
-    const chat = document.getElementById('cozeChat');
-    const closeBtn = document.getElementById('cozeClose');
-    const cfgBtn = document.getElementById('cozeCfg');
-    const sendBtn = document.getElementById('cozeSend');
-    const input = document.getElementById('cozeInput');
+    const fab = document.getElementById('miaoFab');
+    const chat = document.getElementById('miaoChat');
+    const closeBtn = document.getElementById('miaoClose');
+    const cfgBtn = document.getElementById('miaoCfg');
+    const sendBtn = document.getElementById('miaoSend');
+    const input = document.getElementById('miaoInput');
 
     if(fab) fab.onclick = () => chat.classList.toggle('open');
     if(closeBtn) closeBtn.onclick = () => chat.classList.remove('open');
@@ -3125,7 +3125,7 @@ ${dataSummary}
     // AI规划按钮
     const planBtn = document.getElementById('aiPlanBtn');
     const goalInput = document.getElementById('aiGoalInput');
-    const settingsBtn = document.getElementById('cozeSettingsBtn');
+    const settingsBtn = document.getElementById('miaoSettingsBtn');
 
     if(planBtn && goalInput){
       const doPlan = () => {
@@ -3201,12 +3201,12 @@ ${dataSummary}
     };
     showToast(`已打开和「${names[agentKey]||'Agent'}」的对话（演示）`);
     // 打开悬浮聊天面板
-    const chat = document.getElementById('cozeChat');
-    const fab = document.getElementById('cozeFab');
+    const chat = document.getElementById('miaoChat');
+    const fab = document.getElementById('miaoFab');
     if(chat && fab){
       chat.classList.add('open');
       fab.style.display = 'none';
-      const msgs = document.getElementById('cozeMsgs');
+      const msgs = document.getElementById('miaoMsgs');
       if(msgs){
         msgs.innerHTML += `<div class="c-msg c-b"><div class="c-bub">喵～我是${names[agentKey]}，有什么可以帮你的吗？🐱</div></div>`;
         msgs.scrollTop = msgs.scrollHeight;
@@ -3251,7 +3251,7 @@ ${dataSummary}
         num: "📋",
         cls: "n-agent",
         title: "选题编辑返回：秋招准备任务清单",
-        desc: "已为你生成6条P0/P1任务：修改简历（突出Coze项目）、刷AI产品Case题、整理RAG/Agent知识体系、准备3个STAR故事、投递5家目标公司、约1次模拟面试。",
+        desc: "已为你生成6条P0/P1任务：修改简历（突出AI Agent项目）、刷AI产品Case题、整理RAG/Agent知识体系、准备3个STAR故事、投递5家目标公司、约1次模拟面试。",
         color: "var(--module-1)"
       },
       {
@@ -4743,7 +4743,7 @@ CloudSync.init();
 /* 初始化 Notion 同步 */
 NotionSync.init();
 
-/* 初始化 Coze AI */
+/* 初始化 MiaoAI */
 MiaoAI.init();
 
 /* 包装 store.save 以支持自动同步 */
