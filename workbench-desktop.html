@@ -2097,6 +2097,325 @@ $("#avatarInput").onchange = e => {
 function esc(s){ return String(s??"").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function attr(s){ return esc(s).replace(/"/g,'&quot;'); }
 
+/* ============================================================
+   COZE AI 助手 - 智能任务规划
+   ============================================================ */
+const CozeAI = {
+  config: {
+    botId: localStorage.getItem('cat-news-coze-bot-id') || '',
+    apiKey: localStorage.getItem('cat-news-coze-api-key') || '',
+    useMock: true  // 默认使用Mock模式，方便Demo
+  },
+
+  // AI规划瓷砖HTML
+  plannerTileHTML(){
+    const suggestions = [
+      {text:"准备字节AI Agent PM面试", icon:"🎯"},
+      {text:"一周雅思备考计划", icon:"📚"},
+      {text:"养成早睡早起习惯", icon:"🌅"},
+      {text:"月度消费复盘优化", icon:"💰"},
+    ];
+    const sugHtml = suggestions.map(s =>
+      `<button class="sug-chip" data-ai-goal="${s.text}">${s.icon} ${s.text}</button>`
+    ).join('');
+    return `<div class="tile b3 ai-planner" id="aiPlannerTile">
+      <div class="tile-h">
+        <span class="tic">${icon("bolt",16)}</span>
+        <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
+        <span class="r" style="cursor:pointer" id="cozeSettingsBtn">⚙️</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
+      <div class="ai-input-wrap">
+        <input type="text" id="aiGoalInput" placeholder="例如：准备秋招，目标字节产品offer" />
+        <button class="btn" id="aiPlanBtn" style="padding:9px 14px;white-space:nowrap">✨ 规划</button>
+      </div>
+      <div class="ai-suggest">${sugHtml}</div>
+      <div class="ai-loading" id="aiLoading"><span>🤔 AI正在思考</span><div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="ai-result" id="aiResult"></div>
+    </div>`;
+  },
+
+  // Mock AI规划（演示用，真实场景调用Coze API）
+  mockPlan(goal){
+    const plans = {
+      "秋招": [
+        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写Coze工作台集成项目"},
+        {type:"todo", title:"刷产品Case题库", priority:"P1", note:"每天2道，重点是AI产品类Case"},
+        {type:"todo", title:"整理AI Agent产品知识体系", priority:"P0", note:"RAG/Agent工作流/工具调用/多Agent"},
+        {type:"checkin", title:"背诵产品八股文", target:30, note:"每天30分钟"},
+        {type:"read", title:"《启示录：打造用户喜爱的产品》", target:200, unit:"页", note:"重点读产品规划章节"},
+        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：Coze工作台可以讲"},
+      ],
+      "雅思": [
+        {type:"todo", title:"完成剑18 Test 1 阅读", priority:"P0", note:"计时20分钟，做完分析错题"},
+        {type:"todo", title:"精听剑18 Test 1 Section 3", priority:"P0", note:"1.2倍速听写，跟读模仿"},
+        {type:"checkin", title:"背雅思单词", target:50, note:"每天50个，复习旧词"},
+        {type:"todo", title:"写一篇Task 2大作文", priority:"P1", note:"AI批改，重点是逻辑连贯"},
+        {type:"read", title:"《雅思写作真经总纲》", target:100, unit:"页", note:"学习高分范文结构"},
+        {type:"todo", title:"口语Part2素材准备：喜欢的科技产品", priority:"P1", note:"录1分钟音频自己听"},
+      ],
+      "早睡": [
+        {type:"checkin", title:"23:00前放下手机", target:7, note:"睡前30分钟不看屏幕"},
+        {type:"checkin", title:"早上7:00前起床", target:7, note:"不赖床，起床喝杯水"},
+        {type:"sport", title:"晚间散步", target:20, unit:"分钟", note:"饭后散步助眠"},
+        {type:"todo", title:"建立睡前仪式", priority:"P1", note:"热水泡脚/读纸质书10分钟"},
+        {type:"todo", title:"记录睡眠质量", priority:"P2", note:"在笔记里每天写一句睡眠感受"},
+      ],
+      "消费": [
+        {type:"todo", title:"导出近30天记账数据", priority:"P0", note:"财经版→导出数据"},
+        {type:"todo", title:"识别非必要支出Top3", priority:"P0", note:"奶茶/外卖/冲动消费等"},
+        {type:"checkin", title:"每日记账不遗漏", target:30, note:"花完马上记，不拖延"},
+        {type:"todo", title:"设定下月各类预算", priority:"P1", note:"餐饮/娱乐/学习等分类预算"},
+        {type:"todo", title:"设立省钱目标奖励", priority:"P2", note:"达标后给自己一个小奖励"},
+      ]
+    };
+    // 匹配关键词
+    let matchedKey = "default";
+    for(const key of Object.keys(plans)){
+      if(goal.includes(key)){
+        matchedKey = key;
+        break;
+      }
+    }
+    if(matchedKey === "default"){
+      return [
+        {type:"todo", title: `拆解目标：${goal}`, priority:"P0", note:"AI初步拆解，可根据实际调整"},
+        {type:"todo", title:"设定可衡量的里程碑", priority:"P1", note:"SMART原则：具体、可衡量、可实现、相关、有时限"},
+        {type:"checkin", title:"每日进度追踪", target:7, note:"每天打卡回顾进展"},
+        {type:"todo", title:"找一个学习榜样/参考案例", priority:"P1", note:"看看别人是怎么做的"},
+        {type:"todo", title:"周末复盘调整计划", priority:"P2", note:"每周日晚回顾，灵活调整"},
+      ];
+    }
+    return plans[matchedKey];
+  },
+
+  // 生成规划结果HTML
+  renderPlanResult(items){
+    const typeIcons = {todo:"📋", checkin:"✅", read:"📖", sport:"🏃", note:"📝", money:"💰"};
+    const typeNames = {todo:"待办", checkin:"打卡", read:"阅读", sport:"运动", note:"笔记", money:"记账"};
+    const listHtml = items.map(item => `
+      <div class="ai-plan-item">
+        <span class="pi-ic" style="background:var(--surface-nested)">${typeIcons[item.type]||"📌"}</span>
+        <div class="pi-tx">
+          <div class="pi-name">${esc(item.title)}</div>
+          <div class="pi-note">${typeNames[item.type]||"任务"}${item.priority?` · ${item.priority}`:''}${item.target?` · 目标${item.target}${item.unit||''}`:''}${item.note?` · ${item.note}`:''}</div>
+        </div>
+      </div>
+    `).join('');
+    return `<div class="ai-result-head">✨ 为你生成 ${items.length} 条计划</div>
+      <div class="ai-plan-list">${listHtml}</div>
+      <div class="ai-plan-actions">
+        <button class="btn-cancel" id="aiCancelBtn">取消</button>
+        <button class="btn-accept" id="aiAcceptBtn">✅ 一键导入工作台</button>
+      </div>`;
+  },
+
+  // 执行规划（带模拟延迟，真实场景调用Coze API）
+  async planGoal(goal){
+    const loading = document.getElementById('aiLoading');
+    const resultEl = document.getElementById('aiResult');
+    if(loading) loading.classList.add('show');
+    if(resultEl) resultEl.classList.remove('show');
+
+    // 模拟AI思考时间
+    await new Promise(r => setTimeout(r, 1500));
+
+    let items;
+    if(this.config.useMock || !this.config.botId){
+      items = this.mockPlan(goal);
+    } else {
+      // 真实Coze API调用（预留）
+      items = this.mockPlan(goal); // 暂时还是用Mock，等配置了Bot ID再切换
+    }
+
+    // 保存当前规划结果，用于确认导入
+    this._pendingPlan = items;
+
+    if(loading) loading.classList.remove('show');
+    if(resultEl){
+      resultEl.innerHTML = this.renderPlanResult(items);
+      resultEl.classList.add('show');
+      // 绑定按钮事件
+      const acceptBtn = document.getElementById('aiAcceptBtn');
+      const cancelBtn = document.getElementById('aiCancelBtn');
+      if(acceptBtn) acceptBtn.onclick = () => this.applyPlan();
+      if(cancelBtn) cancelBtn.onclick = () => { resultEl.classList.remove('show'); this._pendingPlan = null; };
+    }
+  },
+
+  // 一键导入计划到工作台
+  applyPlan(){
+    if(!this._pendingPlan) return;
+    let added = {todo:0, checkin:0, read:0, sport:0};
+    this._pendingPlan.forEach(item => {
+      const moduleKey = item.type;
+      if(!data[moduleKey]) data[moduleKey] = [];
+      const newItem = {
+        id: Date.now() + Math.floor(Math.random()*1000),
+        title: item.title,
+        note: item.note || '',
+      };
+      if(item.type === 'todo'){
+        newItem.priority = item.priority || 'P1';
+        newItem.done = false;
+      } else if(item.type === 'checkin'){
+        newItem.target = item.target || 7;
+        newItem.log = {};
+      } else if(item.type === 'read' || item.type === 'sport'){
+        newItem.current = 0;
+        newItem.target = item.target || 100;
+        newItem.unit = item.unit || (item.type === 'read' ? '页' : '分钟');
+      }
+      data[moduleKey].push(newItem);
+      added[moduleKey] = (added[moduleKey]||0) + 1;
+    });
+    persist();
+    showToast(`✅ 已导入：待办${added.todo}个 · 打卡${added.checkin}个 · 阅读${added.read}个 · 运动${added.sport}个`);
+    const resultEl = document.getElementById('aiResult');
+    if(resultEl) resultEl.classList.remove('show');
+    const input = document.getElementById('aiGoalInput');
+    if(input) input.value = '';
+    this._pendingPlan = null;
+  },
+
+  // 聊天发送消息
+  async chatSend(text){
+    const msgsEl = document.getElementById('cozeMsgs');
+    const typing = document.getElementById('cozeTyping');
+    if(!text.trim()) return;
+
+    // 添加用户消息
+    const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    msgsEl.innerHTML += `<div class="c-msg user">
+      <div class="m-ava">👤</div>
+      <div><div class="m-bubble">${esc(text)}</div><div class="m-time">${time}</div></div>
+    </div>`;
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+
+    typing.classList.add('show');
+
+    // 模拟AI回复
+    await new Promise(r => setTimeout(r, 1200));
+
+    typing.classList.remove('show');
+
+    let reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！真实接入Coze后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️可以配置你的Coze Bot ID～";
+    if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
+      reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「Coze×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：在Coze上真的搭几个Bot试试！比如任务拆解Bot、周报生成Bot。<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
+    } else if(text.includes('待办') || text.includes('完成率')){
+      const todos = data.todo || [];
+      const done = todos.filter(x=>x.done).length;
+      const total = todos.length;
+      const pct = total ? Math.round(done/total*100) : 0;
+      reply = `📊 今日待办分析：<br><br>• 总待办：${total}项<br>• 已完成：${done}项<br>• 完成率：${pct}%<br><br>${pct < 50 ? '加油！今天还有不少任务没完成呢 💪' : pct < 80 ? '进度不错！继续保持～' : '太棒了！今天效率很高 🎉'}`;
+    } else if(text.includes('AI Agent') || text.includes('产品设计')){
+      reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
+    }
+
+    msgsEl.innerHTML += `<div class="c-msg bot">
+      <div class="m-ava">🤖</div>
+      <div><div class="m-bubble">${reply}</div><div class="m-time">${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div></div>
+    </div>`;
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  },
+
+  // 打开配置面板
+  openConfig(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `<div class="modal" style="width:480px">
+      <h3>🤖 Coze AI 配置</h3>
+      <div class="sub">填入你的Coze Bot信息即可接入真实AI能力；不填则使用演示模式。</div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
+        <div class="field">
+          <label>Coze Bot ID</label>
+          <input type="text" id="cfg-bot-id" value="${this.config.botId}" placeholder="在Coze平台发布Bot后获取" />
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在Coze官网 → 你的Bot → 发布 → API中查看</div>
+        </div>
+        <div class="field">
+          <label>Personal Access Token (可选)</label>
+          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="Coze PAT令牌" />
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="cfg-use-mock" ${this.config.useMock?'checked':''} style="width:auto" />
+          <label for="cfg-use-mock" style="margin:0;cursor:pointer">使用演示模式（不需要配置也能体验）</label>
+        </div>
+      </div>
+      <div class="modal-actions"><div class="spacer"></div>
+        <button class="btn ghost" id="cfg-cancel">取消</button>
+        <button class="btn" id="cfg-save">保存</button></div></div>`;
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.onclick = e => { if(e.target === overlay) close(); };
+    overlay.querySelector('#cfg-cancel').onclick = close;
+    overlay.querySelector('#cfg-save').onclick = () => {
+      this.config.botId = overlay.querySelector('#cfg-bot-id').value.trim();
+      this.config.apiKey = overlay.querySelector('#cfg-api-key').value.trim();
+      this.config.useMock = overlay.querySelector('#cfg-use-mock').checked;
+      localStorage.setItem('cat-news-coze-bot-id', this.config.botId);
+      localStorage.setItem('cat-news-coze-api-key', this.config.apiKey);
+      close();
+      showToast('Coze配置已保存 ✓');
+    };
+  },
+
+  // 初始化
+  init(){
+    // 悬浮按钮
+    const fab = document.getElementById('cozeFab');
+    const chat = document.getElementById('cozeChat');
+    const closeBtn = document.getElementById('cozeClose');
+    const cfgBtn = document.getElementById('cozeCfg');
+    const sendBtn = document.getElementById('cozeSend');
+    const input = document.getElementById('cozeInput');
+
+    if(fab) fab.onclick = () => chat.classList.toggle('open');
+    if(closeBtn) closeBtn.onclick = () => chat.classList.remove('open');
+    if(cfgBtn) cfgBtn.onclick = () => this.openConfig();
+
+    const sendMsg = () => {
+      const text = input.value.trim();
+      if(!text) return;
+      input.value = '';
+      this.chatSend(text);
+    };
+    if(sendBtn) sendBtn.onclick = sendMsg;
+    if(input) input.onkeydown = e => { if(e.key === 'Enter') sendMsg(); };
+
+    // 快捷问题
+    document.querySelectorAll('.cq').forEach(btn => {
+      btn.onclick = () => { if(input){ input.value = btn.dataset.q; sendMsg(); } };
+    });
+  },
+
+  // 绑定首页AI规划瓷砖事件
+  wirePlannerEvents(){
+    // AI规划按钮
+    const planBtn = document.getElementById('aiPlanBtn');
+    const goalInput = document.getElementById('aiGoalInput');
+    const settingsBtn = document.getElementById('cozeSettingsBtn');
+
+    if(planBtn && goalInput){
+      const doPlan = () => {
+        const goal = goalInput.value.trim();
+        if(!goal){ showToast('请先输入你的目标', 'warn'); return; }
+        this.planGoal(goal);
+      };
+      planBtn.onclick = doPlan;
+      goalInput.onkeydown = e => { if(e.key === 'Enter') doPlan(); };
+    }
+
+    // 建议标签
+    document.querySelectorAll('.sug-chip[data-ai-goal]').forEach(chip => {
+      chip.onclick = () => {
+        if(goalInput){ goalInput.value = chip.dataset.aiGoal; this.planGoal(chip.dataset.aiGoal); }
+      };
+    });
+
+    if(settingsBtn) settingsBtn.onclick = () => this.openConfig();
+  }
+};
+
 buildNav();
 render();
 
@@ -3534,328 +3853,6 @@ const NotionSync = {
       this.testConnection(true);
     };
   },
-};
-
-/* ============================================================
-   COZE AI 助手 - 智能任务规划
-   ============================================================ */
-const CozeAI = {
-  config: {
-    botId: localStorage.getItem('cat-news-coze-bot-id') || '',
-    apiKey: localStorage.getItem('cat-news-coze-api-key') || '',
-    useMock: true  // 默认使用Mock模式，方便Demo
-  },
-
-  // AI规划瓷砖HTML
-  plannerTileHTML(){
-    const suggestions = [
-      {text:"准备字节AI Agent PM面试", icon:"🎯"},
-      {text:"一周雅思备考计划", icon:"📚"},
-      {text:"养成早睡早起习惯", icon:"🌅"},
-      {text:"月度消费复盘优化", icon:"💰"},
-    ];
-    const sugHtml = suggestions.map(s =>
-      `<button class="sug-chip" data-ai-goal="${s.text}">${s.icon} ${s.text}</button>`
-    ).join('');
-    return `<div class="tile b3 ai-planner" id="aiPlannerTile">
-      <div class="tile-h">
-        <span class="tic">${icon("bolt",16)}</span>
-        <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
-        <span class="r" style="cursor:pointer" id="cozeSettingsBtn">⚙️</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
-      <div class="ai-input-wrap">
-        <input type="text" id="aiGoalInput" placeholder="例如：准备秋招，目标字节产品offer" />
-        <button class="btn" id="aiPlanBtn" style="padding:9px 14px;white-space:nowrap">✨ 规划</button>
-      </div>
-      <div class="ai-suggest">${sugHtml}</div>
-      <div class="ai-loading" id="aiLoading"><span>🤔 AI正在思考</span><div class="dots"><i></i><i></i><i></i></div></div>
-      <div class="ai-result" id="aiResult"></div>
-    </div>`;
-  },
-
-  // Mock AI规划（演示用，真实场景调用Coze API）
-  mockPlan(goal){
-    const plans = {
-      "秋招": [
-        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写Coze工作台集成项目"},
-        {type:"todo", title:"刷产品Case题库", priority:"P1", note:"每天2道，重点是AI产品类Case"},
-        {type:"todo", title:"整理AI Agent产品知识体系", priority:"P0", note:"RAG/Agent工作流/工具调用/多Agent"},
-        {type:"checkin", title:"背诵产品八股文", target:30, note:"每天30分钟"},
-        {type:"read", title:"《启示录：打造用户喜爱的产品》", target:200, unit:"页", note:"重点读产品规划章节"},
-        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：Coze工作台可以讲"},
-      ],
-      "雅思": [
-        {type:"todo", title:"完成剑18 Test 1 阅读", priority:"P0", note:"计时20分钟，做完分析错题"},
-        {type:"todo", title:"精听剑18 Test 1 Section 3", priority:"P0", note:"1.2倍速听写，跟读模仿"},
-        {type:"checkin", title:"背雅思单词", target:50, note:"每天50个，复习旧词"},
-        {type:"todo", title:"写一篇Task 2大作文", priority:"P1", note:"AI批改，重点是逻辑连贯"},
-        {type:"read", title:"《雅思写作真经总纲》", target:100, unit:"页", note:"学习高分范文结构"},
-        {type:"todo", title:"口语Part2素材准备：喜欢的科技产品", priority:"P1", note:"录1分钟音频自己听"},
-      ],
-      "早睡": [
-        {type:"checkin", title:"23:00前放下手机", target:7, note:"睡前30分钟不看屏幕"},
-        {type:"checkin", title:"早上7:00前起床", target:7, note:"不赖床，起床喝杯水"},
-        {type:"sport", title:"晚间散步", target:20, unit:"分钟", note:"饭后散步助眠"},
-        {type:"todo", title:"建立睡前仪式", priority:"P1", note:"热水泡脚/读纸质书10分钟"},
-        {type:"todo", title:"记录睡眠质量", priority:"P2", note:"在笔记里每天写一句睡眠感受"},
-      ],
-      "消费": [
-        {type:"todo", title:"导出近30天记账数据", priority:"P0", note:"财经版→导出数据"},
-        {type:"todo", title:"识别非必要支出Top3", priority:"P0", note:"奶茶/外卖/冲动消费等"},
-        {type:"checkin", title:"每日记账不遗漏", target:30, note:"花完马上记，不拖延"},
-        {type:"todo", title:"设定下月各类预算", priority:"P1", note:"餐饮/娱乐/学习等分类预算"},
-        {type:"todo", title:"设立省钱目标奖励", priority:"P2", note:"达标后给自己一个小奖励"},
-      ]
-    };
-    // 匹配关键词
-    let matchedKey = "default";
-    for(const key of Object.keys(plans)){
-      if(goal.includes(key) || goal.includes(key) || goal.includes(key)){
-        matchedKey = key;
-        break;
-      }
-    }
-    if(matchedKey === "default"){
-      return [
-        {type:"todo", title: `拆解目标：${goal}`, priority:"P0", note:"AI初步拆解，可根据实际调整"},
-        {type:"todo", title:"设定可衡量的里程碑", priority:"P1", note:"SMART原则：具体、可衡量、可实现、相关、有时限"},
-        {type:"checkin", title:"每日进度追踪", target:7, note:"每天打卡回顾进展"},
-        {type:"todo", title:"找一个学习榜样/参考案例", priority:"P1", note:"看看别人是怎么做的"},
-        {type:"todo", title:"周末复盘调整计划", priority:"P2", note:"每周日晚回顾，灵活调整"},
-      ];
-    }
-    return plans[matchedKey];
-  },
-
-  // 生成规划结果HTML
-  renderPlanResult(items){
-    const typeIcons = {todo:"📋", checkin:"✅", read:"📖", sport:"🏃", note:"📝", money:"💰"};
-    const typeNames = {todo:"待办", checkin:"打卡", read:"阅读", sport:"运动", note:"笔记", money:"记账"};
-    const listHtml = items.map(item => `
-      <div class="ai-plan-item">
-        <span class="pi-ic" style="background:var(--surface-nested)">${typeIcons[item.type]||"📌"}</span>
-        <div class="pi-tx">
-          <div class="pi-name">${esc(item.title)}</div>
-          <div class="pi-note">${typeNames[item.type]||"任务"}${item.priority?` · ${item.priority}`:''}${item.target?` · 目标${item.target}${item.unit||''}`:''}${item.note?` · ${item.note}`:''}</div>
-        </div>
-      </div>
-    `).join('');
-    return `<div class="ai-result-head">✨ 为你生成 ${items.length} 条计划</div>
-      <div class="ai-plan-list">${listHtml}</div>
-      <div class="ai-plan-actions">
-        <button class="btn-cancel" id="aiCancelBtn">取消</button>
-        <button class="btn-accept" id="aiAcceptBtn">✅ 一键导入工作台</button>
-      </div>`;
-  },
-
-  // 执行规划（带模拟延迟，真实场景调用Coze API）
-  async planGoal(goal){
-    const loading = document.getElementById('aiLoading');
-    const resultEl = document.getElementById('aiResult');
-    if(loading) loading.classList.add('show');
-    if(resultEl) resultEl.classList.remove('show');
-
-    // 模拟AI思考时间
-    await new Promise(r => setTimeout(r, 1500));
-
-    let items;
-    if(this.config.useMock || !this.config.botId){
-      items = this.mockPlan(goal);
-    } else {
-      // 真实Coze API调用（预留）
-      items = this.mockPlan(goal); // 暂时还是用Mock，等配置了Bot ID再切换
-    }
-
-    // 保存当前规划结果，用于确认导入
-    this._pendingPlan = items;
-
-    if(loading) loading.classList.remove('show');
-    if(resultEl){
-      resultEl.innerHTML = this.renderPlanResult(items);
-      resultEl.classList.add('show');
-      // 绑定按钮事件
-      const acceptBtn = document.getElementById('aiAcceptBtn');
-      const cancelBtn = document.getElementById('aiCancelBtn');
-      if(acceptBtn) acceptBtn.onclick = () => this.applyPlan();
-      if(cancelBtn) cancelBtn.onclick = () => { resultEl.classList.remove('show'); this._pendingPlan = null; };
-    }
-  },
-
-  // 一键导入计划到工作台
-  applyPlan(){
-    if(!this._pendingPlan) return;
-    let added = {todo:0, checkin:0, read:0, sport:0};
-    this._pendingPlan.forEach(item => {
-      const moduleKey = item.type;
-      if(!data[moduleKey]) data[moduleKey] = [];
-      const newItem = {
-        id: Date.now() + Math.floor(Math.random()*1000),
-        title: item.title,
-        note: item.note || '',
-      };
-      if(item.type === 'todo'){
-        newItem.priority = item.priority || 'P1';
-        newItem.done = false;
-      } else if(item.type === 'checkin'){
-        newItem.target = item.target || 7;
-        newItem.log = {};
-      } else if(item.type === 'read' || item.type === 'sport'){
-        newItem.current = 0;
-        newItem.target = item.target || 100;
-        newItem.unit = item.unit || (item.type === 'read' ? '页' : '分钟');
-      }
-      data[moduleKey].push(newItem);
-      added[moduleKey] = (added[moduleKey]||0) + 1;
-    });
-    persist();
-    showToast(`✅ 已导入：待办${added.todo}个 · 打卡${added.checkin}个 · 阅读${added.read}个 · 运动${added.sport}个`);
-    const resultEl = document.getElementById('aiResult');
-    if(resultEl) resultEl.classList.remove('show');
-    const input = document.getElementById('aiGoalInput');
-    if(input) input.value = '';
-    this._pendingPlan = null;
-  },
-
-  // 聊天发送消息
-  async chatSend(text){
-    const msgsEl = document.getElementById('cozeMsgs');
-    const typing = document.getElementById('cozeTyping');
-    if(!text.trim()) return;
-
-    // 添加用户消息
-    const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
-    msgsEl.innerHTML += `<div class="c-msg user">
-      <div class="m-ava">👤</div>
-      <div><div class="m-bubble">${esc(text)}</div><div class="m-time">${time}</div></div>
-    </div>`;
-    msgsEl.scrollTop = msgsEl.scrollHeight;
-
-    typing.classList.add('show');
-
-    // 模拟AI回复
-    await new Promise(r => setTimeout(r, 1200));
-
-    typing.classList.remove('show');
-
-    let reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！真实接入Coze后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️可以配置你的Coze Bot ID～";
-    if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
-      reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「Coze×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：在Coze上真的搭几个Bot试试！比如任务拆解Bot、周报生成Bot。<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
-    } else if(text.includes('待办') || text.includes('完成率')){
-      const todos = data.todo || [];
-      const done = todos.filter(x=>x.done).length;
-      const total = todos.length;
-      const pct = total ? Math.round(done/total*100) : 0;
-      reply = `📊 今日待办分析：<br><br>• 总待办：${total}项<br>• 已完成：${done}项<br>• 完成率：${pct}%<br><br>${pct < 50 ? '加油！今天还有不少任务没完成呢 💪' : pct < 80 ? '进度不错！继续保持～' : '太棒了！今天效率很高 🎉'}`;
-    } else if(text.includes('AI Agent') || text.includes('产品设计')){
-      reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
-    }
-
-    msgsEl.innerHTML += `<div class="c-msg bot">
-      <div class="m-ava">🤖</div>
-      <div><div class="m-bubble">${reply}</div><div class="m-time">${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div></div>
-    </div>`;
-    msgsEl.scrollTop = msgsEl.scrollHeight;
-  },
-
-  // 打开配置面板
-  openConfig(){
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    overlay.innerHTML = `<div class="modal" style="width:480px">
-      <h3>🤖 Coze AI 配置</h3>
-      <div class="sub">填入你的Coze Bot信息即可接入真实AI能力；不填则使用演示模式。</div>
-      <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
-        <div class="field">
-          <label>Coze Bot ID</label>
-          <input type="text" id="cfg-bot-id" value="${this.config.botId}" placeholder="在Coze平台发布Bot后获取" />
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在Coze官网 → 你的Bot → 发布 → API中查看</div>
-        </div>
-        <div class="field">
-          <label>Personal Access Token (可选)</label>
-          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="Coze PAT令牌" />
-        </div>
-        <div class="field" style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" id="cfg-use-mock" ${this.config.useMock?'checked':''} style="width:auto" />
-          <label for="cfg-use-mock" style="margin:0;cursor:pointer">使用演示模式（不需要配置也能体验）</label>
-        </div>
-      </div>
-      <div class="modal-actions"><div class="spacer"></div>
-        <button class="btn ghost" id="cfg-cancel">取消</button>
-        <button class="btn" id="cfg-save">保存</button></div></div>`;
-    document.body.appendChild(overlay);
-    const close = () => overlay.remove();
-    overlay.onclick = e => { if(e.target === overlay) close(); };
-    overlay.querySelector('#cfg-cancel').onclick = close;
-    overlay.querySelector('#cfg-save').onclick = () => {
-      this.config.botId = overlay.querySelector('#cfg-bot-id').value.trim();
-      this.config.apiKey = overlay.querySelector('#cfg-api-key').value.trim();
-      this.config.useMock = overlay.querySelector('#cfg-use-mock').checked;
-      localStorage.setItem('cat-news-coze-bot-id', this.config.botId);
-      localStorage.setItem('cat-news-coze-api-key', this.config.apiKey);
-      close();
-      showToast('Coze配置已保存 ✓');
-    };
-  },
-
-  // 初始化
-  init(){
-    // 悬浮按钮
-    const fab = document.getElementById('cozeFab');
-    const chat = document.getElementById('cozeChat');
-    const closeBtn = document.getElementById('cozeClose');
-    const cfgBtn = document.getElementById('cozeCfg');
-    const sendBtn = document.getElementById('cozeSend');
-    const input = document.getElementById('cozeInput');
-
-    if(fab) fab.onclick = () => chat.classList.toggle('open');
-    if(closeBtn) closeBtn.onclick = () => chat.classList.remove('open');
-    if(cfgBtn) cfgBtn.onclick = () => this.openConfig();
-
-    const sendMsg = () => {
-      const text = input.value.trim();
-      if(!text) return;
-      input.value = '';
-      this.chatSend(text);
-    };
-    if(sendBtn) sendBtn.onclick = sendMsg;
-    if(input) input.onkeydown = e => { if(e.key === 'Enter') sendMsg(); };
-
-    // 快捷问题
-    document.querySelectorAll('.cq').forEach(btn => {
-      btn.onclick = () => { if(input){ input.value = btn.dataset.q; sendMsg(); } };
-    });
-
-    // 侧边栏设置按钮（动态绑定，因为renderHome会重绘）
-    setTimeout(() => this.wirePlannerEvents(), 100);
-  },
-
-  // 绑定首页AI规划瓷砖事件
-  wirePlannerEvents(){
-    // AI规划按钮
-    const planBtn = document.getElementById('aiPlanBtn');
-    const goalInput = document.getElementById('aiGoalInput');
-    const settingsBtn = document.getElementById('cozeSettingsBtn');
-
-    if(planBtn && goalInput){
-      const doPlan = () => {
-        const goal = goalInput.value.trim();
-        if(!goal){ showToast('请先输入你的目标', 'warn'); return; }
-        this.planGoal(goal);
-      };
-      planBtn.onclick = doPlan;
-      goalInput.onkeydown = e => { if(e.key === 'Enter') doPlan(); };
-    }
-
-    // 建议标签
-    document.querySelectorAll('.sug-chip[data-ai-goal]').forEach(chip => {
-      chip.onclick = () => {
-        if(goalInput){ goalInput.value = chip.dataset.aiGoal; this.planGoal(chip.dataset.aiGoal); }
-      };
-    });
-
-    if(settingsBtn) settingsBtn.onclick = () => this.openConfig();
-  }
 };
 
 /* 初始化云同步 */
