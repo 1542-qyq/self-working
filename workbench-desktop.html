@@ -2381,13 +2381,25 @@ function esc(s){ return String(s??"").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&l
 function attr(s){ return esc(s).replace(/"/g,'&quot;'); }
 
 /* ============================================================
-   COZE AI 助手 - 智能任务规划
+   AI 助手 - 智能任务规划（支持多模型：演示/DeepSeek/豆包/Ollama）
    ============================================================ */
 const CozeAI = {
   config: {
-    botId: localStorage.getItem('cat-news-coze-bot-id') || '',
-    apiKey: localStorage.getItem('cat-news-coze-api-key') || '',
-    useMock: true  // 默认使用Mock模式，方便Demo
+    provider: localStorage.getItem('cat-news-ai-provider') || 'mock', // mock/deepseek/doubao/ollama
+    apiKey: localStorage.getItem('cat-news-ai-api-key') || '',
+    proxyUrl: localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787',
+    model: localStorage.getItem('cat-news-ai-model') || 'deepseek-chat',
+    botId: localStorage.getItem('cat-news-coze-bot-id') || '', // 保留兼容
+    useMock: true  // 兼容旧字段，自动根据provider判断
+  },
+
+  // 模型提供商配置
+  providers: {
+    mock: { name: "演示模式", icon: "🎭", desc: "无需API Key，使用内置模拟数据，适合快速演示" },
+    deepseek: { name: "DeepSeek V3", icon: "🧠", desc: "中文能力顶级，工具调用极强，成本极低（约¥2/月）", model: "deepseek-chat", path: "/deepseek/v1/chat/completions" },
+    deepseek_r1: { name: "DeepSeek R1", icon: "🤔", desc: "推理增强模型，适合复杂面试问题分析", model: "deepseek-reasoner", path: "/deepseek/v1/chat/completions" },
+    doubao: { name: "豆包 Pro", icon: "🫘", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/api/v3/chat/completions" },
+    ollama: { name: "Ollama本地", icon: "💻", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
   },
 
   // AI规划瓷砖HTML
@@ -2549,7 +2561,7 @@ const CozeAI = {
       </div>`;
   },
 
-  // 执行规划（接入真实Coze API）
+  // 执行规划（支持多模型LLM调用）
   async planGoal(goal){
     const loading = document.getElementById('aiLoading');
     const resultEl = document.getElementById('aiResult');
@@ -2557,18 +2569,29 @@ const CozeAI = {
     if(resultEl) resultEl.classList.remove('show');
 
     let items = [];
+    const useRealLLM = this.config.provider !== 'mock' && 
+                      (this.config.apiKey || this.config.provider === 'ollama');
 
-    if(this.config.useMock || !this.config.botId || !this.config.apiKey){
+    if(!useRealLLM){
       // 演示模式：使用Mock数据
       await new Promise(r => setTimeout(r, 1500));
       items = this.mockPlan(goal);
     } else {
-      // 真实Coze API调用
+      // 真实LLM调用
       try {
-        items = await this.callCozeAPI(goal);
+        showToast(`正在用${this.providers[this.config.provider].icon} ${this.providers[this.config.provider].name}思考中...`, 'info');
+        items = await this.callLLMPlan(goal);
+        
+        if(items.length === 0){
+          console.warn('LLM没有返回工具调用，回退到Mock');
+          showToast('AI没有返回任务，已切换到演示模式', 'warn');
+          items = this.mockPlan(goal);
+        } else {
+          showToast(`AI为你规划了${items.length}个任务！`, 'success');
+        }
       } catch(e){
-        console.error('Coze API调用失败:', e);
-        showToast('Coze API调用失败，已切换到演示模式', 'warn');
+        console.error('LLM调用失败:', e);
+        showToast(`AI调用失败: ${e.message.slice(0,30)}，已切换到演示模式`, 'warn');
         items = this.mockPlan(goal);
       }
     }
@@ -2588,22 +2611,143 @@ const CozeAI = {
     }
   },
 
-  // 调用Coze API并解析工具调用结果
-  async callCozeAPI(goal){
-    const apiUrl = 'https://api.coze.cn/open_api/v2/chat';
-    const headers = {
-      'Authorization': `Bearer ${this.config.apiKey}`,
-      'Content-Type': 'application/json',
-      'Accept': '*/*',
-      'Host': 'api.coze.cn'
-    };
+  // 获取System Prompt（任务规划版）
+  getPlannerSystemPrompt(){
+    return `你是喵喵编辑部的智能任务规划师，专门帮用户把大目标拆解成可执行的小任务。
+
+【你的能力】
+你必须调用工具来创建任务，不要只输出文字！你有以下工具：
+1. create_todo - 创建待办任务
+2. create_checkin - 创建习惯打卡项
+3. create_reading - 创建阅读计划
+4. create_sport - 创建运动计划
+
+【任务拆解原则】
+- 待办任务要具体可执行，不要太笼统，标题不超过20字
+- 打卡习惯设置合理的目标天数（7天/21天/30天）
+- 阅读/运动计划要合理，不要设定不可能完成的目标
+- 优先级分配：紧急重要的P0，重要不紧急P1，其他P2
+- 一次拆解出3-8个任务最合适，不要太多
+- 至少包含1个待办任务，可以搭配打卡/阅读/运动
+
+【输出格式】
+调用完工具后，用一句话总结你为用户规划了什么，语气友好活泼，像猫咪一样可爱，用"喵～"开头。`;
+  },
+
+  // 获取工具定义（OpenAI Function Call格式）
+  getToolDefinitions(){
+    return [
+      {
+        type: "function",
+        function: {
+          name: "create_todo",
+          description: "创建一个待办任务项",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "任务标题，具体可执行，不超过20字" },
+              priority: { type: "string", enum: ["P0", "P1", "P2"], description: "优先级：P0最高，P2最低" },
+              note: { type: "string", description: "备注说明，为什么要做这件事" }
+            },
+            required: ["title", "priority"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "create_checkin",
+          description: "创建一个习惯打卡项",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "打卡习惯名称" },
+              target: { type: "number", description: "目标天数，比如7、21、30" },
+              note: { type: "string", description: "打卡说明" }
+            },
+            required: ["title", "target"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "create_reading",
+          description: "创建一个阅读计划",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "书名" },
+              target: { type: "number", description: "目标页数" },
+              note: { type: "string", description: "阅读建议" }
+            },
+            required: ["title", "target"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "create_sport",
+          description: "创建一个运动计划",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "运动项目名称" },
+              target: { type: "number", description: "目标时长/次数" },
+              unit: { type: "string", enum: ["分钟", "次"], description: "单位：分钟或次" },
+              note: { type: "string", description: "运动建议" }
+            },
+            required: ["title", "target", "unit"]
+          }
+        }
+      }
+    ];
+  },
+
+  // 通用LLM调用（支持OpenAI兼容格式：DeepSeek/豆包/Qwen/Ollama）
+  async callLLM(messages, options = {}){
+    const provider = this.config.provider;
+    const providerConfig = this.providers[provider];
+    
+    if(!providerConfig || provider === 'mock'){
+      throw new Error('Mock mode');
+    }
+
+    if(!this.config.apiKey && provider !== 'ollama'){
+      throw new Error('请先配置API Key');
+    }
+
+    const apiUrl = this.config.proxyUrl.replace(/\/$/, '') + providerConfig.path;
+    const model = options.model || this.config.model || providerConfig.model;
+
     const body = {
-      bot_id: this.config.botId,
-      user: 'workbench-user-' + Date.now(),
-      query: goal,
-      stream: false
+      model: model,
+      messages: messages,
+      temperature: options.temperature || 0.7,
     };
 
+    // Ollama格式略有不同
+    if(provider === 'ollama'){
+      body.stream = false;
+      if(options.tools){
+        body.tools = options.tools;
+      }
+    } else {
+      // OpenAI兼容格式
+      if(options.tools){
+        body.tools = options.tools;
+        body.tool_choice = options.tool_choice || "auto";
+      }
+    }
+
+    const headers = { 'Content-Type': 'application/json' };
+    if(this.config.apiKey && provider !== 'ollama'){
+      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+    }
+
+    console.log(`调用LLM: ${provider} ${model}`, apiUrl);
+    
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: headers,
@@ -2611,58 +2755,114 @@ const CozeAI = {
     });
 
     if(!response.ok){
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errText = await response.text();
+      throw new Error(`API请求失败 (${response.status}): ${errText.slice(0, 200)}`);
     }
 
     const data = await response.json();
-    if(data.code !== 0){
-      throw new Error(`Coze API error: ${data.msg || 'unknown error'}`);
+    
+    // 统一解析返回格式（兼容OpenAI/Ollama）
+    let message;
+    if(provider === 'ollama'){
+      message = data.message || {};
+    } else {
+      message = data.choices?.[0]?.message || {};
     }
 
-    // 解析返回消息中的工具调用
+    return message;
+  },
+
+  // 调用LLM进行任务规划
+  async callLLMPlan(goal){
+    const messages = [
+      { role: "system", content: this.getPlannerSystemPrompt() },
+      { role: "user", content: `帮我规划：${goal}` }
+    ];
+
+    const message = await this.callLLM(messages, {
+      tools: this.getToolDefinitions(),
+      temperature: 0.6
+    });
+
+    // 解析工具调用
     const items = [];
-    const messages = data.messages || [];
+    const toolCalls = message.tool_calls || [];
 
-    for(const msg of messages){
-      if(msg.role === 'assistant' && msg.type === 'function_call'){
-        // 解析function call
-        try {
-          const toolCall = JSON.parse(msg.content);
-          const toolName = msg.name || toolCall.name;
-          const args = typeof toolCall.arguments === 'string' ? JSON.parse(toolCall.arguments) : (toolCall.parameters || {});
+    const typeMap = {
+      'create_todo': 'todo',
+      'create_checkin': 'checkin',
+      'create_reading': 'read',
+      'create_sport': 'sport'
+    };
 
-          // 工具名映射：create_todo -> todo, create_checkin -> checkin等
-          const typeMap = {
-            'create_todo': 'todo',
-            'create_checkin': 'checkin',
-            'create_reading': 'read',
-            'create_sport': 'sport'
-          };
-
-          const type = typeMap[toolName];
-          if(type && args.title){
-            items.push({
-              type: type,
-              title: args.title,
-              priority: args.priority || 'P1',
-              target: args.target,
-              unit: args.unit,
-              note: args.note || ''
-            });
-          }
-        } catch(e){
-          console.warn('解析工具调用失败:', e, msg);
+    for(const tc of toolCalls){
+      try {
+        const fn = tc.function || tc;
+        const name = fn.name;
+        const args = typeof fn.arguments === 'string' ? JSON.parse(fn.arguments) : (fn.arguments || {});
+        const type = typeMap[name];
+        
+        if(type && args.title){
+          items.push({
+            type: type,
+            title: args.title,
+            priority: args.priority || 'P1',
+            target: args.target,
+            unit: args.unit,
+            note: args.note || ''
+          });
         }
+      } catch(e){
+        console.warn('解析工具调用失败:', e, tc);
       }
     }
 
-    // 如果没有解析到工具调用，回退到Mock
-    if(items.length === 0){
-      console.warn('Coze返回中没有工具调用，使用Mock数据');
-      return this.mockPlan(goal);
-    }
-
     return items;
+  },
+
+  // 通用聊天（不带工具调用，用于AI助手对话）
+  async callLLMChat(userMessage, history = []){
+    // 获取工作台当前数据摘要，提供上下文
+    const dataSummary = this.getDataSummary();
+    
+    const messages = [
+      { 
+        role: "system", 
+        content: `你是喵喵编辑部的智能助手，熟悉用户的个人工作台数据。
+
+当前工作台数据摘要：
+${dataSummary}
+
+回答要求：
+- 语气友好活泼，像猫咪一样可爱，偶尔用"喵～"
+- 简洁明了，不要太啰嗦
+- 基于用户的真实数据给出建议
+- 如果需要创建任务，可以提示用户去首页用AI规划功能`
+      },
+      ...history,
+      { role: "user", content: userMessage }
+    ];
+
+    const message = await this.callLLM(messages, { temperature: 0.8 });
+    return message.content || "喵～我没听清，再说一遍？";
+  },
+
+  // 获取工作台数据摘要
+  getDataSummary(){
+    const todos = data.todo || [];
+    const checkins = data.checkin || [];
+    const reads = data.read || [];
+    const moneys = data.money || [];
+    const ieltsItems = (data.ielts_read || []).concat(data.ielts_listen || [], data.ielts_writing || [], data.ielts_speaking || []);
+    
+    const todoDone = todos.filter(t=>t.done).length;
+    const todoPct = todos.length ? Math.round(todoDone/todos.length*100) : 0;
+    
+    return `- 待办：共${todos.length}个，完成${todoDone}个，完成率${todoPct}%
+- 打卡：${checkins.length}个习惯
+- 阅读：${reads.length}本书
+- 记账：${moneys.length}条记录
+- 雅思错题：${ieltsItems.length}道`;
   },
 
   // 一键导入计划到工作台
@@ -2706,6 +2906,9 @@ const CozeAI = {
     const typing = document.getElementById('cozeTyping');
     if(!text.trim()) return;
 
+    // 初始化聊天历史（简单版，只保存最近10轮）
+    if(!this._chatHistory) this._chatHistory = [];
+
     // 添加用户消息
     const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
     msgsEl.innerHTML += `<div class="c-msg user">
@@ -2717,13 +2920,15 @@ const CozeAI = {
     typing.classList.add('show');
 
     let reply = '';
+    const useRealLLM = this.config.provider !== 'mock' && 
+                      (this.config.apiKey || this.config.provider === 'ollama');
 
-    if(this.config.useMock || !this.config.botId || !this.config.apiKey){
+    if(!useRealLLM){
       // 演示模式
       await new Promise(r => setTimeout(r, 1200));
-      reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！真实接入Coze后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️配置你的Coze Bot，即可解锁真实AI能力～";
+      reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！接入真实大模型后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️配置AI模型，DeepSeek V3每月成本只要2块钱～";
       if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
-        reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「Coze×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：在Coze上真的搭几个Bot试试！比如任务拆解Bot、周报生成Bot。<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
+        reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「AI×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：配置好DeepSeek，真实跑通Function Call任务拆解！<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
       } else if(text.includes('待办') || text.includes('完成率')){
         const todos = data.todo || [];
         const done = todos.filter(x=>x.done).length;
@@ -2733,35 +2938,22 @@ const CozeAI = {
       } else if(text.includes('AI Agent') || text.includes('产品设计')){
         reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
       }
+      // 演示模式也加入历史
+      this._chatHistory.push({ role: 'user', content: text });
+      this._chatHistory.push({ role: 'assistant', content: reply.replace(/<br>/g, '\n') });
     } else {
-      // 真实Coze API调用
+      // 真实LLM调用
       try {
-        const apiUrl = 'https://api.coze.cn/open_api/v2/chat';
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${this.config.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            bot_id: this.config.botId,
-            user: 'workbench-chat-' + Date.now(),
-            query: text,
-            stream: false
-          })
-        });
-        const respData = await response.json();
-        // 提取assistant的回答
-        for(const msg of (respData.messages || [])){
-          if(msg.role === 'assistant' && msg.type === 'answer'){
-            reply = msg.content.replace(/\n/g, '<br>');
-            break;
-          }
-        }
-        if(!reply) reply = "喵？我好像没听清，可以再说一遍吗？";
+        this._chatHistory.push({ role: 'user', content: text });
+        // 只保留最近10轮，避免token太长
+        if(this._chatHistory.length > 20) this._chatHistory = this._chatHistory.slice(-20);
+        
+        reply = await this.callLLMChat(text, this._chatHistory.slice(0, -1));
+        reply = reply.replace(/\n/g, '<br>');
+        this._chatHistory.push({ role: 'assistant', content: reply.replace(/<br>/g, '\n') });
       } catch(e){
         console.error('聊天API调用失败:', e);
-        reply = "抱歉，AI连接出了点小问题，请检查网络或Coze配置～";
+        reply = `抱歉，AI连接出了点小问题：${e.message}<br>请检查：<br>1. 本地代理是否启动（node proxy.js）<br>2. API Key是否正确<br>3. 网络是否正常`;
       }
     }
 
@@ -2774,52 +2966,122 @@ const CozeAI = {
     msgsEl.scrollTop = msgsEl.scrollHeight;
   },
 
-  // 打开配置面板
+  // 打开配置面板（支持多模型）
   openConfig(){
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
-    overlay.innerHTML = `<div class="modal" style="width:520px">
-      <h3>🤖 Coze AI 配置</h3>
-      <div class="sub">填入你的Coze Bot信息即可接入真实AI能力；不填则使用演示模式。</div>
+    
+    const providerOptions = Object.entries(this.providers).map(([key, p]) => 
+      `<option value="${key}" ${this.config.provider === key ? 'selected' : ''}>${p.icon} ${p.name}</option>`
+    ).join('');
+
+    overlay.innerHTML = `<div class="modal" style="width:560px;max-height:90vh;overflow-y:auto">
+      <h3>🤖 AI 模型配置</h3>
+      <div class="sub">选择AI提供商，接入真实大模型获得个性化任务规划能力</div>
+      
       <div style="margin-top:12px;padding:12px;background:var(--accent-muted);border-radius:10px;font-size:12px;line-height:1.7;color:var(--text-secondary)">
-        <b style="color:var(--accent)">📝 接入步骤：</b><br>
-        1. 访问 <a href="https://www.coze.cn" target="_blank" style="color:var(--accent)">coze.cn</a> 创建Bot<br>
-        2. 添加4个Function工具：create_todo/create_checkin/create_reading/create_sport<br>
-        3. 发布Bot到API渠道，复制Bot ID<br>
-        4. 访问 <a href="https://www.coze.cn/open/oauth/pat" target="_blank" style="color:var(--accent)">开放平台</a> 生成Personal Access Token<br>
-        5. 将两个ID填入下方，取消勾选「演示模式」即可
+        <b style="color:var(--accent)">🚀 最快接入方式（10分钟，约¥2/月）：</b><br>
+        1. 运行本地代理：<code style="background:#fff;padding:2px 6px;border-radius:4px">node proxy.js</code><br>
+        2. 访问 <a href="https://platform.deepseek.com/" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> 注册，获取API Key<br>
+        3. 下方选择「DeepSeek V3」，填入API Key，保存即可<br>
+        4. 想部署到云端？把proxy.js复制到Cloudflare Workers就行，代码不用改
       </div>
+
       <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
         <div class="field">
-          <label>Coze Bot ID <span style="color:var(--red)">*</span></label>
-          <input type="text" id="cfg-bot-id" value="${this.config.botId}" placeholder="例如：7312345678901234567" />
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在Coze → 你的Bot → 发布 → API 中获取</div>
+          <label>AI 提供商</label>
+          <select id="cfg-provider" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-family:inherit">
+            ${providerOptions}
+          </select>
+          <div id="cfg-provider-desc" style="font-size:11px;color:var(--text-tertiary);margin-top:4px"></div>
         </div>
+
+        <div class="field" id="cfg-api-key-wrap">
+          <label>API Key <span style="color:var(--red)">*</span></label>
+          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="sk-xxxxxxxxxxxxxxxx" />
+          <div id="cfg-api-key-hint" style="font-size:11px;color:var(--text-tertiary);margin-top:4px"></div>
+        </div>
+
         <div class="field">
-          <label>Personal Access Token <span style="color:var(--red)">*</span></label>
-          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="pat_xxxxxxxxxxxxxxxxx" />
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在coze.cn/open/oauth/pat生成，需要BotChat权限</div>
+          <label>代理地址</label>
+          <input type="text" id="cfg-proxy-url" value="${this.config.proxyUrl}" placeholder="http://localhost:8787" />
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">本地代理跑在8787端口；云端部署后改成你的Worker地址</div>
         </div>
-        <div class="field" style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" id="cfg-use-mock" ${this.config.useMock?'checked':''} style="width:auto" />
-          <label for="cfg-use-mock" style="margin:0;cursor:pointer">使用演示模式（不需要配置也能体验，使用内置Mock数据）</label>
+
+        <div class="field" id="cfg-model-wrap">
+          <label>模型名称（可选）</label>
+          <input type="text" id="cfg-model" value="${this.config.model}" placeholder="留空使用默认模型" />
+        </div>
+
+        <div id="cfg-proxy-help" style="display:none;padding:10px;background:#fff3cd;border:1px solid #ffeaa7;border-radius:8px;font-size:11px;line-height:1.6;color:#856404">
+          <b>⚠️ 还没启动本地代理？</b><br>
+          在项目目录运行：<code>node proxy.js</code><br>
+          代理启动后再使用AI功能。代理文件就是项目根目录的 proxy.js
         </div>
       </div>
-      <div class="modal-actions"><div class="spacer"></div>
-        <button class="btn ghost" id="cfg-cancel">取消</button>
-        <button class="btn" id="cfg-save">保存配置</button></div></div>`;
+
+      <div class="modal-actions" style="margin-top:20px">
+        <button class="btn ghost" id="cfg-cancel" style="margin-right:auto">关闭</button>
+        <button class="btn" id="cfg-save">保存配置</button>
+      </div>
+    </div>`;
+
     document.body.appendChild(overlay);
+    
+    // 提供商选择变化时更新说明
+    const providerSelect = overlay.querySelector('#cfg-provider');
+    const descEl = overlay.querySelector('#cfg-provider-desc');
+    const keyHintEl = overlay.querySelector('#cfg-api-key-hint');
+    const apiKeyWrap = overlay.querySelector('#cfg-api-key-wrap');
+    
+    const updateProviderDesc = () => {
+      const key = providerSelect.value;
+      const p = this.providers[key];
+      descEl.textContent = p.desc;
+      
+      if(key === 'mock'){
+        apiKeyWrap.style.display = 'none';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'none';
+      } else if(key === 'ollama'){
+        apiKeyWrap.style.display = 'none';
+        keyHintEl.textContent = '本地运行Ollama不需要API Key，确保ollama serve已启动';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'block';
+      } else if(key === 'deepseek' || key === 'deepseek_r1'){
+        apiKeyWrap.style.display = 'block';
+        keyHintEl.innerHTML = '在 <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com/api_keys</a> 获取';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'block';
+      } else if(key === 'doubao'){
+        apiKeyWrap.style.display = 'block';
+        keyHintEl.innerHTML = '在火山引擎方舟控制台获取，需要先创建推理接入点';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'block';
+      }
+    };
+    providerSelect.onchange = updateProviderDesc;
+    updateProviderDesc();
+
     const close = () => overlay.remove();
     overlay.onclick = e => { if(e.target === overlay) close(); };
     overlay.querySelector('#cfg-cancel').onclick = close;
     overlay.querySelector('#cfg-save').onclick = () => {
-      this.config.botId = overlay.querySelector('#cfg-bot-id').value.trim();
+      this.config.provider = providerSelect.value;
       this.config.apiKey = overlay.querySelector('#cfg-api-key').value.trim();
-      this.config.useMock = overlay.querySelector('#cfg-use-mock').checked;
-      localStorage.setItem('cat-news-coze-bot-id', this.config.botId);
+      this.config.proxyUrl = overlay.querySelector('#cfg-proxy-url').value.trim();
+      this.config.model = overlay.querySelector('#cfg-model').value.trim() || this.providers[this.config.provider]?.model || '';
+      this.config.useMock = this.config.provider === 'mock'; // 兼容旧逻辑
+      
+      localStorage.setItem('cat-news-ai-provider', this.config.provider);
+      localStorage.setItem('cat-news-ai-api-key', this.config.apiKey);
+      localStorage.setItem('cat-news-ai-proxy', this.config.proxyUrl);
+      localStorage.setItem('cat-news-ai-model', this.config.model);
+      // 保留旧字段兼容
       localStorage.setItem('cat-news-coze-api-key', this.config.apiKey);
+      
       close();
-      showToast('Coze配置已保存 ✓');
+      if(this.config.provider === 'mock'){
+        showToast('已切换到演示模式 ✓');
+      } else {
+        showToast(`AI配置已保存，使用${this.providers[this.config.provider].name} ✓`);
+      }
     };
   },
 
