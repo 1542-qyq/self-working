@@ -683,6 +683,107 @@
   .word-stats .ws-item { background:rgba(255,255,255,.5); border:1px solid var(--border); border-radius:var(--radius-tile); padding:10px 12px; }
   .word-stats .ws-item .ws-label { font-size:11px; color:var(--text-tertiary); }
   .word-stats .ws-item .ws-val { font-size:18px; font-weight:800; color:var(--module-1); }
+
+  /* ============================================================
+     COZE AI 助手样式
+     ============================================================ */
+  /* AI规划瓷砖 */
+  .ai-planner { background:linear-gradient(135deg,#f5efe0 0%,#e8e0d0 50%,#d8e5d0 100%); position:relative; overflow:hidden; }
+  .ai-planner::before { content:""; position:absolute; right:-40px; top:-40px; width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle,rgba(74,108,63,.15),transparent 70%); pointer-events:none; }
+  .ai-planner::after { content:""; position:absolute; left:-30px; bottom:-50px; width:140px; height:140px; border-radius:50%;
+    background:radial-gradient(circle,rgba(230,160,67,.12),transparent 70%); pointer-events:none; }
+  .ai-planner > * { position:relative; z-index:1; }
+  .ai-input-wrap { display:flex; gap:8px; margin:12px 0; }
+  .ai-input-wrap input { flex:1; background:rgba(255,255,255,.6); border:1px solid var(--border-input); }
+  .ai-input-wrap input:focus { background:#fff; }
+  .ai-suggest { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .ai-suggest .sug-chip { font-size:11px; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.5); border:1px solid var(--border);
+    color:var(--text-secondary); cursor:pointer; transition:all .12s; font-family:var(--font); }
+  .ai-suggest .sug-chip:hover { background:var(--accent-muted); border-color:var(--accent); color:var(--accent); }
+  .ai-result { display:none; margin-top:10px; padding:12px; background:rgba(255,255,255,.5); border-radius:var(--radius-tile); border:1px solid var(--border); }
+  .ai-result.show { display:block; animation: fadeUp .25s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } }
+  .ai-result .ai-result-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px; font-weight:700; color:var(--accent); }
+  .ai-plan-list { display:flex; flex-direction:column; gap:6px; }
+  .ai-plan-item { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; padding:6px 8px; border-radius:8px; background:rgba(255,255,255,.4); }
+  .ai-plan-item .pi-ic { width:22px; height:22px; border-radius:6px; display:grid; place-items:center; flex:0 0 auto; font-size:12px; }
+  .ai-plan-item .pi-tx { flex:1; }
+  .ai-plan-item .pi-name { font-weight:600; }
+  .ai-plan-item .pi-note { font-size:11px; color:var(--text-secondary); margin-top:1px; }
+  .ai-plan-actions { display:flex; gap:8px; margin-top:10px; }
+  .ai-plan-actions button { flex:1; padding:7px 10px; border-radius:8px; border:1px solid var(--border); font-size:12px; font-weight:600; cursor:pointer;
+    font-family:var(--font); transition:all .12s; }
+  .ai-plan-actions .btn-accept { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .ai-plan-actions .btn-accept:hover { filter:brightness(1.08); }
+  .ai-plan-actions .btn-cancel { background:transparent; color:var(--text-secondary); }
+  .ai-plan-actions .btn-cancel:hover { background:var(--surface-nested); }
+  .ai-loading { display:none; align-items:center; gap:8px; font-size:12px; color:var(--text-secondary); padding:8px 0; }
+  .ai-loading.show { display:flex; }
+  .ai-loading .dots { display:inline-flex; gap:3px; }
+  .ai-loading .dots i { width:6px; height:6px; border-radius:50%; background:var(--accent); animation: bounce 1.2s infinite ease-in-out; }
+  .ai-loading .dots i:nth-child(2) { animation-delay:.15s; }
+  .ai-loading .dots i:nth-child(3) { animation-delay:.3s; }
+  @keyframes bounce { 0%,80%,100% { transform:scale(.6); opacity:.4; } 40% { transform:scale(1); opacity:1; } }
+
+  /* 悬浮AI助手按钮 */
+  .coze-fab { position:fixed; right:28px; bottom:28px; width:58px; height:58px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent) 0%,#5a7c4f 100%); color:#fff; border:none; cursor:pointer;
+    box-shadow:0 8px 28px rgba(74,108,63,.4); z-index:70; display:grid; place-items:center; font-size:26px;
+    transition:transform .2s, box-shadow .2s; }
+  .coze-fab:hover { transform:scale(1.08); box-shadow:0 12px 36px rgba(74,108,63,.5); }
+  .coze-fab:active { transform:scale(.96); }
+  .coze-fab .fab-pulse { position:absolute; inset:0; border-radius:50%; border:2px solid var(--accent); animation:pulseRing 2s infinite; }
+  @keyframes pulseRing { 0% { transform:scale(1); opacity:.6; } 100% { transform:scale(1.5); opacity:0; } }
+
+  /* AI聊天面板 */
+  .coze-chat { position:fixed; right:28px; bottom:100px; width:380px; max-width:calc(100vw - 56px); max-height:560px;
+    background:var(--surface-card); border:1px solid var(--border); border-radius:20px; box-shadow:0 20px 60px rgba(92,74,46,.25);
+    z-index:75; display:flex; flex-direction:column; overflow:hidden; transform-origin:bottom right;
+    transform:scale(.9) translateY(20px); opacity:0; pointer-events:none; transition:all .22s cubic-bezier(.2,.8,.3,1); }
+  .coze-chat.open { transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
+  .coze-chat-head { background:linear-gradient(135deg,#4a6c3f 0%,#3d5a33 100%); color:#fff; padding:16px 18px; display:flex; align-items:center; gap:12px; }
+  .coze-chat-head .c-ava { width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.15); display:grid; place-items:center; font-size:22px; flex:0 0 auto; }
+  .coze-chat-head .c-info { flex:1; }
+  .coze-chat-head .c-name { font-size:15px; font-weight:700; }
+  .coze-chat-head .c-status { font-size:11px; opacity:.75; display:flex; align-items:center; gap:5px; margin-top:2px; }
+  .coze-chat-head .c-status .dot { width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 6px #4ade80; }
+  .coze-chat-head .c-cfg { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:#fff; cursor:pointer;
+    display:grid; place-items:center; transition:background .12s; }
+  .coze-chat-head .c-cfg:hover { background:rgba(255,255,255,.2); }
+  .coze-chat-head .c-close { width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.1); border:none; color:#fff; cursor:pointer;
+    display:grid; place-items:center; transition:background .12s; }
+  .coze-chat-head .c-close:hover { background:rgba(255,255,255,.2); }
+  .coze-chat-body { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; background:var(--page-bg); }
+  .coze-chat-body::-webkit-scrollbar { width:5px; }
+  .coze-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:5px; }
+  .c-msg { display:flex; gap:8px; max-width:85%; }
+  .c-msg.bot { align-self:flex-start; }
+  .c-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+  .c-msg .m-ava { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; font-size:15px; }
+  .c-msg.bot .m-ava { background:var(--accent-muted); color:var(--accent); }
+  .c-msg.user .m-ava { background:var(--module-2); color:#fff; }
+  .c-msg .m-bubble { padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.6; }
+  .c-msg.bot .m-bubble { background:#fff; border:1px solid var(--border); border-bottom-left-radius:4px; color:var(--text); }
+  .c-msg.user .m-bubble { background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
+  .c-msg .m-time { font-size:10px; color:var(--text-tertiary); margin-top:4px; }
+  .c-msg.user .m-time { text-align:right; }
+  .c-quick { display:flex; flex-wrap:wrap; gap:6px; padding:0 16px 10px; background:var(--page-bg); }
+  .c-quick .cq { font-size:11.5px; padding:6px 12px; border-radius:999px; background:#fff; border:1px solid var(--border);
+    color:var(--text-secondary); cursor:pointer; font-family:var(--font); transition:all .12s; }
+  .c-quick .cq:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-muted); }
+  .coze-chat-input { padding:12px 14px; background:#fff; border-top:1px solid var(--border); display:flex; gap:8px; }
+  .coze-chat-input input { flex:1; border:1px solid var(--border-input); border-radius:12px; padding:10px 14px; font-size:13px; font-family:var(--font); outline:none; }
+  .coze-chat-input input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-muted); }
+  .coze-chat-input button { width:40px; height:40px; border-radius:12px; background:var(--accent); color:#fff; border:none; cursor:pointer;
+    display:grid; place-items:center; transition:filter .12s; flex:0 0 auto; }
+  .coze-chat-input button:hover { filter:brightness(1.1); }
+  .coze-chat-input button:disabled { opacity:.5; cursor:not-allowed; }
+  .c-typing { display:none; gap:4px; padding:4px 0; }
+  .c-typing.show { display:flex; }
+  .c-typing i { width:7px; height:7px; border-radius:50%; background:var(--text-tertiary); animation: bounce 1.2s infinite ease-in-out; }
+  .c-typing i:nth-child(2) { animation-delay:.15s; }
+  .c-typing i:nth-child(3) { animation-delay:.3s; }
 </style>
 </head>
 <body>
@@ -740,6 +841,51 @@
   </aside>
   <!-- main -->
   <main class="main"><div id="screen"></div></main>
+</div>
+
+<!-- Coze AI 悬浮助手 -->
+<button class="coze-fab" id="cozeFab" title="喵喵智能助手">
+  <span class="fab-pulse"></span>
+  🤖
+</button>
+
+<!-- Coze AI 聊天面板 -->
+<div class="coze-chat" id="cozeChat">
+  <div class="coze-chat-head">
+    <div class="c-ava">🤖</div>
+    <div class="c-info">
+      <div class="c-name">喵喵智能助手</div>
+      <div class="c-status"><span class="dot"></span>在线 · 由 Coze 驱动</div>
+    </div>
+    <button class="c-cfg" id="cozeCfg" title="配置">⚙️</button>
+    <button class="c-close" id="cozeClose">✕</button>
+  </div>
+  <div class="coze-chat-body" id="cozeMsgs">
+    <div class="c-msg bot">
+      <div class="m-ava">🤖</div>
+      <div>
+        <div class="m-bubble">喵～我是喵喵编辑部的智能助手！我可以帮你：<br>
+          • 拆解任务，自动创建待办<br>
+          • 分析你的工作/学习数据<br>
+          • 解答产品/AI Agent相关问题<br>
+          试试下面的快捷问题，或者直接输入你的目标吧！
+        </div>
+        <div class="m-time">刚刚</div>
+      </div>
+    </div>
+  </div>
+  <div class="c-typing" id="cozeTyping"><i></i><i></i><i></i></div>
+  <div class="c-quick">
+    <button class="cq" data-q="帮我拆解秋招准备计划">🎯 秋招计划</button>
+    <button class="cq" data-q="我今天的待办完成率如何">📊 今日分析</button>
+    <button class="cq" data-q="给我一些AI Agent产品设计建议">💡 产品建议</button>
+  </div>
+  <div class="coze-chat-input">
+    <input type="text" id="cozeInput" placeholder="输入你的问题或目标..." />
+    <button id="cozeSend">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+    </button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1017,14 +1163,14 @@ function focusTileHTML(){
       <div class="ft js-pin-open" data-mkey="${m.key}" data-id="${x.id}"><div class="fn ${(m.type==='todo'&&x.done)?'done':''}">${esc(x.title)}</div><div class="fm">${sub(m,x)}</div></div>
       ${ctl(m,x)}</div>`).join("")
     : `<div class="focus-empty">在任意模块点击 <span style="display:inline-flex;color:var(--module-3);vertical-align:-2px">${icon("star",13)}</span> 即可把要事置顶到这里。</div>`;
-  return `<div class="tile b4"><div class="tile-h"><span class="tic">${icon("star",16)}</span><div class="tt"><span class="en">TODAY'S FOCUS</span><span class="zh">今日聚焦</span></div><span class="r">${pins.length} 项</span></div>
+  return `<div class="tile b3"><div class="tile-h"><span class="tic">${icon("star",16)}</span><div class="tt"><span class="en">TODAY'S FOCUS</span><span class="zh">今日聚焦</span></div><span class="r">${pins.length} 项</span></div>
     <div class="focus-list">${rows}</div></div>`;
 }
 
 /* 快速记录 */
 function quickTileHTML(){
   const quick = CONFIG.quickAdd.map(q=>`<button class="qbtn" data-quick="${q.module}"><span class="e" style="background:${q.tint};color:${q.color}">${icon(q.icon,20)}<i class="qplus">${icon("plus",10,3)}</i></span><span class="l">${q.label}</span></button>`).join("");
-  return `<div class="tile b4"><div class="tile-h"><span class="tic">${icon("plus",16,2.2)}</span><div class="tt"><span class="en">QUICK ADD</span><span class="zh">快速记录</span></div></div>
+  return `<div class="tile b3"><div class="tile-h"><span class="tic">${icon("plus",16,2.2)}</span><div class="tt"><span class="en">QUICK ADD</span><span class="zh">快速记录</span></div></div>
     <div class="quick-grid" style="flex:1;align-content:start">${quick}</div></div>`;
 }
 
@@ -1199,7 +1345,7 @@ function renderHome(){
   const hi = hour<5?"夜深了":hour<11?"早上好":hour<13?"中午好":hour<18?"下午好":"晚上好";
 
   // 时钟卡
-  const clockCard=`<div class="clock-card b4">
+  const clockCard=`<div class="clock-card b3">
     <div><div class="hi">${hi}，${esc(CONFIG.owner)}</div><div class="sub">${esc(q)}</div></div>
     <div><div class="clk" id="clk">${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}</div>
       <div class="cmeta"><span>${dateStr()}</span><span class="dot"></span><span>第 1 周</span></div></div></div>`;
@@ -1209,6 +1355,7 @@ function renderHome(){
     <div class="bento">
       ${clockCard}
       ${focusTileHTML()}
+      ${CozeAI.plannerTileHTML()}
       ${quickTileHTML()}
       ${overviewTileHTML()}
     </div>
@@ -1249,6 +1396,8 @@ function wireHome(){
   const rs=$("#pomo-reset"); if(rs) rs.onclick=()=>{ pomo.running=false; pomo.remain=pomo.total; pomoUpdate(); };
   // IELTS tile sub-row clicks
   $("#screen").querySelectorAll(".ielts-sub-row, .ielts-action").forEach(el=>el.onclick=()=>{ go(el.dataset.open); });
+  // AI Planner events
+  CozeAI.wirePlannerEvents();
 }
 
 /* ---------- INSIGHT ---------- */
@@ -3387,11 +3536,336 @@ const NotionSync = {
   },
 };
 
+/* ============================================================
+   COZE AI 助手 - 智能任务规划
+   ============================================================ */
+const CozeAI = {
+  config: {
+    botId: localStorage.getItem('cat-news-coze-bot-id') || '',
+    apiKey: localStorage.getItem('cat-news-coze-api-key') || '',
+    useMock: true  // 默认使用Mock模式，方便Demo
+  },
+
+  // AI规划瓷砖HTML
+  plannerTileHTML(){
+    const suggestions = [
+      {text:"准备字节AI Agent PM面试", icon:"🎯"},
+      {text:"一周雅思备考计划", icon:"📚"},
+      {text:"养成早睡早起习惯", icon:"🌅"},
+      {text:"月度消费复盘优化", icon:"💰"},
+    ];
+    const sugHtml = suggestions.map(s =>
+      `<button class="sug-chip" data-ai-goal="${s.text}">${s.icon} ${s.text}</button>`
+    ).join('');
+    return `<div class="tile b3 ai-planner" id="aiPlannerTile">
+      <div class="tile-h">
+        <span class="tic">${icon("bolt",16)}</span>
+        <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
+        <span class="r" style="cursor:pointer" id="cozeSettingsBtn">⚙️</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
+      <div class="ai-input-wrap">
+        <input type="text" id="aiGoalInput" placeholder="例如：准备秋招，目标字节产品offer" />
+        <button class="btn" id="aiPlanBtn" style="padding:9px 14px;white-space:nowrap">✨ 规划</button>
+      </div>
+      <div class="ai-suggest">${sugHtml}</div>
+      <div class="ai-loading" id="aiLoading"><span>🤔 AI正在思考</span><div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="ai-result" id="aiResult"></div>
+    </div>`;
+  },
+
+  // Mock AI规划（演示用，真实场景调用Coze API）
+  mockPlan(goal){
+    const plans = {
+      "秋招": [
+        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写Coze工作台集成项目"},
+        {type:"todo", title:"刷产品Case题库", priority:"P1", note:"每天2道，重点是AI产品类Case"},
+        {type:"todo", title:"整理AI Agent产品知识体系", priority:"P0", note:"RAG/Agent工作流/工具调用/多Agent"},
+        {type:"checkin", title:"背诵产品八股文", target:30, note:"每天30分钟"},
+        {type:"read", title:"《启示录：打造用户喜爱的产品》", target:200, unit:"页", note:"重点读产品规划章节"},
+        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：Coze工作台可以讲"},
+      ],
+      "雅思": [
+        {type:"todo", title:"完成剑18 Test 1 阅读", priority:"P0", note:"计时20分钟，做完分析错题"},
+        {type:"todo", title:"精听剑18 Test 1 Section 3", priority:"P0", note:"1.2倍速听写，跟读模仿"},
+        {type:"checkin", title:"背雅思单词", target:50, note:"每天50个，复习旧词"},
+        {type:"todo", title:"写一篇Task 2大作文", priority:"P1", note:"AI批改，重点是逻辑连贯"},
+        {type:"read", title:"《雅思写作真经总纲》", target:100, unit:"页", note:"学习高分范文结构"},
+        {type:"todo", title:"口语Part2素材准备：喜欢的科技产品", priority:"P1", note:"录1分钟音频自己听"},
+      ],
+      "早睡": [
+        {type:"checkin", title:"23:00前放下手机", target:7, note:"睡前30分钟不看屏幕"},
+        {type:"checkin", title:"早上7:00前起床", target:7, note:"不赖床，起床喝杯水"},
+        {type:"sport", title:"晚间散步", target:20, unit:"分钟", note:"饭后散步助眠"},
+        {type:"todo", title:"建立睡前仪式", priority:"P1", note:"热水泡脚/读纸质书10分钟"},
+        {type:"todo", title:"记录睡眠质量", priority:"P2", note:"在笔记里每天写一句睡眠感受"},
+      ],
+      "消费": [
+        {type:"todo", title:"导出近30天记账数据", priority:"P0", note:"财经版→导出数据"},
+        {type:"todo", title:"识别非必要支出Top3", priority:"P0", note:"奶茶/外卖/冲动消费等"},
+        {type:"checkin", title:"每日记账不遗漏", target:30, note:"花完马上记，不拖延"},
+        {type:"todo", title:"设定下月各类预算", priority:"P1", note:"餐饮/娱乐/学习等分类预算"},
+        {type:"todo", title:"设立省钱目标奖励", priority:"P2", note:"达标后给自己一个小奖励"},
+      ]
+    };
+    // 匹配关键词
+    let matchedKey = "default";
+    for(const key of Object.keys(plans)){
+      if(goal.includes(key) || goal.includes(key) || goal.includes(key)){
+        matchedKey = key;
+        break;
+      }
+    }
+    if(matchedKey === "default"){
+      return [
+        {type:"todo", title: `拆解目标：${goal}`, priority:"P0", note:"AI初步拆解，可根据实际调整"},
+        {type:"todo", title:"设定可衡量的里程碑", priority:"P1", note:"SMART原则：具体、可衡量、可实现、相关、有时限"},
+        {type:"checkin", title:"每日进度追踪", target:7, note:"每天打卡回顾进展"},
+        {type:"todo", title:"找一个学习榜样/参考案例", priority:"P1", note:"看看别人是怎么做的"},
+        {type:"todo", title:"周末复盘调整计划", priority:"P2", note:"每周日晚回顾，灵活调整"},
+      ];
+    }
+    return plans[matchedKey];
+  },
+
+  // 生成规划结果HTML
+  renderPlanResult(items){
+    const typeIcons = {todo:"📋", checkin:"✅", read:"📖", sport:"🏃", note:"📝", money:"💰"};
+    const typeNames = {todo:"待办", checkin:"打卡", read:"阅读", sport:"运动", note:"笔记", money:"记账"};
+    const listHtml = items.map(item => `
+      <div class="ai-plan-item">
+        <span class="pi-ic" style="background:var(--surface-nested)">${typeIcons[item.type]||"📌"}</span>
+        <div class="pi-tx">
+          <div class="pi-name">${esc(item.title)}</div>
+          <div class="pi-note">${typeNames[item.type]||"任务"}${item.priority?` · ${item.priority}`:''}${item.target?` · 目标${item.target}${item.unit||''}`:''}${item.note?` · ${item.note}`:''}</div>
+        </div>
+      </div>
+    `).join('');
+    return `<div class="ai-result-head">✨ 为你生成 ${items.length} 条计划</div>
+      <div class="ai-plan-list">${listHtml}</div>
+      <div class="ai-plan-actions">
+        <button class="btn-cancel" id="aiCancelBtn">取消</button>
+        <button class="btn-accept" id="aiAcceptBtn">✅ 一键导入工作台</button>
+      </div>`;
+  },
+
+  // 执行规划（带模拟延迟，真实场景调用Coze API）
+  async planGoal(goal){
+    const loading = document.getElementById('aiLoading');
+    const resultEl = document.getElementById('aiResult');
+    if(loading) loading.classList.add('show');
+    if(resultEl) resultEl.classList.remove('show');
+
+    // 模拟AI思考时间
+    await new Promise(r => setTimeout(r, 1500));
+
+    let items;
+    if(this.config.useMock || !this.config.botId){
+      items = this.mockPlan(goal);
+    } else {
+      // 真实Coze API调用（预留）
+      items = this.mockPlan(goal); // 暂时还是用Mock，等配置了Bot ID再切换
+    }
+
+    // 保存当前规划结果，用于确认导入
+    this._pendingPlan = items;
+
+    if(loading) loading.classList.remove('show');
+    if(resultEl){
+      resultEl.innerHTML = this.renderPlanResult(items);
+      resultEl.classList.add('show');
+      // 绑定按钮事件
+      const acceptBtn = document.getElementById('aiAcceptBtn');
+      const cancelBtn = document.getElementById('aiCancelBtn');
+      if(acceptBtn) acceptBtn.onclick = () => this.applyPlan();
+      if(cancelBtn) cancelBtn.onclick = () => { resultEl.classList.remove('show'); this._pendingPlan = null; };
+    }
+  },
+
+  // 一键导入计划到工作台
+  applyPlan(){
+    if(!this._pendingPlan) return;
+    let added = {todo:0, checkin:0, read:0, sport:0};
+    this._pendingPlan.forEach(item => {
+      const moduleKey = item.type;
+      if(!data[moduleKey]) data[moduleKey] = [];
+      const newItem = {
+        id: Date.now() + Math.floor(Math.random()*1000),
+        title: item.title,
+        note: item.note || '',
+      };
+      if(item.type === 'todo'){
+        newItem.priority = item.priority || 'P1';
+        newItem.done = false;
+      } else if(item.type === 'checkin'){
+        newItem.target = item.target || 7;
+        newItem.log = {};
+      } else if(item.type === 'read' || item.type === 'sport'){
+        newItem.current = 0;
+        newItem.target = item.target || 100;
+        newItem.unit = item.unit || (item.type === 'read' ? '页' : '分钟');
+      }
+      data[moduleKey].push(newItem);
+      added[moduleKey] = (added[moduleKey]||0) + 1;
+    });
+    persist();
+    showToast(`✅ 已导入：待办${added.todo}个 · 打卡${added.checkin}个 · 阅读${added.read}个 · 运动${added.sport}个`);
+    const resultEl = document.getElementById('aiResult');
+    if(resultEl) resultEl.classList.remove('show');
+    const input = document.getElementById('aiGoalInput');
+    if(input) input.value = '';
+    this._pendingPlan = null;
+  },
+
+  // 聊天发送消息
+  async chatSend(text){
+    const msgsEl = document.getElementById('cozeMsgs');
+    const typing = document.getElementById('cozeTyping');
+    if(!text.trim()) return;
+
+    // 添加用户消息
+    const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    msgsEl.innerHTML += `<div class="c-msg user">
+      <div class="m-ava">👤</div>
+      <div><div class="m-bubble">${esc(text)}</div><div class="m-time">${time}</div></div>
+    </div>`;
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+
+    typing.classList.add('show');
+
+    // 模拟AI回复
+    await new Promise(r => setTimeout(r, 1200));
+
+    typing.classList.remove('show');
+
+    let reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！真实接入Coze后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️可以配置你的Coze Bot ID～";
+    if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
+      reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「Coze×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：在Coze上真的搭几个Bot试试！比如任务拆解Bot、周报生成Bot。<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
+    } else if(text.includes('待办') || text.includes('完成率')){
+      const todos = data.todo || [];
+      const done = todos.filter(x=>x.done).length;
+      const total = todos.length;
+      const pct = total ? Math.round(done/total*100) : 0;
+      reply = `📊 今日待办分析：<br><br>• 总待办：${total}项<br>• 已完成：${done}项<br>• 完成率：${pct}%<br><br>${pct < 50 ? '加油！今天还有不少任务没完成呢 💪' : pct < 80 ? '进度不错！继续保持～' : '太棒了！今天效率很高 🎉'}`;
+    } else if(text.includes('AI Agent') || text.includes('产品设计')){
+      reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
+    }
+
+    msgsEl.innerHTML += `<div class="c-msg bot">
+      <div class="m-ava">🤖</div>
+      <div><div class="m-bubble">${reply}</div><div class="m-time">${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div></div>
+    </div>`;
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  },
+
+  // 打开配置面板
+  openConfig(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `<div class="modal" style="width:480px">
+      <h3>🤖 Coze AI 配置</h3>
+      <div class="sub">填入你的Coze Bot信息即可接入真实AI能力；不填则使用演示模式。</div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
+        <div class="field">
+          <label>Coze Bot ID</label>
+          <input type="text" id="cfg-bot-id" value="${this.config.botId}" placeholder="在Coze平台发布Bot后获取" />
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在Coze官网 → 你的Bot → 发布 → API中查看</div>
+        </div>
+        <div class="field">
+          <label>Personal Access Token (可选)</label>
+          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="Coze PAT令牌" />
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="cfg-use-mock" ${this.config.useMock?'checked':''} style="width:auto" />
+          <label for="cfg-use-mock" style="margin:0;cursor:pointer">使用演示模式（不需要配置也能体验）</label>
+        </div>
+      </div>
+      <div class="modal-actions"><div class="spacer"></div>
+        <button class="btn ghost" id="cfg-cancel">取消</button>
+        <button class="btn" id="cfg-save">保存</button></div></div>`;
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    overlay.onclick = e => { if(e.target === overlay) close(); };
+    overlay.querySelector('#cfg-cancel').onclick = close;
+    overlay.querySelector('#cfg-save').onclick = () => {
+      this.config.botId = overlay.querySelector('#cfg-bot-id').value.trim();
+      this.config.apiKey = overlay.querySelector('#cfg-api-key').value.trim();
+      this.config.useMock = overlay.querySelector('#cfg-use-mock').checked;
+      localStorage.setItem('cat-news-coze-bot-id', this.config.botId);
+      localStorage.setItem('cat-news-coze-api-key', this.config.apiKey);
+      close();
+      showToast('Coze配置已保存 ✓');
+    };
+  },
+
+  // 初始化
+  init(){
+    // 悬浮按钮
+    const fab = document.getElementById('cozeFab');
+    const chat = document.getElementById('cozeChat');
+    const closeBtn = document.getElementById('cozeClose');
+    const cfgBtn = document.getElementById('cozeCfg');
+    const sendBtn = document.getElementById('cozeSend');
+    const input = document.getElementById('cozeInput');
+
+    if(fab) fab.onclick = () => chat.classList.toggle('open');
+    if(closeBtn) closeBtn.onclick = () => chat.classList.remove('open');
+    if(cfgBtn) cfgBtn.onclick = () => this.openConfig();
+
+    const sendMsg = () => {
+      const text = input.value.trim();
+      if(!text) return;
+      input.value = '';
+      this.chatSend(text);
+    };
+    if(sendBtn) sendBtn.onclick = sendMsg;
+    if(input) input.onkeydown = e => { if(e.key === 'Enter') sendMsg(); };
+
+    // 快捷问题
+    document.querySelectorAll('.cq').forEach(btn => {
+      btn.onclick = () => { if(input){ input.value = btn.dataset.q; sendMsg(); } };
+    });
+
+    // 侧边栏设置按钮（动态绑定，因为renderHome会重绘）
+    setTimeout(() => this.wirePlannerEvents(), 100);
+  },
+
+  // 绑定首页AI规划瓷砖事件
+  wirePlannerEvents(){
+    // AI规划按钮
+    const planBtn = document.getElementById('aiPlanBtn');
+    const goalInput = document.getElementById('aiGoalInput');
+    const settingsBtn = document.getElementById('cozeSettingsBtn');
+
+    if(planBtn && goalInput){
+      const doPlan = () => {
+        const goal = goalInput.value.trim();
+        if(!goal){ showToast('请先输入你的目标', 'warn'); return; }
+        this.planGoal(goal);
+      };
+      planBtn.onclick = doPlan;
+      goalInput.onkeydown = e => { if(e.key === 'Enter') doPlan(); };
+    }
+
+    // 建议标签
+    document.querySelectorAll('.sug-chip[data-ai-goal]').forEach(chip => {
+      chip.onclick = () => {
+        if(goalInput){ goalInput.value = chip.dataset.aiGoal; this.planGoal(chip.dataset.aiGoal); }
+      };
+    });
+
+    if(settingsBtn) settingsBtn.onclick = () => this.openConfig();
+  }
+};
+
 /* 初始化云同步 */
 CloudSync.init();
 
 /* 初始化 Notion 同步 */
 NotionSync.init();
+
+/* 初始化 Coze AI */
+CozeAI.init();
 
 /* 包装 store.save 以支持自动同步 */
 const _origSave = store.save.bind(store);
