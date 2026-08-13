@@ -2210,22 +2210,28 @@ const CozeAI = {
       </div>`;
   },
 
-  // 执行规划（带模拟延迟，真实场景调用Coze API）
+  // 执行规划（接入真实Coze API）
   async planGoal(goal){
     const loading = document.getElementById('aiLoading');
     const resultEl = document.getElementById('aiResult');
     if(loading) loading.classList.add('show');
     if(resultEl) resultEl.classList.remove('show');
 
-    // 模拟AI思考时间
-    await new Promise(r => setTimeout(r, 1500));
+    let items = [];
 
-    let items;
-    if(this.config.useMock || !this.config.botId){
+    if(this.config.useMock || !this.config.botId || !this.config.apiKey){
+      // 演示模式：使用Mock数据
+      await new Promise(r => setTimeout(r, 1500));
       items = this.mockPlan(goal);
     } else {
-      // 真实Coze API调用（预留）
-      items = this.mockPlan(goal); // 暂时还是用Mock，等配置了Bot ID再切换
+      // 真实Coze API调用
+      try {
+        items = await this.callCozeAPI(goal);
+      } catch(e){
+        console.error('Coze API调用失败:', e);
+        showToast('Coze API调用失败，已切换到演示模式', 'warn');
+        items = this.mockPlan(goal);
+      }
     }
 
     // 保存当前规划结果，用于确认导入
@@ -2241,6 +2247,83 @@ const CozeAI = {
       if(acceptBtn) acceptBtn.onclick = () => this.applyPlan();
       if(cancelBtn) cancelBtn.onclick = () => { resultEl.classList.remove('show'); this._pendingPlan = null; };
     }
+  },
+
+  // 调用Coze API并解析工具调用结果
+  async callCozeAPI(goal){
+    const apiUrl = 'https://api.coze.cn/open_api/v2/chat';
+    const headers = {
+      'Authorization': `Bearer ${this.config.apiKey}`,
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Host': 'api.coze.cn'
+    };
+    const body = {
+      bot_id: this.config.botId,
+      user: 'workbench-user-' + Date.now(),
+      query: goal,
+      stream: false
+    };
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(body)
+    });
+
+    if(!response.ok){
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if(data.code !== 0){
+      throw new Error(`Coze API error: ${data.msg || 'unknown error'}`);
+    }
+
+    // 解析返回消息中的工具调用
+    const items = [];
+    const messages = data.messages || [];
+
+    for(const msg of messages){
+      if(msg.role === 'assistant' && msg.type === 'function_call'){
+        // 解析function call
+        try {
+          const toolCall = JSON.parse(msg.content);
+          const toolName = msg.name || toolCall.name;
+          const args = typeof toolCall.arguments === 'string' ? JSON.parse(toolCall.arguments) : (toolCall.parameters || {});
+
+          // 工具名映射：create_todo -> todo, create_checkin -> checkin等
+          const typeMap = {
+            'create_todo': 'todo',
+            'create_checkin': 'checkin',
+            'create_reading': 'read',
+            'create_sport': 'sport'
+          };
+
+          const type = typeMap[toolName];
+          if(type && args.title){
+            items.push({
+              type: type,
+              title: args.title,
+              priority: args.priority || 'P1',
+              target: args.target,
+              unit: args.unit,
+              note: args.note || ''
+            });
+          }
+        } catch(e){
+          console.warn('解析工具调用失败:', e, msg);
+        }
+      }
+    }
+
+    // 如果没有解析到工具调用，回退到Mock
+    if(items.length === 0){
+      console.warn('Coze返回中没有工具调用，使用Mock数据');
+      return this.mockPlan(goal);
+    }
+
+    return items;
   },
 
   // 一键导入计划到工作台
@@ -2294,23 +2377,56 @@ const CozeAI = {
 
     typing.classList.add('show');
 
-    // 模拟AI回复
-    await new Promise(r => setTimeout(r, 1200));
+    let reply = '';
+
+    if(this.config.useMock || !this.config.botId || !this.config.apiKey){
+      // 演示模式
+      await new Promise(r => setTimeout(r, 1200));
+      reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！真实接入Coze后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️配置你的Coze Bot，即可解锁真实AI能力～";
+      if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
+        reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「Coze×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：在Coze上真的搭几个Bot试试！比如任务拆解Bot、周报生成Bot。<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
+      } else if(text.includes('待办') || text.includes('完成率')){
+        const todos = data.todo || [];
+        const done = todos.filter(x=>x.done).length;
+        const total = todos.length;
+        const pct = total ? Math.round(done/total*100) : 0;
+        reply = `📊 今日待办分析：<br><br>• 总待办：${total}项<br>• 已完成：${done}项<br>• 完成率：${pct}%<br><br>${pct < 50 ? '加油！今天还有不少任务没完成呢 💪' : pct < 80 ? '进度不错！继续保持～' : '太棒了！今天效率很高 🎉'}`;
+      } else if(text.includes('AI Agent') || text.includes('产品设计')){
+        reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
+      }
+    } else {
+      // 真实Coze API调用
+      try {
+        const apiUrl = 'https://api.coze.cn/open_api/v2/chat';
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.config.apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            bot_id: this.config.botId,
+            user: 'workbench-chat-' + Date.now(),
+            query: text,
+            stream: false
+          })
+        });
+        const respData = await response.json();
+        // 提取assistant的回答
+        for(const msg of (respData.messages || [])){
+          if(msg.role === 'assistant' && msg.type === 'answer'){
+            reply = msg.content.replace(/\n/g, '<br>');
+            break;
+          }
+        }
+        if(!reply) reply = "喵？我好像没听清，可以再说一遍吗？";
+      } catch(e){
+        console.error('聊天API调用失败:', e);
+        reply = "抱歉，AI连接出了点小问题，请检查网络或Coze配置～";
+      }
+    }
 
     typing.classList.remove('show');
-
-    let reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！真实接入Coze后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️可以配置你的Coze Bot ID～";
-    if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
-      reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「Coze×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：在Coze上真的搭几个Bot试试！比如任务拆解Bot、周报生成Bot。<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
-    } else if(text.includes('待办') || text.includes('完成率')){
-      const todos = data.todo || [];
-      const done = todos.filter(x=>x.done).length;
-      const total = todos.length;
-      const pct = total ? Math.round(done/total*100) : 0;
-      reply = `📊 今日待办分析：<br><br>• 总待办：${total}项<br>• 已完成：${done}项<br>• 完成率：${pct}%<br><br>${pct < 50 ? '加油！今天还有不少任务没完成呢 💪' : pct < 80 ? '进度不错！继续保持～' : '太棒了！今天效率很高 🎉'}`;
-    } else if(text.includes('AI Agent') || text.includes('产品设计')){
-      reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
-    }
 
     msgsEl.innerHTML += `<div class="c-msg bot">
       <div class="m-ava">🤖</div>
@@ -2323,27 +2439,36 @@ const CozeAI = {
   openConfig(){
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
-    overlay.innerHTML = `<div class="modal" style="width:480px">
+    overlay.innerHTML = `<div class="modal" style="width:520px">
       <h3>🤖 Coze AI 配置</h3>
       <div class="sub">填入你的Coze Bot信息即可接入真实AI能力；不填则使用演示模式。</div>
+      <div style="margin-top:12px;padding:12px;background:var(--accent-muted);border-radius:10px;font-size:12px;line-height:1.7;color:var(--text-secondary)">
+        <b style="color:var(--accent)">📝 接入步骤：</b><br>
+        1. 访问 <a href="https://www.coze.cn" target="_blank" style="color:var(--accent)">coze.cn</a> 创建Bot<br>
+        2. 添加4个Function工具：create_todo/create_checkin/create_reading/create_sport<br>
+        3. 发布Bot到API渠道，复制Bot ID<br>
+        4. 访问 <a href="https://www.coze.cn/open/oauth/pat" target="_blank" style="color:var(--accent)">开放平台</a> 生成Personal Access Token<br>
+        5. 将两个ID填入下方，取消勾选「演示模式」即可
+      </div>
       <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
         <div class="field">
-          <label>Coze Bot ID</label>
-          <input type="text" id="cfg-bot-id" value="${this.config.botId}" placeholder="在Coze平台发布Bot后获取" />
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在Coze官网 → 你的Bot → 发布 → API中查看</div>
+          <label>Coze Bot ID <span style="color:var(--red)">*</span></label>
+          <input type="text" id="cfg-bot-id" value="${this.config.botId}" placeholder="例如：7312345678901234567" />
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在Coze → 你的Bot → 发布 → API 中获取</div>
         </div>
         <div class="field">
-          <label>Personal Access Token (可选)</label>
-          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="Coze PAT令牌" />
+          <label>Personal Access Token <span style="color:var(--red)">*</span></label>
+          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="pat_xxxxxxxxxxxxxxxxx" />
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">在coze.cn/open/oauth/pat生成，需要BotChat权限</div>
         </div>
         <div class="field" style="display:flex;align-items:center;gap:10px">
           <input type="checkbox" id="cfg-use-mock" ${this.config.useMock?'checked':''} style="width:auto" />
-          <label for="cfg-use-mock" style="margin:0;cursor:pointer">使用演示模式（不需要配置也能体验）</label>
+          <label for="cfg-use-mock" style="margin:0;cursor:pointer">使用演示模式（不需要配置也能体验，使用内置Mock数据）</label>
         </div>
       </div>
       <div class="modal-actions"><div class="spacer"></div>
         <button class="btn ghost" id="cfg-cancel">取消</button>
-        <button class="btn" id="cfg-save">保存</button></div></div>`;
+        <button class="btn" id="cfg-save">保存配置</button></div></div>`;
     document.body.appendChild(overlay);
     const close = () => overlay.remove();
     overlay.onclick = e => { if(e.target === overlay) close(); };
