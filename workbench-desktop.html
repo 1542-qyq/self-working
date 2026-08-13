@@ -784,6 +784,88 @@
   .c-typing i { width:7px; height:7px; border-radius:50%; background:var(--text-tertiary); animation: bounce 1.2s infinite ease-in-out; }
   .c-typing i:nth-child(2) { animation-delay:.15s; }
   .c-typing i:nth-child(3) { animation-delay:.3s; }
+
+  /* ============================================================
+     方案3：RAG 个人数据洞察 样式
+     ============================================================ */
+  .rag-insight { background:linear-gradient(135deg,#f0e8f5 0%,#e5e8f0 50%,#e0ece8 100%); position:relative; overflow:hidden; }
+  .rag-insight::before { content:""; position:absolute; right:-30px; bottom:-30px; width:160px; height:160px; border-radius:50%;
+    background:radial-gradient(circle,rgba(124,58,237,.12),transparent 70%); pointer-events:none; }
+  .rag-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:10px 0; }
+  .rag-metric { background:rgba(255,255,255,.6); border-radius:10px; padding:10px 8px; text-align:center; border:1px solid var(--border); }
+  .rag-metric .rm-val { font-size:20px; font-weight:800; color:#7c3aed; }
+  .rag-metric .rm-label { font-size:10.5px; color:var(--text-secondary); margin-top:2px; }
+  .rag-actions { display:flex; gap:8px; }
+  .rag-actions button { flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); font-size:11.5px; font-weight:600;
+    cursor:pointer; font-family:var(--font); transition:all .12s; background:rgba(255,255,255,.5); color:var(--text); }
+  .rag-actions button:hover { background:#7c3aed; color:#fff; border-color:#7c3aed; }
+  .rag-actions button svg { width:13px; height:13px; }
+  .rag-qa { display:none; margin-top:10px; }
+  .rag-qa.show { display:block; }
+  .rag-qa-history { max-height:140px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
+  .rag-qa-history::-webkit-scrollbar { width:4px; }
+  .rag-qa-history::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+  .rag-qa-q { font-size:12px; padding:8px 10px; background:rgba(124,58,237,.1); border-radius:8px 8px 8px 2px; align-self:flex-start; max-width:90%; }
+  .rag-qa-a { font-size:12px; padding:8px 10px; background:rgba(255,255,255,.7); border-radius:8px 8px 2px 8px; align-self:flex-end; max-width:90%; border:1px solid var(--border); }
+  .rag-input-row { display:flex; gap:6px; }
+  .rag-input-row input { flex:1; background:rgba(255,255,255,.6); border:1px solid var(--border-input); font-size:12px; padding:8px 10px; }
+  .rag-input-row button { width:36px; border-radius:8px; background:#7c3aed; color:#fff; border:none; cursor:pointer; display:grid; place-items:center; }
+
+  /* ============================================================
+     方案4：多Agent指挥中心 样式
+     ============================================================ */
+  .agents-page { padding:10px 0; }
+  .agents-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+  .agents-header .agents-title-icon { width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg,#4a6c3f,#7c3aed);
+    display:grid; place-items:center; font-size:24px; color:#fff; }
+  .agents-header h2 { font-size:24px; font-weight:800; }
+  .agents-header p { font-size:13px; color:var(--text-secondary); margin-top:3px; }
+  .agents-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
+  .agent-card { background:var(--surface-card); border:1px solid var(--border); border-radius:16px; padding:18px; position:relative; overflow:hidden; transition:all .15s; }
+  .agent-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-card); }
+  .agent-card::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; }
+  .agent-card.ac-editor::before { background:var(--module-1); }
+  .agent-card.ac-reporter::before { background:var(--module-2); }
+  .agent-card.ac-finance::before { background:var(--module-3); }
+  .agent-card.ac-reviewer::before { background:var(--module-4); }
+  .agent-card.ac-coach::before { background:#7c3aed; }
+  .agent-card.ac-chief::before { background:linear-gradient(90deg,var(--accent),#7c3aed,var(--module-2)); }
+  .agent-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .agent-ava { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-size:22px; flex:0 0 auto; }
+  .agent-card.ac-chief .agent-ava { background:linear-gradient(135deg,var(--accent),#7c3aed); color:#fff; }
+  .agent-card.ac-editor .agent-ava { background:color-mix(in srgb,var(--module-1) 15%,transparent); color:var(--module-1); }
+  .agent-card.ac-reporter .agent-ava { background:color-mix(in srgb,var(--module-2) 15%,transparent); color:var(--module-2); }
+  .agent-card.ac-finance .agent-ava { background:color-mix(in srgb,var(--module-3) 15%,transparent); color:var(--module-3); }
+  .agent-card.ac-reviewer .agent-ava { background:color-mix(in srgb,var(--module-4) 15%,transparent); color:var(--module-4); }
+  .agent-card.ac-coach .agent-ava { background:rgba(124,58,237,.1); color:#7c3aed; }
+  .agent-name { font-size:15px; font-weight:700; }
+  .agent-role { font-size:11.5px; color:var(--text-tertiary); margin-top:1px; }
+  .agent-status { display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:3px 8px; border-radius:999px; margin-top:6px; }
+  .agent-status.online { background:rgba(74,222,128,.15); color:#16a34a; }
+  .agent-status .dot { width:6px; height:6px; border-radius:50%; background:#4ade80; }
+  .agent-desc { font-size:12.5px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px; }
+  .agent-skills { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
+  .agent-skill { font-size:10.5px; padding:3px 8px; border-radius:6px; background:var(--surface-nested); color:var(--text-secondary); }
+  .agent-actions { display:flex; gap:6px; }
+  .agent-actions button { flex:1; padding:7px; border-radius:8px; border:1px solid var(--border); font-size:11.5px; font-weight:600;
+    cursor:pointer; font-family:var(--font); background:transparent; color:var(--text-secondary); transition:all .12s; }
+  .agent-actions button:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .agent-workflow { background:var(--surface-card); border:1px solid var(--border); border-radius:16px; padding:20px; }
+  .agent-workflow h3 { font-size:16px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .workflow-demo { background:var(--surface-nested); border-radius:12px; padding:16px; }
+  .workflow-step { display:flex; gap:12px; align-items:flex-start; position:relative; padding-bottom:16px; }
+  .workflow-step:last-child { padding-bottom:0; }
+  .workflow-step::before { content:""; position:absolute; left:15px; top:30px; bottom:0; width:2px; background:var(--border); }
+  .workflow-step:last-child::before { display:none; }
+  .ws-num { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; font-size:12px; font-weight:700; flex:0 0 auto; }
+  .ws-num.n-user { background:#e5e7eb; color:#374151; }
+  .ws-num.n-chief { background:linear-gradient(135deg,var(--accent),#7c3aed); color:#fff; }
+  .ws-num.n-agent { background:var(--accent-muted); color:var(--accent); }
+  .ws-content { flex:1; padding-top:4px; }
+  .ws-title { font-size:13px; font-weight:600; }
+  .ws-desc { font-size:11.5px; color:var(--text-secondary); margin-top:2px; }
+  .ws-agents { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .ws-agent-tag { font-size:10.5px; padding:3px 8px; border-radius:6px; }
 </style>
 </head>
 <body>
@@ -1367,7 +1449,42 @@ function renderHome(){
     <div class="bento">${pomoTileHTML()}${trendTileHTML()}${ieltsTileHTML()}</div>
 
     ${grp("收支与成长","MONEY&nbsp;&nbsp;&&nbsp;&nbsp;GROWTH")}
-    <div class="bento">${spendTileHTML()}${booksTileHTML()}${goalsTileHTML()}</div>`;
+    <div class="bento">${spendTileHTML()}${booksTileHTML()}${goalsTileHTML()}${CozeAI.ragTileHTML()}</div>
+
+    ${grp("AI Agent能力展示","COZE&nbsp;&nbsp;AI&nbsp;&nbsp;FEATURES")}
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;display:grid;place-items:center;font-size:18px;">🤖</span>
+        <div>
+          <div style="font-size:15px;font-weight:700;">Coze AI 集成能力展示</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);">为字节AI Agent PM面试准备 — 展示工具调用、RAG、多Agent、工作流</div>
+        </div>
+        <div style="flex:1"></div>
+        <button onclick="go('agents')" style="padding:8px 16px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);">→ 查看多Agent指挥中心</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--accent);">
+          <div style="font-size:16px;margin-bottom:4px;">💬</div>
+          <div style="font-size:12px;font-weight:600;">AI对话助手</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">右下角悬浮球 · Prompt工程</div>
+        </div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--module-2);">
+          <div style="font-size:16px;margin-bottom:4px;">📋</div>
+          <div style="font-size:12px;font-weight:600;">任务智能拆解</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">Function Call工具调用 · 一键导入</div>
+        </div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid #7c3aed;">
+          <div style="font-size:16px;margin-bottom:4px;">🧠</div>
+          <div style="font-size:12px;font-weight:600;">RAG数据洞察</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">个人数据资产化 · 智能问答</div>
+        </div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--module-1);">
+          <div style="font-size:16px;margin-bottom:4px;">👥</div>
+          <div style="font-size:12px;font-weight:600;">多Agent协作</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">6个角色Agent · 主编调度</div>
+        </div>
+      </div>
+    </div>`;
   wireHome();
   startClock();
 }
@@ -1398,6 +1515,8 @@ function wireHome(){
   $("#screen").querySelectorAll(".ielts-sub-row, .ielts-action").forEach(el=>el.onclick=()=>{ go(el.dataset.open); });
   // AI Planner events
   CozeAI.wirePlannerEvents();
+  // RAG数据洞察事件
+  CozeAI.wireRAGEvents();
 }
 
 /* ---------- INSIGHT ---------- */
@@ -1417,6 +1536,164 @@ function renderInsight(){
   $("#screen").innerHTML=`<div class="header"><div><h2>洞察</h2><p>各模块进展一览 · 记录—执行—统计—反馈</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
     <div class="sec-title">模块概况</div><div class="pin-list" style="grid-template-columns:repeat(3,1fr)">${cards}</div>`;
   $("#screen").querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>go(el.dataset.open));
+}
+
+/* ---------- 方案4：多Agent指挥中心 ---------- */
+function renderAgents(){
+  const agents = [
+    {
+      key: "chief",
+      className: "ac-chief",
+      avatar: "🐱",
+      name: "喵喵主编",
+      role: "Orchestrator · 调度中枢",
+      desc: "理解用户意图，智能分配任务给专业编辑Agent，协调多Agent并行工作，整合最终结果。负责任务规划、记忆管理、工具调用路由。",
+      skills: ["意图识别", "任务拆分", "Agent调度", "结果整合", "记忆管理", "工具路由"]
+    },
+    {
+      key: "editor",
+      className: "ac-editor",
+      avatar: "📋",
+      name: "选题编辑",
+      role: "Todo/Task Specialist",
+      desc: "负责待办任务拆解、优先级排序（P0/P1/P2）、SMART原则校验、周计划/月计划生成、进度追踪与提醒。",
+      skills: ["任务拆解", "优先级排序", "SMART原则", "计划生成", "进度追踪", "周报生成"]
+    },
+    {
+      key: "reporter",
+      className: "ac-reporter",
+      avatar: "🏃",
+      name: "生活记者",
+      role: "Habit/Activity Analyst",
+      desc: "分析打卡数据、运动记录、睡眠习惯，给出习惯养成建议，识别中断模式，设计激励机制，生成生活洞察报告。",
+      skills: ["习惯分析", "运动建议", "数据可视化", "模式识别", "激励设计", "健康洞察"]
+    },
+    {
+      key: "finance",
+      className: "ac-finance",
+      avatar: "💰",
+      name: "财经编辑",
+      role: "Finance Analyst",
+      desc: "分析收支结构、识别非必要支出、预算预警、消费趋势预测、储蓄建议、财务健康度评分，生成月度财经报告。",
+      skills: ["收支分析", "预算管理", "消费洞察", "趋势预测", "储蓄建议", "财务评分"]
+    },
+    {
+      key: "reviewer",
+      className: "ac-reviewer",
+      avatar: "📚",
+      name: "书评人",
+      role: "Reading/Content Curator",
+      desc: "管理阅读计划、生成书籍摘要、做知识点关联、推荐相关书籍、阅读速度分析、读书笔记整理与知识图谱构建。",
+      skills: ["阅读规划", "内容摘要", "知识关联", "书籍推荐", "笔记整理", "知识图谱"]
+    },
+    {
+      key: "coach",
+      className: "ac-coach",
+      avatar: "🎯",
+      name: "雅思教练",
+      role: "IELTS Tutor",
+      desc: "分析听说读写四项薄弱点、错题分类归因、针对性练习推荐、学习路径规划、模考评分、口语写作素材生成。",
+      skills: ["错题分析", "薄弱点定位", "练习推荐", "路径规划", "模考评分", "素材生成"]
+    }
+  ];
+
+  const agentsHtml = agents.map(a => `
+    <div class="agent-card ${a.className}">
+      <div class="agent-head">
+        <div class="agent-ava">${a.avatar}</div>
+        <div>
+          <div class="agent-name">${a.name}</div>
+          <div class="agent-role">${a.role}</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
+        </div>
+      </div>
+      <div class="agent-desc">${a.desc}</div>
+      <div class="agent-skills">
+        ${a.skills.map(s=>`<span class="agent-skill">${s}</span>`).join("")}
+      </div>
+      <div class="agent-actions">
+        <button onclick="CozeAI.chatWithAgent('${a.key}')">💬 对话</button>
+        <button onclick="CozeAI.assignTask('${a.key}')">📋 派任务</button>
+      </div>
+    </div>
+  `).join("");
+
+  $("#screen").innerHTML = `<div class="agents-page">
+    <div class="agents-header">
+      <div class="agents-title-icon">🤖</div>
+      <div>
+        <h2>喵喵编辑部 · AI Agent指挥中心</h2>
+        <p>多Agent协作架构 · 6个专业角色Agent · 主编智能调度 · 对应JD：任务规划/工具调用/记忆/多Agent</p>
+      </div>
+      <div style="flex:1"></div>
+      <span class="date-chip">${icon("cpu",14)} Multi-Agent System</span>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(74,108,63,.08),rgba(124,58,237,.08));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="font-size:20px;">⚡</span>
+        <div style="font-size:15px;font-weight:700;">多Agent协作工作流演示</div>
+        <div style="flex:1"></div>
+        <button onclick="CozeAI.runWorkflowDemo()" style="padding:8px 18px;border-radius:8px;background:linear-gradient(90deg,var(--accent),#7c3aed);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);">▶ 运行演示：周复盘+秋招规划</button>
+      </div>
+      <div class="workflow-demo" id="workflowDemo">
+        <div class="workflow-step">
+          <div class="ws-num n-user">👤</div>
+          <div class="ws-content">
+            <div class="ws-title">用户输入指令</div>
+            <div class="ws-desc">"帮我复盘下这周，顺便规划下秋招准备"</div>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="ws-num n-chief">🐱</div>
+          <div class="ws-content">
+            <div class="ws-title">喵喵主编分析意图，分配任务</div>
+            <div class="ws-desc">识别到"复盘"和"规划"两个意图，并行调用4个专业Agent收集数据</div>
+            <div class="ws-agents">
+              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-3) 15%,transparent);color:var(--module-3)">💰 财经编辑</span>
+              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-2) 15%,transparent);color:var(--module-2)">🏃 生活记者</span>
+              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-1) 15%,transparent);color:var(--module-1)">📋 选题编辑</span>
+              <span class="ws-agent-tag" style="background:rgba(124,58,237,.1);color:#7c3aed">🎯 雅思教练</span>
+            </div>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="ws-num n-agent">⏳</div>
+          <div class="ws-content">
+            <div class="ws-title">各Agent并行执行，返回结果</div>
+            <div class="ws-desc" style="color:var(--text-tertiary)">点击上方「运行演示」查看完整流程 →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-bottom:14px;">👥 Agent 团队成员</div>
+    <div class="agents-grid">${agentsHtml}</div>
+
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:16px;padding:20px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+        🎯 架构设计亮点（面试可讲）
+      </h3>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🧠 主编调度（Orchestrator）</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">不是多个Bot堆砌，而是有中枢调度的Multi-Agent架构。主编负责意图识别、任务拆分、并行调用、结果整合，专业Agent只做自己擅长的事。</div>
+        </div>
+        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔧 工具调用（Function Call）</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">每个Agent都有专属工具集，通过Function Call真实操作工作台数据（创建待办、记录打卡、生成报告），不是只聊天。</div>
+        </div>
+        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">💾 记忆机制（Memory）</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">三层记忆：短期会话记忆、用户偏好记忆、跨模块数据记忆。主编能记住你上周的计划，延续上下文。</div>
+        </div>
+        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔐 RBAC权限控制</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">不同Agent有不同权限：财经编辑只能读/写记账数据，不能删除雅思记录；删除操作需要用户二次确认，保障数据安全。</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
 }
 
 /* ---------- MODULE VIEW ---------- */
@@ -2058,13 +2335,19 @@ function confirmDelete(key,id){ const item=(data[key]||[]).find(i=>i.id==id); if
 /* ---------- router / sidebar ---------- */
 function dateStr(){ const n=new Date(); const wd="日一二三四五六"[n.getDay()]; return `${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 周${wd}`; }
 function go(v){ view=v; searchQ=""; renderNavActive(); render(); window.scrollTo({top:0}); }
-function render(){ if(view==="home") renderHome(); else if(view==="insight") renderInsight(); else renderModule(view); }
+function render(){
+  if(view==="home") renderHome();
+  else if(view==="insight") renderInsight();
+  else if(view==="agents") renderAgents();
+  else renderModule(view);
+}
 
 function buildNav(){
   $("#brandName").textContent=CONFIG.owner; $("#brandSlogan").textContent=CONFIG.slogan;
   const normalModules = CONFIG.modules.filter(m => m.type !== 'ielts');
   const ieltsModules = CONFIG.modules.filter(m => m.type === 'ielts');
   const html=[`<div class="navi" data-go="home">${icon("home",19)}首页</div>`,
+    `<div class="navi" data-go="agents" style="background:linear-gradient(90deg,rgba(74,108,63,.12),rgba(124,58,237,.1));color:var(--accent);font-weight:700;">${icon("sparkles",19)}🤖 AI Agent中心</div>`,
     `<div class="nav-sep">猫生日常</div>`]
     .concat(normalModules.map(m=>`<div class="navi" data-go="${m.key}">${icon(m.icon,19)}${m.name}</div>`))
     .concat([`<div class="nav-sep">IELTS 备考</div>`])
@@ -2133,6 +2416,62 @@ const CozeAI = {
       <div class="ai-loading" id="aiLoading"><span>🤔 AI正在思考</span><div class="dots"><i></i><i></i><i></i></div></div>
       <div class="ai-result" id="aiResult"></div>
     </div>`;
+  },
+
+  // 方案3：RAG个人数据洞察瓷砖HTML
+  ragTileHTML(){
+    // 计算简单数据指标
+    const todos = data.todo||[];
+    const todoDone = todos.filter(x=>x.done).length;
+    const todoRate = todos.length?Math.round(todoDone/todos.length*100):0;
+    const checkins = data.checkin||[];
+    const todayStr = today();
+    const checkinDone = checkins.filter(x=>x.log&&x.log[todayStr]).length;
+    const notes = data.note||[];
+    const entries = Object.keys(data).reduce((a,k)=>a+(data[k]||[]).length,0);
+
+    return `<div class="tile rag-insight">
+      <div class="ti">
+        <span class="tic" style="background:rgba(124,58,237,.15);color:#7c3aed">🧠</span>
+        <div class="tt"><b>RAG 个人数据洞察</b></div>
+        <button class="ti-more" id="ragConfigBtn" title="知识库配置">⚙️</button>
+      </div>
+      <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:6px">个人数据资产化 · AI基于你的历史数据给出洞察</p>
+      <div class="rag-metrics">
+        <div class="rag-metric"><div class="rm-val">${todoRate}%</div><div class="rm-label">待办完成率</div></div>
+        <div class="rag-metric"><div class="rm-val">${checkinDone}</div><div class="rm-label">今日打卡</div></div>
+        <div class="rag-metric"><div class="rm-val">${entries}</div><div class="rm-label">总数据条目</div></div>
+      </div>
+      <div class="rag-actions">
+        <button id="ragExportBtn">${icon('download',13)}&nbsp;导出数据</button>
+        <button id="ragAskBtn">${icon('message-circle',13)}&nbsp;AI 问数据</button>
+      </div>
+      <div class="rag-qa" id="ragQa">
+        <div class="rag-qa-history" id="ragHistory">
+          <div class="rag-qa-a">喵～我可以分析你的待办完成率、打卡习惯、消费趋势、阅读进度、雅思错题等！试着问我：<br>• 我最近消费有什么问题？<br>• 我哪类待办总是拖延？<br>• 雅思阅读应该重点练什么？</div>
+        </div>
+        <div class="rag-input-row">
+          <input type="text" id="ragQInput" placeholder="问关于你的数据问题..." />
+          <button id="ragQSend">${icon('send',14)}</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  // RAG Mock问答（演示用）
+  mockRAGAnswer(question){
+    const answers = {
+      "消费": "喵～从你的记账数据看，最近餐饮支出占比最高（约55%），其中奶茶/外卖占了餐饮的32%哦！建议：① 工作日带饭或吃食堂，每周外卖不超过2次；② 设置奶茶预算每周2杯；③ 冲动消费前先等24小时～ 🐱",
+      "待办": "喵～分析了你的待办数据：P0任务完成率72%还不错，但P2任务拖延比较严重，平均延期2.3天完成。建议：① 用2分钟法则——2分钟能做完的事立刻做；② 每天早上先做3件最重要的事；③ 周末清理一次待办清单，删掉不重要的～ 📋",
+      "打卡": "喵～你的早起打卡坚持得最好（连续12天）！但运动打卡经常中断，平均每周只完成3.2次。建议：① 把运动和已有习惯绑定（比如吃完晚饭立刻去散步）；② 从最小目标开始（每天10分钟也行）；③ 找个搭子互相监督～ ✅",
+      "雅思": "喵～你的雅思听力正确率稳定在75%，但阅读Matching题错得最多（错误率42%）！建议：① 重点练段落信息匹配题；② 先读题再看文章，划关键词；③ 控制每篇阅读在20分钟内；写作方面，Task2逻辑连贯需要加强～ 📚",
+      "阅读": "喵～你最近读完了2本书，平均阅读速度是每天15页，进度有点慢哦！建议：① 固定每天睡前读20分钟；② 用番茄钟法：专注读25分钟休息5分钟；③ 读完写3句话总结，印象更深～ 📖",
+      "default": "喵～收到你的问题啦！基于你的个人数据，我建议你：① 保持当前待办完成率不错的势头；② 运动和阅读可以稍微加强频率；③ 记账分类可以更细致一些。需要我针对某个模块做更深入分析吗？🐱"
+    };
+    for(const key of Object.keys(answers)){
+      if(question.includes(key)) return answers[key];
+    }
+    return answers.default;
   },
 
   // Mock AI规划（演示用，真实场景调用Coze API）
@@ -2538,6 +2877,156 @@ const CozeAI = {
     });
 
     if(settingsBtn) settingsBtn.onclick = () => this.openConfig();
+  },
+
+  // 绑定RAG数据洞察事件
+  wireRAGEvents(){
+    const askBtn = document.getElementById('ragAskBtn');
+    const qaBox = document.getElementById('ragQa');
+    const exportBtn = document.getElementById('ragExportBtn');
+    const sendBtn = document.getElementById('ragQSend');
+    const qInput = document.getElementById('ragQInput');
+    const history = document.getElementById('ragHistory');
+
+    if(askBtn && qaBox){
+      askBtn.onclick = () => {
+        qaBox.classList.toggle('show');
+        if(qaBox.classList.contains('show') && qInput) qInput.focus();
+      };
+    }
+
+    if(exportBtn) exportBtn.onclick = () => exportData();
+
+    const askQuestion = () => {
+      if(!qInput || !history) return;
+      const q = qInput.value.trim();
+      if(!q) return;
+      // 添加问题
+      const qEl = document.createElement('div');
+      qEl.className = 'rag-qa-q';
+      qEl.textContent = '👤 ' + q;
+      history.appendChild(qEl);
+      qInput.value = '';
+      history.scrollTop = history.scrollHeight;
+      // 模拟AI思考后回答
+      setTimeout(() => {
+        const aEl = document.createElement('div');
+        aEl.className = 'rag-qa-a';
+        aEl.textContent = '🤖 ' + this.mockRAGAnswer(q);
+        history.appendChild(aEl);
+        history.scrollTop = history.scrollHeight;
+      }, 800);
+    };
+    if(sendBtn) sendBtn.onclick = askQuestion;
+    if(qInput) qInput.onkeydown = e => { if(e.key === 'Enter') askQuestion(); };
+  },
+
+  // 和单个Agent对话（演示）
+  chatWithAgent(agentKey){
+    const names = {
+      chief: "喵喵主编",
+      editor: "选题编辑",
+      reporter: "生活记者",
+      finance: "财经编辑",
+      reviewer: "书评人",
+      coach: "雅思教练"
+    };
+    showToast(`已打开和「${names[agentKey]||'Agent'}」的对话（演示）`);
+    // 打开悬浮聊天面板
+    const chat = document.getElementById('cozeChat');
+    const fab = document.getElementById('cozeFab');
+    if(chat && fab){
+      chat.classList.add('open');
+      fab.style.display = 'none';
+      const msgs = document.getElementById('cozeMsgs');
+      if(msgs){
+        msgs.innerHTML += `<div class="c-msg c-b"><div class="c-bub">喵～我是${names[agentKey]}，有什么可以帮你的吗？🐱</div></div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+    }
+  },
+
+  // 给Agent派任务（演示）
+  assignTask(agentKey){
+    const tasks = {
+      chief: "让主编帮你协调周复盘+下周计划",
+      editor: "让选题编辑帮你拆解待办任务",
+      reporter: "让生活记者分析你的运动打卡数据",
+      finance: "让财经编辑做本月消费分析",
+      reviewer: "让书评人帮你制定阅读计划",
+      coach: "让雅思教练分析你的错题薄弱点"
+    };
+    showToast(tasks[agentKey] || '任务已派发（演示）', 'warn');
+  },
+
+  // 运行多Agent工作流演示
+  async runWorkflowDemo(){
+    const demo = document.getElementById('workflowDemo');
+    if(!demo) return;
+
+    const steps = [
+      {
+        num: "💰",
+        cls: "n-agent",
+        title: "财经编辑返回：本周消费分析",
+        desc: "本周总支出¥1,247，餐饮占比58%，其中外卖¥342为非必要支出；娱乐支出¥180略超预算；总体结余¥753，财务健康度72分。",
+        color: "var(--module-3)"
+      },
+      {
+        num: "🏃",
+        cls: "n-agent",
+        title: "生活记者返回：习惯与运动数据",
+        desc: "本周早起打卡完成5/7天（周日赖床了）；运动只完成2次（目标3次）；番茄钟专注总时长12.5小时，比上周增加2小时，专注效率提升！",
+        color: "var(--module-2)"
+      },
+      {
+        num: "📋",
+        cls: "n-agent",
+        title: "选题编辑返回：秋招准备任务清单",
+        desc: "已为你生成6条P0/P1任务：修改简历（突出Coze项目）、刷AI产品Case题、整理RAG/Agent知识体系、准备3个STAR故事、投递5家目标公司、约1次模拟面试。",
+        color: "var(--module-1)"
+      },
+      {
+        num: "🎯",
+        cls: "n-agent",
+        title: "雅思教练返回：备考进度",
+        desc: "剑18 Test1阅读正确率72%，Matching题仍需加强；听力Section 3正确率65%，同义替换识别要练；写作Task2逻辑框架没问题，词汇多样性可以提升。",
+        color: "#7c3aed"
+      },
+      {
+        num: "🐱",
+        cls: "n-chief",
+        title: "喵喵主编整合：生成最终周报+计划",
+        desc: "✅ 周报已生成！✅ 秋招任务已一键导入待办！✅ 雅思薄弱点专项练习已安排！✅ 给你加了一个奶茶预算提醒～ 继续加油喵！🐱",
+        color: ""
+      }
+    ];
+
+    // 移除之前的结果步骤（保留前2个）
+    const existing = demo.querySelectorAll('.workflow-step');
+    for(let i=2; i<existing.length; i++) existing[i].remove();
+
+    for(let i=0; i<steps.length; i++){
+      await new Promise(r => setTimeout(r, 1000));
+      const s = steps[i];
+      const step = document.createElement('div');
+      step.className = 'workflow-step';
+      step.style.opacity = '0';
+      step.style.transform = 'translateX(-10px)';
+      step.style.transition = 'all .3s';
+      step.innerHTML = `
+        <div class="ws-num ${s.cls}" ${s.color?`style="background:${s.color};color:#fff"`:''}>${s.num}</div>
+        <div class="ws-content">
+          <div class="ws-title">${s.title}</div>
+          <div class="ws-desc">${s.desc}</div>
+        </div>`;
+      demo.appendChild(step);
+      requestAnimationFrame(() => {
+        step.style.opacity = '1';
+        step.style.transform = 'translateX(0)';
+      });
+    }
+    showToast('多Agent协作演示完成 ✓');
   }
 };
 
