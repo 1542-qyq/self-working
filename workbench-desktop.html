@@ -4161,7 +4161,7 @@ const NotionSync = {
     if(!status) return;
 
     if(!this.config?.apiKey){
-      status.textContent = '未配置 · 点击齿轮图标';
+      status.textContent = '未配置';
       status.className = 'nb-status';
       if(modules) modules.style.display = 'none';
       if(actions) actions.style.display = 'none';
