@@ -934,6 +934,18 @@
       </div>
       <div class="nb-last" id="nbLast"></div>
     </div>
+    <div class="notion-bar" id="aiConfigBar">
+      <div class="nb-header">
+        <span class="nb-icon" id="aiIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/><polyline points="16 3 21 3 21 8"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="14" y1="17" x2="21" y2="17"/><line x1="14" y1="13" x2="21" y2="13"/></svg>
+        </span>
+        <span class="nb-title">AI 配置</span>
+        <button class="nb-cfg" id="btn-ai-cfg" title="AI 配置">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1"/></svg>
+        </button>
+      </div>
+      <div class="nb-status" id="aiStatus">未配置</div>
+    </div>
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
   <!-- main -->
@@ -2964,12 +2976,29 @@ ${dataSummary}
       localStorage.setItem('cat-news-ai-model', this.config.model);
       
       close();
+      this.updateSidebarStatus();
       if(this.config.provider === 'mock'){
         showToast('已切换到演示模式 ✓');
       } else {
         showToast(`AI配置已保存，使用${this.providers[this.config.provider].name} ✓`);
       }
     };
+  },
+
+  // 更新侧边栏AI配置状态
+  updateSidebarStatus(){
+    const aiStatusEl = document.getElementById('aiStatus');
+    if(!aiStatusEl) return;
+    
+    const hasKey = this.config.apiKey && this.config.apiKey.length > 5;
+    if(hasKey){
+      const provider = this.providers[this.config.provider];
+      aiStatusEl.textContent = provider ? provider.name : '已配置';
+      aiStatusEl.className = 'nb-status connected';
+    } else {
+      aiStatusEl.textContent = '未配置';
+      aiStatusEl.className = 'nb-status';
+    }
   },
 
   // 初始化
@@ -2984,10 +3013,15 @@ ${dataSummary}
     const cfgBtn = document.getElementById('miaoCfg');
     const sendBtn = document.getElementById('miaoSend');
     const input = document.getElementById('miaoInput');
+    const aiCfgBtn = document.getElementById('btn-ai-cfg');
 
     if(fab) fab.onclick = () => chat.classList.toggle('open');
     if(closeBtn) closeBtn.onclick = () => chat.classList.remove('open');
     if(cfgBtn) cfgBtn.onclick = () => this.openConfig();
+    if(aiCfgBtn) aiCfgBtn.onclick = () => this.openConfig();
+    
+    // 更新侧边栏状态
+    this.updateSidebarStatus();
 
     const sendMsg = () => {
       const text = input.value.trim();
