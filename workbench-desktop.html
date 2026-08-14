@@ -4340,23 +4340,11 @@ const NotionSync = {
       const pages = await this.queryDatabase(mapping.databaseId);
       const items = pages.map(p => mapToWorkbenchItem(p, this.activeModule, mapping.fields));
 
-      const moduleData = data[this.activeModule] || [];
-      const notExisting = items.filter(item => !moduleData.find(x => x._notionId === item._notionId));
-
-      let imported = 0;
-      if(this.config.pullMode === 'merge'){
-        notExisting.forEach(item => {
-          item.id = item.id || Date.now() + Math.floor(Math.random() * 1000);
-          moduleData.push(item);
-          imported++;
-        });
-      } else {
-        items.forEach(item => {
-          if(!item.id) item.id = Date.now() + Math.floor(Math.random() * 1000);
-        });
-        data[this.activeModule] = items;
-        imported = items.length;
-      }
+      items.forEach(item => {
+        if(!item.id) item.id = Date.now() + Math.floor(Math.random() * 1000);
+      });
+      data[this.activeModule] = items;
+      const imported = items.length;
 
       store.save();
       render();
@@ -4453,13 +4441,6 @@ const NotionSync = {
             placeholder="/notion 或 http://localhost:8081/notion"
             style="flex:1"/>
           <span class="nc-help">本地使用（python3 notion-proxy.py）填 /notion；GitHub Pages 部署需填 Cloudflare Worker 完整 URL（如 https://your-worker.workers.dev/notion）</span>
-        </div>
-        <div class="nc-row">
-          <label>拉取模式</label>
-          <select class="nc-input" id="nc-pull-mode" style="flex:1">
-            <option value="merge" ${this.config?.pullMode === 'merge' ? 'selected' : ''}>合并（仅导入新条目）</option>
-            <option value="overwrite" ${(!this.config?.pullMode || this.config?.pullMode === 'overwrite') ? 'selected' : ''}>覆盖（用 Notion 数据完全替换）</option>
-          </select>
         </div>
         <div class="nc-section-title">模块映射</div>
         ${modules}
@@ -4643,7 +4624,6 @@ const NotionSync = {
     overlay.querySelector('#nc-save').onclick = () => {
       const apiKey = overlay.querySelector('#nc-api-key').value.trim();
       const proxyUrl = overlay.querySelector('#nc-proxy-url').value.trim();
-      const pullMode = overlay.querySelector('#nc-pull-mode').value;
 
       if(!apiKey){ showToast('请填写 Notion API Key', 'warn'); return; }
 
@@ -4665,7 +4645,7 @@ const NotionSync = {
         }
       });
 
-      this.config = { apiKey, proxyUrl: proxyUrl || '', pullMode, mappings };
+      this.config = { apiKey, proxyUrl: proxyUrl || '', mappings };
       localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
       this.updateUI();
       close();
