@@ -5482,10 +5482,11 @@ function openEditor(key,item){
 
   // 生成checkin类型字段的函数
   function buildCheckinFields(){
+    const currentType = d.type || "habit";
     const typeSeg=`<div class="seg" id="f-ctype">
-      <div class="opt ${d.type!=="word"?'on':''}" data-v="habit">习惯打卡</div>
-      <div class="opt ${d.type==="word"?'on':''}" data-v="word">单词打卡</div></div>`;
-    if(d.type==="word"){
+      <div class="opt ${currentType!=="word"?'on':''}" data-v="habit">习惯打卡</div>
+      <div class="opt ${currentType==="word"?'on':''}" data-v="word">单词打卡</div></div>`;
+    if(currentType==="word"){
       return `<div class="field"><label>类型</label>${typeSeg}</div>
         <div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="背单词"/></div>
         <div class="field"><label>每日目标(词)</label><input id="f-target" type="number" min="1" value="${d.target||50}"/></div>
@@ -5494,6 +5495,30 @@ function openEditor(key,item){
       return `<div class="field"><label>类型</label>${typeSeg}</div>
         <div class="field"><label>打卡项</label><input id="f-title" value="${attr(d.title)}" placeholder="例如：喝够 8 杯水"/></div>
         <p class="sub" style="margin:0">保存后可在卡片点击左侧方块打卡；连续天数自动统计，每天从零开始。</p>`;
+    }
+  }
+
+  // 动态切换checkin表单字段的函数
+  function switchCheckinFields(newType){
+    const titleInput = overlay.querySelector("#f-title");
+    const targetInput = overlay.querySelector("#f-target");
+    const currentTitle = titleInput ? titleInput.value : "";
+    const currentTarget = targetInput ? targetInput.value : (d.target || 50);
+    d.type = newType;
+    d.title = currentTitle;
+    d.target = currentTarget;
+
+    const fieldsContainer = overlay.querySelector("#checkin-fields");
+    if(fieldsContainer){
+      fieldsContainer.innerHTML = buildCheckinFields();
+      // 重新绑定seg事件
+      fieldsContainer.querySelectorAll(".seg").forEach(seg=>seg.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
+        seg.querySelectorAll(".opt").forEach(x=>x.classList.remove("on"));
+        o.classList.add("on");
+        if(seg.id==="f-ctype"){
+          switchCheckinFields(o.dataset.v);
+        }
+      }));
     }
   }
 
@@ -5508,7 +5533,7 @@ function openEditor(key,item){
         <div class="field"><label>优先级</label><div class="seg" id="f-prio">${(m.priorities||[]).map(p=>`<div class="opt ${p.key===d.priority?'on':''}" data-v="${p.key}">${p.label}</div>`).join("")}</div></div>
         <div class="field"><label>备注</label><textarea id="f-note" placeholder="补充说明">${esc(d.note||'')}</textarea></div>`;
     } else if(m.type==="checkin"){
-      f=buildCheckinFields();
+      f=`<div id="checkin-fields">${buildCheckinFields()}</div>`;
     } else if(m.type==="progress"){
       f=`<div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="书名 / 目标"/></div>
         <div class="frow"><div class="field"><label>当前</label><input id="f-cur" type="number" value="${d.current??0}"/></div>
@@ -5629,34 +5654,15 @@ function openEditor(key,item){
   overlay.onclick=e=>{ if(e.target===overlay) close(); };
   overlay.querySelector("#m-cancel").onclick=close;
 
-  // 绑定seg点击事件，处理打卡类型切换的特殊逻辑
-  function bindSegEvents(){
-    overlay.querySelectorAll(".seg").forEach(seg=>seg.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
-      seg.querySelectorAll(".opt").forEach(x=>x.classList.remove("on"));
-      o.classList.add("on");
-      // 如果是打卡类型切换，保存当前输入并重新打开编辑器
-      if(seg.id==="f-ctype"&&m.type==="checkin"){
-        const newType=o.dataset.v;
-        // 保存当前已输入的内容
-        const titleInput=overlay.querySelector("#f-title");
-        if(titleInput) d.title=(titleInput.value||"").trim();
-        const targetInput=overlay.querySelector("#f-target");
-        if(targetInput) d.target=Math.max(1,+targetInput.value||50);
-        // 更新类型
-        if(newType==="word"){
-          d.type="word";
-          if(!d.target) d.target=50;
-          if(!d.title) d.title="背单词";
-        } else {
-          delete d.type;
-        }
-        // 关闭当前弹窗并重新打开
-        close();
-        openEditor(key,d);
-      }
-    }));
-  }
-  bindSegEvents();
+  // 绑定seg点击事件
+  overlay.querySelectorAll(".seg").forEach(seg=>seg.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
+    seg.querySelectorAll(".opt").forEach(x=>x.classList.remove("on"));
+    o.classList.add("on");
+    // checkin类型切换时动态切换表单
+    if(seg.id==="f-ctype"){
+      switchCheckinFields(o.dataset.v);
+    }
+  }));
   if(editing) overlay.querySelector("#m-del").onclick=()=>{ close(); confirmDelete(key,d.id); };
   overlay.querySelector("#m-save").onclick=()=>{
     const val=id=>{ const el=overlay.querySelector(id); return el?el.value:undefined; };
