@@ -1702,70 +1702,8 @@ function renderAgents(){
       <span class="date-chip">${icon("cpu",14)} Multi-Agent System</span>
     </div>
 
-    <div style="background:linear-gradient(135deg,rgba(74,108,63,.08),rgba(124,58,237,.08));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:24px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span style="font-size:20px;">⚡</span>
-        <div style="font-size:15px;font-weight:700;">多Agent协作工作流演示</div>
-        <div style="flex:1"></div>
-        <button onclick="MiaoAI.runWorkflowDemo()" style="padding:8px 18px;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--accent));color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);">▶ 运行演示：周复盘+秋招规划</button>
-      </div>
-      <div class="workflow-demo" id="workflowDemo">
-        <div class="workflow-step">
-          <div class="ws-num n-user">👤</div>
-          <div class="ws-content">
-            <div class="ws-title">用户输入指令</div>
-            <div class="ws-desc">"帮我复盘下这周，顺便规划下秋招准备"</div>
-          </div>
-        </div>
-        <div class="workflow-step">
-          <div class="ws-num n-chief">🐱</div>
-          <div class="ws-content">
-            <div class="ws-title">喵喵主编分析意图，分配任务</div>
-            <div class="ws-desc">识别到"复盘"和"规划"两个意图，并行调用4个专业Agent收集数据</div>
-            <div class="ws-agents">
-              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-3) 15%,transparent);color:var(--module-3)">💰 财经编辑</span>
-              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-2) 15%,transparent);color:var(--module-2)">🏃 生活记者</span>
-              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-1) 15%,transparent);color:var(--module-1)">📋 选题编辑</span>
-              <span class="ws-agent-tag" style="background:var(--accent-muted);color:var(--accent)">🎯 雅思教练</span>
-            </div>
-          </div>
-        </div>
-        <div class="workflow-step">
-          <div class="ws-num n-agent">⏳</div>
-          <div class="ws-content">
-            <div class="ws-title">各Agent并行执行，返回结果</div>
-            <div class="ws-desc" style="color:var(--text-tertiary)">点击上方「运行演示」查看完整流程 →</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec-title" style="margin-bottom:14px;">👥 Agent 团队成员</div>
+    <div class="sec-title" style="margin-bottom:14px;">Agent 团队成员</div>
     <div class="agents-grid">${agentsHtml}</div>
-
-    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        🎯 架构设计亮点（面试可讲）
-      </h3>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🧠 主编调度（Orchestrator）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">不是多个Bot堆砌，而是有中枢调度的Multi-Agent架构。主编负责意图识别、任务拆分、并行调用、结果整合，专业Agent只做自己擅长的事。</div>
-        </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔧 工具调用（Function Call）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">每个Agent都有专属工具集，通过Function Call真实操作工作台数据（创建待办、记录打卡、生成报告），不是只聊天。</div>
-        </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">💾 记忆机制（Memory）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">三层记忆：短期会话记忆、用户偏好记忆、跨模块数据记忆。主编能记住你上周的计划，延续上下文。</div>
-        </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔐 RBAC权限控制</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">不同Agent有不同权限：财经编辑只能读/写记账数据，不能删除雅思记录；删除操作需要用户二次确认，保障数据安全。</div>
-        </div>
-      </div>
-    </div>
   </div>`;
 }
 

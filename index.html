@@ -2434,6 +2434,682 @@
   line-height: 18px;
 }
 
+</style><style>.trae-browser-inspect-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:999997;pointer-events:auto;background:rgba(0,0,0,0)}.trae-browser-inspect-highlight-box{position:absolute;top:0;left:0;z-index:999998;display:none}.trae-browser-inspect-highlight-tag{position:absolute;left:0px;top:0px;height:18px;padding:0 6px;box-sizing:border-box;border-radius:4px;background-color:var(--vscode-icube-colorSuccessHover, "#2FB287");color:var(--vscode-icube-colorSnow, "#fff");font-size:12px;font-weight:400;display:none;align-items:center;z-index:999999}.trae-browser-inspect-highlight-box-show{display:flex}.trae-browser-inspect-select-button.trae-browser-inspect-highlight-box-show{display:flex !important}.trae-browser-inspect-select-button{position:absolute;top:0;left:0;background-color:var(--vscode-icube--bg-bg-base-secondary, "#222427");color:var(--vscode-icube--text-text-default-active, "#F5F9FE");font-size:11px;font-weight:500;border:1px solid var(--vscode-icube--border-neutral-l1, "#E0E2F217");border-radius:6px;padding:0 8px;height:32px;display:none;align-items:center;cursor:pointer;z-index:999999;gap:4px}.trae-browser-inspect-select-button svg,.trae-browser-inspect-select-button span{z-index:1}.trae-browser-inspect-select-highlight-box{background:rgba(0,0,0,0) !important}.trae-browser-inspect-select-highlight-box .trae-browser-inspect-highlight-tag{background-color:var(--vscode-icube--status-success-active, "#1E8B56")}.trae-browser-inspect-comment-card-container{position:fixed;top:0;left:0;z-index:9999999;pointer-events:auto}.trae-browser-inspect-comment-card-container .trae-browser-inspect-comment-card{display:flex;padding-top:0px !important;align-items:center;z-index:9999999 !important;background-color:var(--vscode-icube--bg-bg-menu)}*[contenteditable]{outline:none}.trae-browser-inspect-click-effect{position:fixed;width:40px;height:40px;margin-left:-20px;margin-top:-20px;border-radius:50%;background-color:var(--vscode-icube-colorSuccessHover, #2FB287);pointer-events:none;animation:trae-browser-inspect-ripple 500ms ease-out forwards;z-index:999999}@keyframes trae-browser-inspect-ripple{0%{transform:scale(0.3);opacity:.8}100%{transform:scale(2);opacity:0}}.trae-browser-inspect-ref-box{position:absolute;border:2px solid var(--vscode-icube-colorSuccessHover, "#2FB287");pointer-events:none;z-index:999998;animation:trae-browser-inspect-fadeInOut 2s ease-in-out forwards}.trae-browser-inspect-ref-label{position:absolute;top:-14px;left:0;height:14px;padding:0 4px;box-sizing:border-box;border-radius:2px;background-color:var(--vscode-icube-colorSuccessHover, "#2FB287");color:var(--vscode-icube-colorSnow, "#fff");font-size:9px;font-weight:500;display:flex;align-items:center;white-space:nowrap;z-index:999999}@keyframes trae-browser-inspect-fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}.trae-browser-inspect-input-highlight{position:absolute;border:2px solid var(--vscode-icube-colorSuccessHover, "#2FB287");border-radius:4px;pointer-events:none;z-index:999998;box-shadow:0 0 8px var(--vscode-icube-colorSuccessHover, "#2FB287");animation:trae-browser-inspect-input-pulse 600ms ease-out forwards}@keyframes trae-browser-inspect-input-pulse{0%{opacity:0;box-shadow:0 0 0 var(--vscode-icube-colorSuccessHover, "#2FB287")}30%{opacity:1;box-shadow:0 0 12px var(--vscode-icube-colorSuccessHover, "#2FB287")}100%{opacity:0;box-shadow:0 0 0 var(--vscode-icube-colorSuccessHover, "#2FB287")}}.trae-browser-inspect-virtual-cursor{position:fixed;width:20px;height:20px;pointer-events:none;z-index:9999999;opacity:0;transition:opacity .2s ease}.trae-browser-inspect-virtual-cursor.trae-browser-inspect-cursor-visible{opacity:1}.trae-browser-inspect-virtual-cursor.trae-browser-inspect-cursor-idle{animation:trae-browser-inspect-cursor-breathe 2s ease-in-out infinite}.trae-browser-inspect-virtual-cursor svg{width:20px;height:20px;filter:drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))}@keyframes trae-browser-inspect-cursor-breathe{0%,100%{opacity:.7}50%{opacity:1}}.trae-browser-inspect-scroll-indicator{position:fixed;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;background-color:rgba(0,0,0,.7);color:#fff;font-size:13px;font-weight:500;pointer-events:none;z-index:999999;animation:trae-browser-inspect-indicator-fade 800ms ease-out forwards;backdrop-filter:blur(4px)}.trae-browser-inspect-scroll-indicator svg{width:16px;height:16px;fill:#fff}.trae-browser-inspect-scroll-indicator.trae-scroll-up{top:12px;left:50%;transform:translateX(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-down{bottom:12px;left:50%;transform:translateX(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-left{left:12px;top:50%;transform:translateY(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-right{right:12px;top:50%;transform:translateY(-50%)}@keyframes trae-browser-inspect-indicator-fade{0%{opacity:0;transform:translateX(-50%) scale(0.9)}15%{opacity:1;transform:translateX(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}.trae-browser-inspect-scroll-indicator.trae-scroll-left,.trae-browser-inspect-scroll-indicator.trae-scroll-right{animation-name:trae-browser-inspect-indicator-fade-y}@keyframes trae-browser-inspect-indicator-fade-y{0%{opacity:0;transform:translateY(-50%) scale(0.9)}15%{opacity:1;transform:translateY(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}.trae-browser-inspect-key-badge{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:8px;background-color:rgba(0,0,0,.8);color:#fff;font-size:18px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;pointer-events:none;z-index:999999;animation:trae-browser-inspect-key-pop 500ms ease-out forwards;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 12px rgba(0,0,0,.3);letter-spacing:1px}@keyframes trae-browser-inspect-key-pop{0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(0.9)}20%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}.trae-browser-inspect-step-badge{position:fixed;top:12px;left:12px;padding:6px 12px;border-radius:6px;background-color:var(--vscode-icube-colorSuccessHover, #2FB287);color:#fff;font-size:12px;font-weight:600;pointer-events:none;z-index:999999;animation:trae-browser-inspect-step-slide 600ms ease-out forwards;box-shadow:0 2px 8px rgba(47,178,135,.3);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.trae-browser-inspect-step-badge.trae-step-old{opacity:.4;transform:translateY(0)}@keyframes trae-browser-inspect-step-slide{0%{opacity:0;transform:translateX(-20px)}20%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(0)}}.trae-browser-inspect-drag-trail{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999998}.trae-browser-inspect-drag-trail svg{width:100%;height:100%}.trae-browser-inspect-drag-trail .trae-drag-path{fill:none;stroke:var(--vscode-icube-colorSuccessHover, #2FB287);stroke-width:2;stroke-dasharray:8 4;opacity:.6;animation:trae-browser-inspect-dash 600ms linear forwards}.trae-browser-inspect-drag-trail .trae-drag-dot{fill:var(--vscode-icube-colorSuccessHover, #2FB287);filter:drop-shadow(0 0 4px rgba(47, 178, 135, 0.6))}.trae-browser-inspect-drag-trail .trae-drag-endpoint{fill:none;stroke:var(--vscode-icube-colorSuccessHover, #2FB287);stroke-width:2;opacity:.5}@keyframes trae-browser-inspect-dash{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}.trae-browser-inspect-drag-trail.trae-drag-fade{animation:trae-browser-inspect-trail-fade 400ms ease-out forwards}@keyframes trae-browser-inspect-trail-fade{0%{opacity:1}100%{opacity:0}}</style><script type="module">(async () => {
+  try {
+    const client = await import('/@vite/client');
+    const hmr = client.createHotContext('hmr-handler/fake.js');
+    hmr.on('vite:afterUpdate', window['__ICUBE_WEBVIEW_HMR_CALLBACK_1786733266899']);
+  } catch {}
+})();</script><style>.buttonsCard-bTXa5j {
+  padding: var(--spacer-4);
+  background: none;
+  align-items: center;
+  gap: 0;
+  display: inline-flex;
+}
+
+.actionButton-opZL8g {
+  align-items: center;
+  gap: var(--spacer-4);
+  padding: var(--spacer-4) var(--spacer-8);
+  border-radius: var(--radius-4);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  background: none;
+  border: none;
+  display: inline-flex;
+}
+
+.actionButton-opZL8g:hover {
+  background: var(--bg-bg-overlay-l2);
+}
+
+.actionButton-opZL8g:active {
+  background: var(--bg-bg-overlay-l3);
+}
+
+.actionButton-opZL8g:focus-visible {
+  outline: 2px solid var(--status-primary-default);
+  outline-offset: 1px;
+}
+
+.icon-ObJEMt {
+  width: 16px;
+  height: 16px;
+  color: var(--icon-icon-default);
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.title-GptGAg {
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.shortcut-nbwTG4 {
+  color: var(--icon-icon-secondary);
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  display: flex;
+}
+
+.shortcutKey-EE6xrE {
+  font-family: var(--font-family-default);
+  color: var(--icon-icon-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 12px;
+}
+
+.divider-cFGVKQ {
+  box-sizing: content-box;
+  background-clip: content-box;
+  background-color: var(--border-border-neutral-l2);
+  flex-shrink: 0;
+  width: 1px;
+  height: 12px;
+  padding: 0 6px;
+}
+
+</style><style>.commentEditorCard-Un4Xaa {
+  width: 320px;
+  padding: var(--spacing-sm);
+  background: none;
+  flex-direction: column;
+  display: flex;
+}
+
+.textContainer-ZISwbW {
+  padding: var(--spacing-sm);
+  background: var(--bg-bg-overlay-l1);
+  border: 1px solid var(--border-border-neutral-l3);
+  border-radius: var(--radius-sm);
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-right: 0;
+  display: flex;
+}
+
+.textarea-ggj4j6 {
+  padding: 0 var(--spacing-sm) 0 2px;
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  resize: none;
+  scrollbar-width: thin;
+  scrollbar-color: #56637726 transparent;
+  background: none;
+  border: none;
+  outline: none;
+  flex: 1;
+  max-height: 140px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  overflow-y: auto;
+}
+
+.textarea-ggj4j6::-webkit-scrollbar {
+  width: 6px;
+}
+
+.textarea-ggj4j6::-webkit-scrollbar-track {
+  background: none;
+}
+
+.textarea-ggj4j6::-webkit-scrollbar-thumb {
+  background: #56637726;
+  border-radius: 3px;
+}
+
+.textarea-ggj4j6::placeholder {
+  color: var(--text-text-tertiary);
+}
+
+.actionBar-u_t8vc {
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  max-height: 0;
+  transition: max-height .2s ease-out, opacity .2s ease-out, margin-top .2s ease-out;
+  display: flex;
+  overflow: hidden;
+}
+
+.actionBarVisible-PxXsje {
+  opacity: 1;
+  max-height: 32px;
+  margin-top: var(--spacing-sm);
+}
+
+.actionBarNoExpandAnimation-FCra2J {
+  transition: opacity .2s ease-out;
+}
+
+.actionBarNoExpandAnimation-FCra2J.actionBarVisible-PxXsje {
+  max-height: 32px;
+  margin-top: var(--spacing-sm);
+}
+
+.cancelButton-Lu0me9 {
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  background: var(--bg-bg-overlay-l2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border: none;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.cancelButton-Lu0me9:hover, .cancelButton-Lu0me9:active {
+  background: var(--bg-bg-overlay-l3);
+}
+
+.cancelButton-Lu0me9:focus-visible {
+  outline: 2px solid var(--status-primary-default);
+  outline-offset: 1px;
+}
+
+.cancelText-j1RS1q {
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  white-space: nowrap;
+  padding: 0 var(--spacing-xs);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.submitButton-BqyEd7 {
+  height: 24px;
+  padding: 0 var(--spacing-sm);
+  background: var(--bg-bg-invert);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border: none;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.submitButton-BqyEd7:hover:not(:disabled) {
+  background: var(--bg-bg-invert-hover);
+}
+
+.submitButton-BqyEd7:active:not(:disabled) {
+  background: var(--bg-bg-invert-active);
+}
+
+.submitButton-BqyEd7:disabled {
+  background: var(--bg-bg-invert-disabled);
+  color: var(--text-text-disabled);
+  cursor: not-allowed;
+}
+
+.submitButton-BqyEd7:focus-visible {
+  outline: 2px solid var(--status-primary-default);
+  outline-offset: 1px;
+}
+
+.submitText-N58QRq {
+  font-family: var(--font-family-default);
+  color: var(--text-text-onaccent);
+  white-space: nowrap;
+  padding: 0 var(--spacing-xs);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.submitButton-BqyEd7:disabled .submitText-N58QRq {
+  color: var(--text-text-disabled);
+}
+
+.submitIcon-vyKSKQ {
+  width: 12px;
+  height: 12px;
+  color: var(--icon-icon-onaccent);
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.submitButton-BqyEd7:disabled .submitIcon-vyKSKQ {
+  color: var(--text-text-disabled);
+}
+
+.limitWarning-Hocj0v {
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--status-warning-default);
+  user-select: none;
+  flex: 1;
+  display: flex;
+}
+
+.limitText-hBXEaq {
+  font-family: var(--font-family-default);
+  color: var(--status-warning-default);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+</style><style>.previewCommentCardContainer-HEkpU8 {
+  border-radius: var(--radius-8);
+  background: var(--bg-bg-menu);
+  border: 1px solid var(--border-border-neutral-l1);
+  transition: width .25s cubic-bezier(.4, 0, .2, 1), height .25s cubic-bezier(.4, 0, .2, 1);
+  display: inline-block;
+  overflow: hidden;
+  box-shadow: 0 2px 6px #0003, 0 .5px #ffffff0f, inset 0 .5px #ffffff0f;
+}
+
+.previewCommentCardContent-ELaLah {
+  width: max-content;
+  position: relative;
+}
+
+.previewCommentCardFadeEnter-OMhMD9 {
+  opacity: 0;
+}
+
+.previewCommentCardFadeEnterActive-Eacuvn {
+  opacity: 1;
+  transition: opacity .2s ease-in;
+}
+
+.previewCommentCardFadeExit-ms9vgc {
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.previewCommentCardFadeExitActive-vyQTsd {
+  opacity: 0;
+  transition: opacity .15s ease-out;
+}
+
+.previewCommentCardSuccessCard-PWnm2o {
+  white-space: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  display: flex;
+}
+
+.previewCommentCardSuccessIcon-Oht9Ir {
+  width: 16px;
+  height: 16px;
+  color: var(--status-success-default);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.previewCommentCardSuccessText-s40BWG {
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  user-select: none;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+</style><style>.trae-browser-inspect-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:999997;pointer-events:auto;background:rgba(0,0,0,0)}.trae-browser-inspect-highlight-box{position:absolute;top:0;left:0;z-index:999998;display:none}.trae-browser-inspect-highlight-tag{position:absolute;left:0px;top:0px;height:18px;padding:0 6px;box-sizing:border-box;border-radius:4px;background-color:var(--vscode-icube-colorSuccessHover, "#2FB287");color:var(--vscode-icube-colorSnow, "#fff");font-size:12px;font-weight:400;display:none;align-items:center;z-index:999999}.trae-browser-inspect-highlight-box-show{display:flex}.trae-browser-inspect-select-button.trae-browser-inspect-highlight-box-show{display:flex !important}.trae-browser-inspect-select-button{position:absolute;top:0;left:0;background-color:var(--vscode-icube--bg-bg-base-secondary, "#222427");color:var(--vscode-icube--text-text-default-active, "#F5F9FE");font-size:11px;font-weight:500;border:1px solid var(--vscode-icube--border-neutral-l1, "#E0E2F217");border-radius:6px;padding:0 8px;height:32px;display:none;align-items:center;cursor:pointer;z-index:999999;gap:4px}.trae-browser-inspect-select-button svg,.trae-browser-inspect-select-button span{z-index:1}.trae-browser-inspect-select-highlight-box{background:rgba(0,0,0,0) !important}.trae-browser-inspect-select-highlight-box .trae-browser-inspect-highlight-tag{background-color:var(--vscode-icube--status-success-active, "#1E8B56")}.trae-browser-inspect-comment-card-container{position:fixed;top:0;left:0;z-index:9999999;pointer-events:auto}.trae-browser-inspect-comment-card-container .trae-browser-inspect-comment-card{display:flex;padding-top:0px !important;align-items:center;z-index:9999999 !important;background-color:var(--vscode-icube--bg-bg-menu)}*[contenteditable]{outline:none}.trae-browser-inspect-click-effect{position:fixed;width:40px;height:40px;margin-left:-20px;margin-top:-20px;border-radius:50%;background-color:var(--vscode-icube-colorSuccessHover, #2FB287);pointer-events:none;animation:trae-browser-inspect-ripple 500ms ease-out forwards;z-index:999999}@keyframes trae-browser-inspect-ripple{0%{transform:scale(0.3);opacity:.8}100%{transform:scale(2);opacity:0}}.trae-browser-inspect-ref-box{position:absolute;border:2px solid var(--vscode-icube-colorSuccessHover, "#2FB287");pointer-events:none;z-index:999998;animation:trae-browser-inspect-fadeInOut 2s ease-in-out forwards}.trae-browser-inspect-ref-label{position:absolute;top:-14px;left:0;height:14px;padding:0 4px;box-sizing:border-box;border-radius:2px;background-color:var(--vscode-icube-colorSuccessHover, "#2FB287");color:var(--vscode-icube-colorSnow, "#fff");font-size:9px;font-weight:500;display:flex;align-items:center;white-space:nowrap;z-index:999999}@keyframes trae-browser-inspect-fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}.trae-browser-inspect-input-highlight{position:absolute;border:2px solid var(--vscode-icube-colorSuccessHover, "#2FB287");border-radius:4px;pointer-events:none;z-index:999998;box-shadow:0 0 8px var(--vscode-icube-colorSuccessHover, "#2FB287");animation:trae-browser-inspect-input-pulse 600ms ease-out forwards}@keyframes trae-browser-inspect-input-pulse{0%{opacity:0;box-shadow:0 0 0 var(--vscode-icube-colorSuccessHover, "#2FB287")}30%{opacity:1;box-shadow:0 0 12px var(--vscode-icube-colorSuccessHover, "#2FB287")}100%{opacity:0;box-shadow:0 0 0 var(--vscode-icube-colorSuccessHover, "#2FB287")}}.trae-browser-inspect-virtual-cursor{position:fixed;width:20px;height:20px;pointer-events:none;z-index:9999999;opacity:0;transition:opacity .2s ease}.trae-browser-inspect-virtual-cursor.trae-browser-inspect-cursor-visible{opacity:1}.trae-browser-inspect-virtual-cursor.trae-browser-inspect-cursor-idle{animation:trae-browser-inspect-cursor-breathe 2s ease-in-out infinite}.trae-browser-inspect-virtual-cursor svg{width:20px;height:20px;filter:drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))}@keyframes trae-browser-inspect-cursor-breathe{0%,100%{opacity:.7}50%{opacity:1}}.trae-browser-inspect-scroll-indicator{position:fixed;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;background-color:rgba(0,0,0,.7);color:#fff;font-size:13px;font-weight:500;pointer-events:none;z-index:999999;animation:trae-browser-inspect-indicator-fade 800ms ease-out forwards;backdrop-filter:blur(4px)}.trae-browser-inspect-scroll-indicator svg{width:16px;height:16px;fill:#fff}.trae-browser-inspect-scroll-indicator.trae-scroll-up{top:12px;left:50%;transform:translateX(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-down{bottom:12px;left:50%;transform:translateX(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-left{left:12px;top:50%;transform:translateY(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-right{right:12px;top:50%;transform:translateY(-50%)}@keyframes trae-browser-inspect-indicator-fade{0%{opacity:0;transform:translateX(-50%) scale(0.9)}15%{opacity:1;transform:translateX(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}.trae-browser-inspect-scroll-indicator.trae-scroll-left,.trae-browser-inspect-scroll-indicator.trae-scroll-right{animation-name:trae-browser-inspect-indicator-fade-y}@keyframes trae-browser-inspect-indicator-fade-y{0%{opacity:0;transform:translateY(-50%) scale(0.9)}15%{opacity:1;transform:translateY(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}.trae-browser-inspect-key-badge{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:8px;background-color:rgba(0,0,0,.8);color:#fff;font-size:18px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;pointer-events:none;z-index:999999;animation:trae-browser-inspect-key-pop 500ms ease-out forwards;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 12px rgba(0,0,0,.3);letter-spacing:1px}@keyframes trae-browser-inspect-key-pop{0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(0.9)}20%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}.trae-browser-inspect-step-badge{position:fixed;top:12px;left:12px;padding:6px 12px;border-radius:6px;background-color:var(--vscode-icube-colorSuccessHover, #2FB287);color:#fff;font-size:12px;font-weight:600;pointer-events:none;z-index:999999;animation:trae-browser-inspect-step-slide 600ms ease-out forwards;box-shadow:0 2px 8px rgba(47,178,135,.3);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.trae-browser-inspect-step-badge.trae-step-old{opacity:.4;transform:translateY(0)}@keyframes trae-browser-inspect-step-slide{0%{opacity:0;transform:translateX(-20px)}20%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(0)}}.trae-browser-inspect-drag-trail{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999998}.trae-browser-inspect-drag-trail svg{width:100%;height:100%}.trae-browser-inspect-drag-trail .trae-drag-path{fill:none;stroke:var(--vscode-icube-colorSuccessHover, #2FB287);stroke-width:2;stroke-dasharray:8 4;opacity:.6;animation:trae-browser-inspect-dash 600ms linear forwards}.trae-browser-inspect-drag-trail .trae-drag-dot{fill:var(--vscode-icube-colorSuccessHover, #2FB287);filter:drop-shadow(0 0 4px rgba(47, 178, 135, 0.6))}.trae-browser-inspect-drag-trail .trae-drag-endpoint{fill:none;stroke:var(--vscode-icube-colorSuccessHover, #2FB287);stroke-width:2;opacity:.5}@keyframes trae-browser-inspect-dash{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}.trae-browser-inspect-drag-trail.trae-drag-fade{animation:trae-browser-inspect-trail-fade 400ms ease-out forwards}@keyframes trae-browser-inspect-trail-fade{0%{opacity:1}100%{opacity:0}}</style><script type="module">(async () => {
+  try {
+    const client = await import('/@vite/client');
+    const hmr = client.createHotContext('hmr-handler/fake.js');
+    hmr.on('vite:afterUpdate', window['__ICUBE_WEBVIEW_HMR_CALLBACK_1786733266909']);
+  } catch {}
+})();</script><style>.buttonsCard-bTXa5j {
+  padding: var(--spacer-4);
+  background: none;
+  align-items: center;
+  gap: 0;
+  display: inline-flex;
+}
+
+.actionButton-opZL8g {
+  align-items: center;
+  gap: var(--spacer-4);
+  padding: var(--spacer-4) var(--spacer-8);
+  border-radius: var(--radius-4);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  background: none;
+  border: none;
+  display: inline-flex;
+}
+
+.actionButton-opZL8g:hover {
+  background: var(--bg-bg-overlay-l2);
+}
+
+.actionButton-opZL8g:active {
+  background: var(--bg-bg-overlay-l3);
+}
+
+.actionButton-opZL8g:focus-visible {
+  outline: 2px solid var(--status-primary-default);
+  outline-offset: 1px;
+}
+
+.icon-ObJEMt {
+  width: 16px;
+  height: 16px;
+  color: var(--icon-icon-default);
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.title-GptGAg {
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.shortcut-nbwTG4 {
+  color: var(--icon-icon-secondary);
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  display: flex;
+}
+
+.shortcutKey-EE6xrE {
+  font-family: var(--font-family-default);
+  color: var(--icon-icon-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 12px;
+}
+
+.divider-cFGVKQ {
+  box-sizing: content-box;
+  background-clip: content-box;
+  background-color: var(--border-border-neutral-l2);
+  flex-shrink: 0;
+  width: 1px;
+  height: 12px;
+  padding: 0 6px;
+}
+
+</style><style>.commentEditorCard-Un4Xaa {
+  width: 320px;
+  padding: var(--spacing-sm);
+  background: none;
+  flex-direction: column;
+  display: flex;
+}
+
+.textContainer-ZISwbW {
+  padding: var(--spacing-sm);
+  background: var(--bg-bg-overlay-l1);
+  border: 1px solid var(--border-border-neutral-l3);
+  border-radius: var(--radius-sm);
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-right: 0;
+  display: flex;
+}
+
+.textarea-ggj4j6 {
+  padding: 0 var(--spacing-sm) 0 2px;
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  resize: none;
+  scrollbar-width: thin;
+  scrollbar-color: #56637726 transparent;
+  background: none;
+  border: none;
+  outline: none;
+  flex: 1;
+  max-height: 140px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  overflow-y: auto;
+}
+
+.textarea-ggj4j6::-webkit-scrollbar {
+  width: 6px;
+}
+
+.textarea-ggj4j6::-webkit-scrollbar-track {
+  background: none;
+}
+
+.textarea-ggj4j6::-webkit-scrollbar-thumb {
+  background: #56637726;
+  border-radius: 3px;
+}
+
+.textarea-ggj4j6::placeholder {
+  color: var(--text-text-tertiary);
+}
+
+.actionBar-u_t8vc {
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  max-height: 0;
+  transition: max-height .2s ease-out, opacity .2s ease-out, margin-top .2s ease-out;
+  display: flex;
+  overflow: hidden;
+}
+
+.actionBarVisible-PxXsje {
+  opacity: 1;
+  max-height: 32px;
+  margin-top: var(--spacing-sm);
+}
+
+.actionBarNoExpandAnimation-FCra2J {
+  transition: opacity .2s ease-out;
+}
+
+.actionBarNoExpandAnimation-FCra2J.actionBarVisible-PxXsje {
+  max-height: 32px;
+  margin-top: var(--spacing-sm);
+}
+
+.cancelButton-Lu0me9 {
+  height: 24px;
+  padding: 0 var(--spacing-xs);
+  background: var(--bg-bg-overlay-l2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border: none;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.cancelButton-Lu0me9:hover, .cancelButton-Lu0me9:active {
+  background: var(--bg-bg-overlay-l3);
+}
+
+.cancelButton-Lu0me9:focus-visible {
+  outline: 2px solid var(--status-primary-default);
+  outline-offset: 1px;
+}
+
+.cancelText-j1RS1q {
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  white-space: nowrap;
+  padding: 0 var(--spacing-xs);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.submitButton-BqyEd7 {
+  height: 24px;
+  padding: 0 var(--spacing-sm);
+  background: var(--bg-bg-invert);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border: none;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.submitButton-BqyEd7:hover:not(:disabled) {
+  background: var(--bg-bg-invert-hover);
+}
+
+.submitButton-BqyEd7:active:not(:disabled) {
+  background: var(--bg-bg-invert-active);
+}
+
+.submitButton-BqyEd7:disabled {
+  background: var(--bg-bg-invert-disabled);
+  color: var(--text-text-disabled);
+  cursor: not-allowed;
+}
+
+.submitButton-BqyEd7:focus-visible {
+  outline: 2px solid var(--status-primary-default);
+  outline-offset: 1px;
+}
+
+.submitText-N58QRq {
+  font-family: var(--font-family-default);
+  color: var(--text-text-onaccent);
+  white-space: nowrap;
+  padding: 0 var(--spacing-xs);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.submitButton-BqyEd7:disabled .submitText-N58QRq {
+  color: var(--text-text-disabled);
+}
+
+.submitIcon-vyKSKQ {
+  width: 12px;
+  height: 12px;
+  color: var(--icon-icon-onaccent);
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.submitButton-BqyEd7:disabled .submitIcon-vyKSKQ {
+  color: var(--text-text-disabled);
+}
+
+.limitWarning-Hocj0v {
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--status-warning-default);
+  user-select: none;
+  flex: 1;
+  display: flex;
+}
+
+.limitText-hBXEaq {
+  font-family: var(--font-family-default);
+  color: var(--status-warning-default);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+</style><style>.previewCommentCardContainer-HEkpU8 {
+  border-radius: var(--radius-8);
+  background: var(--bg-bg-menu);
+  border: 1px solid var(--border-border-neutral-l1);
+  transition: width .25s cubic-bezier(.4, 0, .2, 1), height .25s cubic-bezier(.4, 0, .2, 1);
+  display: inline-block;
+  overflow: hidden;
+  box-shadow: 0 2px 6px #0003, 0 .5px #ffffff0f, inset 0 .5px #ffffff0f;
+}
+
+.previewCommentCardContent-ELaLah {
+  width: max-content;
+  position: relative;
+}
+
+.previewCommentCardFadeEnter-OMhMD9 {
+  opacity: 0;
+}
+
+.previewCommentCardFadeEnterActive-Eacuvn {
+  opacity: 1;
+  transition: opacity .2s ease-in;
+}
+
+.previewCommentCardFadeExit-ms9vgc {
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.previewCommentCardFadeExitActive-vyQTsd {
+  opacity: 0;
+  transition: opacity .15s ease-out;
+}
+
+.previewCommentCardSuccessCard-PWnm2o {
+  white-space: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  display: flex;
+}
+
+.previewCommentCardSuccessIcon-Oht9Ir {
+  width: 16px;
+  height: 16px;
+  color: var(--status-success-default);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.previewCommentCardSuccessText-s40BWG {
+  font-family: var(--font-family-default);
+  color: var(--text-text-default);
+  user-select: none;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
 </style><style id="icube-theme-variables">:root {--vscode-foreground: #31353a;--vscode-disabledForeground: #8a9096;--vscode-errorForeground: #cc4b53;--vscode-descriptionForeground: #5b6066;--vscode-icon-foreground: #5b6066;--vscode-focusBorder: rgba(0, 0, 0, 0);--vscode-textLink-foreground: #006ab1;--vscode-textLink-activeForeground: #387bff;--vscode-textSeparator-foreground: rgba(0, 0, 0, 0.18);--vscode-textPreformat-foreground: #a31515;--vscode-textPreformat-background: rgba(0, 0, 0, 0.1);--vscode-textBlockQuote-background: #f2f2f2;--vscode-textBlockQuote-border: rgba(0, 122, 204, 0.5);--vscode-textCodeBlock-background: rgba(220, 220, 220, 0.4);--vscode-sash-hoverBorder: #0fdc78;--vscode-badge-background: #c4c4c4;--vscode-badge-foreground: #333333;--vscode-activityWarningBadge-foreground: #ffffff;--vscode-activityWarningBadge-background: #b27c00;--vscode-activityErrorBadge-foreground: #ffffff;--vscode-activityErrorBadge-background: #e51400;--vscode-scrollbar-shadow: #dddddd;--vscode-scrollbarSlider-background: rgba(100, 100, 100, 0.4);--vscode-scrollbarSlider-hoverBackground: rgba(100, 100, 100, 0.7);--vscode-scrollbarSlider-activeBackground: rgba(0, 0, 0, 0.6);--vscode-progressBar-background: #2f74ff;--vscode-chart-line: #236b8e;--vscode-chart-axis: rgba(0, 0, 0, 0.6);--vscode-chart-guide: rgba(0, 0, 0, 0.2);--vscode-editor-background: #ffffff;--vscode-editor-foreground: #31353a;--vscode-editorStickyScroll-background: #ffffff;--vscode-editorStickyScrollGutter-background: #ffffff;--vscode-editorStickyScrollHover-background: rgba(91, 146, 255, 0.08);--vscode-editorStickyScroll-shadow: #dddddd;--vscode-editorWidget-background: #f3f3f3;--vscode-editorWidget-foreground: #31353a;--vscode-editorWidget-border: #c8c8c8;--vscode-editorError-foreground: #e51400;--vscode-editorWarning-foreground: #bf8803;--vscode-editorInfo-foreground: #0063d3;--vscode-editorHint-foreground: #6c6c6c;--vscode-editorLink-activeForeground: #36393d;--vscode-editor-selectionBackground: rgba(47, 116, 255, 0.18);--vscode-editor-inactiveSelectionBackground: #e5ebf1;--vscode-editor-selectionHighlightBackground: rgba(173, 214, 255, 0.5);--vscode-editor-compositionBorder: #000000;--vscode-editor-findMatchBackground: #a8ac94;--vscode-editor-findMatchHighlightBackground: rgba(234, 92, 0, 0.33);--vscode-editor-findRangeHighlightBackground: rgba(180, 180, 180, 0.3);--vscode-editor-hoverHighlightBackground: rgba(173, 214, 255, 0.15);--vscode-editorHoverWidget-background: #ffffff;--vscode-editorHoverWidget-foreground: #31353a;--vscode-editorHoverWidget-border: rgba(77, 107, 153, 0.09);--vscode-editorHoverWidget-statusBarBackground: #f2f2f2;--vscode-editorInlayHint-foreground: #969696;--vscode-editorInlayHint-background: rgba(196, 196, 196, 0.1);--vscode-editorInlayHint-typeForeground: #969696;--vscode-editorInlayHint-typeBackground: rgba(196, 196, 196, 0.1);--vscode-editorInlayHint-parameterForeground: #969696;--vscode-editorInlayHint-parameterBackground: rgba(196, 196, 196, 0.1);--vscode-editorLightBulb-foreground: #ddb100;--vscode-editorLightBulbAutoFix-foreground: #007acc;--vscode-editorLightBulbAi-foreground: #ddb100;--vscode-editor-snippetTabstopHighlightBackground: rgba(10, 50, 100, 0.2);--vscode-editor-snippetFinalTabstopHighlightBorder: rgba(10, 50, 100, 0.5);--vscode-diffEditor-insertedTextBackground: rgba(64, 176, 139, 0.18);--vscode-diffEditor-removedTextBackground: rgba(232, 70, 58, 0.16);--vscode-diffEditor-insertedLineBackground: rgba(64, 176, 139, 0.12);--vscode-diffEditor-removedLineBackground: rgba(232, 70, 58, 0.12);--vscode-diffEditorOverview-insertedForeground: rgba(64, 176, 139, 0.18);--vscode-diffEditorOverview-removedForeground: rgba(232, 70, 58, 0.16);--vscode-diffEditor-diagonalFill: rgba(34, 34, 34, 0.2);--vscode-diffEditor-unchangedRegionBackground: #ffffff;--vscode-diffEditor-unchangedRegionForeground: #31353a;--vscode-diffEditor-unchangedCodeBackground: rgba(184, 184, 184, 0.16);--vscode-widget-shadow: rgba(0, 0, 0, 0.08);--vscode-widget-border: rgba(77, 107, 153, 0.09);--vscode-toolbar-hoverBackground: rgba(86, 99, 119, 0.11);--vscode-toolbar-activeBackground: rgba(86, 99, 119, 0.15);--vscode-breadcrumb-foreground: rgba(49, 53, 58, 0.8);--vscode-breadcrumb-background: #ffffff;--vscode-breadcrumb-focusForeground: #272a2e;--vscode-breadcrumb-activeSelectionForeground: #272a2e;--vscode-breadcrumbPicker-background: #ffffff;--vscode-merge-currentHeaderBackground: rgba(64, 200, 174, 0.5);--vscode-merge-currentContentBackground: rgba(64, 200, 174, 0.2);--vscode-merge-incomingHeaderBackground: rgba(64, 166, 255, 0.5);--vscode-merge-incomingContentBackground: rgba(64, 166, 255, 0.2);--vscode-merge-commonHeaderBackground: rgba(96, 96, 96, 0.4);--vscode-merge-commonContentBackground: rgba(96, 96, 96, 0.16);--vscode-editorOverviewRuler-currentContentForeground: rgba(64, 200, 174, 0.5);--vscode-editorOverviewRuler-incomingContentForeground: rgba(64, 166, 255, 0.5);--vscode-editorOverviewRuler-commonContentForeground: rgba(96, 96, 96, 0.4);--vscode-editorOverviewRuler-findMatchForeground: rgba(209, 134, 22, 0.49);--vscode-editorOverviewRuler-selectionHighlightForeground: rgba(160, 160, 160, 0.8);--vscode-problemsErrorIcon-foreground: #e51400;--vscode-problemsWarningIcon-foreground: #bf8803;--vscode-problemsInfoIcon-foreground: #0063d3;--vscode-minimap-findMatchHighlight: #d18616;--vscode-minimap-selectionOccurrenceHighlight: #c9c9c9;--vscode-minimap-selectionHighlight: #add6ff;--vscode-minimap-infoHighlight: #0063d3;--vscode-minimap-warningHighlight: #bf8803;--vscode-minimap-errorHighlight: rgba(255, 18, 18, 0.7);--vscode-minimap-foregroundOpacity: #000000;--vscode-minimapSlider-background: rgba(100, 100, 100, 0.2);--vscode-minimapSlider-hoverBackground: rgba(100, 100, 100, 0.35);--vscode-minimapSlider-activeBackground: rgba(0, 0, 0, 0.3);--vscode-charts-foreground: #31353a;--vscode-charts-lines: rgba(49, 53, 58, 0.5);--vscode-charts-red: #e51400;--vscode-charts-blue: #0063d3;--vscode-charts-yellow: #bf8803;--vscode-charts-orange: #d18616;--vscode-charts-green: #388a34;--vscode-charts-purple: #652d90;--vscode-input-background: rgba(86, 99, 119, 0.07);--vscode-input-foreground: #31353a;--vscode-inputOption-activeBorder: rgba(77, 107, 153, 0.36);--vscode-inputOption-hoverBackground: rgba(184, 184, 184, 0.31);--vscode-inputOption-activeBackground: rgba(0, 0, 0, 0);--vscode-inputOption-activeForeground: #000000;--vscode-input-placeholderForeground: #5b6066;--vscode-inputValidation-infoBackground: #d6ecf2;--vscode-inputValidation-infoBorder: #007acc;--vscode-inputValidation-warningBackground: #f6f5d2;--vscode-inputValidation-warningBorder: #b89500;--vscode-inputValidation-errorBackground: #f2dede;--vscode-inputValidation-errorBorder: #e8463a;--vscode-dropdown-background: #ffffff;--vscode-dropdown-foreground: #31353a;--vscode-dropdown-border: #cecece;--vscode-button-foreground: #ffffff;--vscode-button-separator: rgba(193, 195, 205, 0.12);--vscode-button-background: #31353a;--vscode-button-hoverBackground: #72767b;--vscode-button-secondaryForeground: #ffffff;--vscode-button-secondaryBackground: #5f6a79;--vscode-button-secondaryHoverBackground: #4c5561;--vscode-radio-activeForeground: #000000;--vscode-radio-activeBackground: rgba(0, 0, 0, 0);--vscode-radio-activeBorder: rgba(77, 107, 153, 0.36);--vscode-radio-inactiveBorder: rgba(0, 0, 0, 0.2);--vscode-radio-inactiveHoverBackground: rgba(184, 184, 184, 0.31);--vscode-checkbox-background: #ffffff;--vscode-checkbox-selectBackground: #f3f3f3;--vscode-checkbox-foreground: #31353a;--vscode-checkbox-border: #919191;--vscode-checkbox-selectBorder: #5b6066;--vscode-checkbox-disabled.background: #bbbcbd;--vscode-checkbox-disabled.foreground: #74777b;--vscode-keybindingLabel-background: rgba(221, 221, 221, 0.4);--vscode-keybindingLabel-foreground: #555555;--vscode-keybindingLabel-border: rgba(204, 204, 204, 0.4);--vscode-keybindingLabel-bottomBorder: rgba(187, 187, 187, 0.4);--vscode-list-focusOutline: rgba(0, 0, 0, 0);--vscode-list-focusAndSelectionOutline: #90c2f9;--vscode-list-activeSelectionBackground: rgba(86, 99, 119, 0.11);--vscode-list-activeSelectionForeground: #111214;--vscode-list-activeSelectionIconForeground: #5b6066;--vscode-list-inactiveSelectionBackground: rgba(86, 99, 119, 0.11);--vscode-list-inactiveSelectionForeground: #111214;--vscode-list-hoverBackground: rgba(86, 99, 119, 0.11);--vscode-list-dropBackground: rgba(86, 99, 119, 0.11);--vscode-list-dropBetweenBackground: #5b6066;--vscode-list-highlightForeground: #0066bf;--vscode-list-focusHighlightForeground: #0066bf;--vscode-list-invalidItemForeground: #b89500;--vscode-list-errorForeground: #e8463a;--vscode-list-warningForeground: #855f00;--vscode-listFilterWidget-background: #f3f3f3;--vscode-listFilterWidget-outline: rgba(0, 0, 0, 0);--vscode-listFilterWidget-noMatchesOutline: #be1100;--vscode-listFilterWidget-shadow: rgba(0, 0, 0, 0.08);--vscode-list-filterMatchBackground: rgba(234, 92, 0, 0.33);--vscode-list-deemphasizedForeground: #8e8e90;--vscode-tree-indentGuidesStroke: rgba(77, 107, 153, 0.09);--vscode-tree-inactiveIndentGuidesStroke: rgba(221, 226, 233, 0.08);--vscode-tree-tableColumnsBorder: rgba(97, 97, 97, 0.13);--vscode-tree-tableOddRowsBackground: rgba(49, 53, 58, 0.04);--vscode-editorActionList-background: #f3f3f3;--vscode-editorActionList-foreground: #31353a;--vscode-editorActionList-focusForeground: #111214;--vscode-editorActionList-focusBackground: rgba(86, 99, 119, 0.11);--vscode-menu-border: rgba(77, 107, 153, 0.09);--vscode-menu-foreground: #616161;--vscode-menu-background: #ffffff;--vscode-menu-selectionForeground: #111214;--vscode-menu-selectionBackground: rgba(86, 99, 119, 0.11);--vscode-menu-separatorBackground: rgba(77, 107, 153, 0.09);--vscode-quickInput-background: #f8f9fa;--vscode-quickInput-foreground: #31353a;--vscode-quickInputTitle-background: rgba(0, 0, 0, 0.04);--vscode-pickerGroup-foreground: #31353a;--vscode-pickerGroup-border: rgba(77, 107, 153, 0.09);--vscode-quickInputList-focusForeground: #111214;--vscode-quickInputList-focusIconForeground: #5b6066;--vscode-quickInputList-focusBackground: rgba(86, 99, 119, 0.11);--vscode-search-resultsInfoForeground: #31353a;--vscode-searchEditor-findMatchBackground: rgba(234, 92, 0, 0.22);--vscode-tab-activeBackground: rgba(86, 99, 119, 0.11);--vscode-tab-unfocusedActiveBackground: rgba(86, 99, 119, 0.11);--vscode-tab-inactiveBackground: #f8f8f9;--vscode-tab-unfocusedInactiveBackground: #f8f8f9;--vscode-tab-activeForeground: #333333;--vscode-tab-inactiveForeground: #5b6066;--vscode-tab-unfocusedActiveForeground: #31353a;--vscode-tab-unfocusedInactiveForeground: rgba(91, 96, 102, 0.5);--vscode-tab-border: rgba(77, 107, 153, 0.09);--vscode-tab-lastPinnedBorder: rgba(97, 97, 97, 0.19);--vscode-tab-activeBorder: #ffffff;--vscode-tab-unfocusedActiveBorder: rgba(255, 255, 255, 0.7);--vscode-tab-activeBorderTop: #000000;--vscode-tab-unfocusedActiveBorderTop: rgba(0, 0, 0, 0.7);--vscode-tab-selectedBorderTop: #000000;--vscode-tab-selectedBackground: rgba(86, 99, 119, 0.11);--vscode-tab-selectedForeground: #333333;--vscode-tab-dragAndDropBorder: #333333;--vscode-tab-activeModifiedBorder: #33aaee;--vscode-tab-inactiveModifiedBorder: rgba(51, 170, 238, 0.5);--vscode-tab-unfocusedActiveModifiedBorder: rgba(51, 170, 238, 0.7);--vscode-tab-unfocusedInactiveModifiedBorder: rgba(51, 170, 238, 0.25);--vscode-editorPane-background: #ffffff;--vscode-editorGroupHeader-tabsBackground: #f8f8f9;--vscode-editorGroupHeader-tabsBorder: rgba(77, 107, 153, 0.09);--vscode-editorGroupHeader-noTabsBackground: #ffffff;--vscode-editorGroup-border: #e7e7e7;--vscode-editorGroup-dropBackground: rgba(33, 97, 224, 0.16);--vscode-editorGroup-dropIntoPromptForeground: #31353a;--vscode-editorGroup-dropIntoPromptBackground: #f3f3f3;--vscode-sideBySideEditor-horizontalBorder: #e7e7e7;--vscode-sideBySideEditor-verticalBorder: #e7e7e7;--vscode-panel-background: #ffffff;--vscode-panel-border: rgba(128, 128, 128, 0.35);--vscode-panelTitle-activeForeground: #111214;--vscode-panelTitle-inactiveForeground: #5b6066;--vscode-panelTitle-activeBorder: #111214;--vscode-panelInput-border: #dddddd;--vscode-panel-dropBorder: #111214;--vscode-panelSection-dropBackground: rgba(33, 97, 224, 0.16);--vscode-panelSectionHeader-background: #ffffff;--vscode-panelSectionHeader-foreground: #111214;--vscode-panelSectionHeader-border: rgba(77, 107, 153, 0.18);--vscode-panelSection-border: rgba(128, 128, 128, 0.35);--vscode-panelStickyScroll-background: #ffffff;--vscode-panelStickyScroll-shadow: #dddddd;--vscode-banner-background: rgba(60, 69, 83, 0.11);--vscode-banner-foreground: #111214;--vscode-banner-iconForeground: #0063d3;--vscode-statusBar-foreground: #ffffff;--vscode-statusBar-noFolderForeground: #ffffff;--vscode-statusBar-background: rgba(0, 0, 0, 0);--vscode-statusBar-noFolderBackground: rgba(0, 0, 0, 0);--vscode-statusBar-focusBorder: #ffffff;--vscode-statusBarItem-activeBackground: rgba(255, 255, 255, 0.18);--vscode-statusBarItem-focusBorder: #ffffff;--vscode-statusBarItem-hoverBackground: rgba(0, 0, 0, 0.12);--vscode-statusBarItem-hoverForeground: #ffffff;--vscode-statusBarItem-compactHoverBackground: rgba(0, 0, 0, 0.12);--vscode-statusBarItem-prominentForeground: #ffffff;--vscode-statusBarItem-prominentBackground: rgba(0, 0, 0, 0.5);--vscode-statusBarItem-prominentHoverForeground: #ffffff;--vscode-statusBarItem-prominentHoverBackground: rgba(0, 0, 0, 0.12);--vscode-statusBarItem-errorBackground: #c72e0f;--vscode-statusBarItem-errorForeground: #ffffff;--vscode-statusBarItem-errorHoverForeground: #ffffff;--vscode-statusBarItem-errorHoverBackground: rgba(0, 0, 0, 0.12);--vscode-statusBarItem-warningBackground: #725102;--vscode-statusBarItem-warningForeground: #ffffff;--vscode-statusBarItem-warningHoverForeground: #ffffff;--vscode-statusBarItem-warningHoverBackground: rgba(0, 0, 0, 0.12);--vscode-activityBar-background: #edeff2;--vscode-activityBar-foreground: #111214;--vscode-activityBar-inactiveForeground: #5b6066;--vscode-activityBar-activeBorder: #111214;--vscode-activityBar-dropBorder: #111214;--vscode-activityBarBadge-background: #2f74ff;--vscode-activityBarBadge-foreground: #ffffff;--vscode-activityBarTop-foreground: #424242;--vscode-activityBarTop-activeBorder: #424242;--vscode-activityBarTop-inactiveForeground: rgba(66, 66, 66, 0.75);--vscode-activityBarTop-dropBorder: #424242;--vscode-profileBadge-background: #c4c4c4;--vscode-profileBadge-foreground: #333333;--vscode-statusBarItem-remoteBackground: #16825d;--vscode-statusBarItem-remoteForeground: #ffffff;--vscode-statusBarItem-remoteHoverForeground: #ffffff;--vscode-statusBarItem-remoteHoverBackground: rgba(0, 0, 0, 0.12);--vscode-statusBarItem-offlineBackground: #6c1717;--vscode-statusBarItem-offlineForeground: #ffffff;--vscode-statusBarItem-offlineHoverForeground: #ffffff;--vscode-statusBarItem-offlineHoverBackground: rgba(0, 0, 0, 0.12);--vscode-extensionBadge-remoteBackground: #2f74ff;--vscode-extensionBadge-remoteForeground: #ffffff;--vscode-sideBar-background: #ffffff;--vscode-sideBarTitle-background: #ffffff;--vscode-sideBarTitle-foreground: #6f6f6f;--vscode-sideBar-dropBackground: rgba(33, 97, 224, 0.16);--vscode-sideBarSectionHeader-background: #ffffff;--vscode-sideBarSectionHeader-foreground: #31353a;--vscode-sideBarSectionHeader-border: rgba(77, 107, 153, 0.18);--vscode-sideBarActivityBarTop-border: rgba(77, 107, 153, 0.18);--vscode-sideBarStickyScroll-background: #ffffff;--vscode-sideBarStickyScroll-shadow: #dddddd;--vscode-titleBar-activeForeground: #5b6066;--vscode-titleBar-inactiveForeground: rgba(91, 96, 102, 0.6);--vscode-titleBar-activeBackground: #edeff2;--vscode-titleBar-inactiveBackground: #edeff2;--vscode-menubar-selectionForeground: #5b6066;--vscode-menubar-selectionBackground: rgba(86, 99, 119, 0.11);--vscode-commandCenter-foreground: #5b6066;--vscode-commandCenter-activeForeground: #5b6066;--vscode-commandCenter-inactiveForeground: rgba(91, 96, 102, 0.6);--vscode-commandCenter-background: rgba(0, 0, 0, 0.05);--vscode-commandCenter-activeBackground: rgba(0, 0, 0, 0.08);--vscode-commandCenter-border: rgba(91, 96, 102, 0.2);--vscode-commandCenter-activeBorder: rgba(91, 96, 102, 0.3);--vscode-commandCenter-inactiveBorder: rgba(91, 96, 102, 0.15);--vscode-notificationCenter-border: rgba(77, 107, 153, 0.09);--vscode-notificationToast-border: rgba(77, 107, 153, 0.09);--vscode-notifications-foreground: #31353a;--vscode-notifications-background: #ffffff;--vscode-notificationLink-foreground: #006ab1;--vscode-notificationCenterHeader-background: #f2f2f2;--vscode-notifications-border: #f2f2f2;--vscode-notificationsErrorIcon-foreground: #e8463a;--vscode-notificationsWarningIcon-foreground: #e28a00;--vscode-notificationsInfoIcon-foreground: #2f74ff;--vscode-iCubeNotificationCenter-border: rgba(77, 107, 153, 0.09);--vscode-icube-colorSnow: #ffffff;--vscode-icube-colorBlack: #000000;--vscode-icube-colorSnowDisable: rgba(255, 255, 255, 0.3);--vscode-icube-modalOverlay: rgba(0, 0, 0, 0.4);--vscode-icube-colorBg1: #ffffff;--vscode-icube-colorBg2: #edeff2;--vscode-icube-colorBg3: #ffffff;--vscode-icube-colorBg4: #e1e1e1;--vscode-icube-diffColorBg3: rgba(225, 225, 225, 0.35);--vscode-icube-colorBgCode: #ffffff;--vscode-icube-colorBgTr0: rgba(86, 99, 119, 0.07);--vscode-icube-colorBtnHover: rgba(86, 99, 119, 0.11);--vscode-icube-colorBg5: rgba(77, 97, 128, 0.08);--vscode-icube-colorBtnHover2: rgba(86, 99, 119, 0.15);--vscode-icube-colorBtnTransparent3: rgba(86, 99, 119, 0.19);--vscode-icube-colorBlend: rgba(77, 97, 128, 0.12);--vscode-icube-colorTransparent: rgba(255, 255, 255, 0);--vscode-icube-colorWidgetShadow: rgba(0, 0, 0, 0.04);--vscode-icube-colorWidgetShadow2: rgba(0, 0, 0, 0.08);--vscode-icube-colorWidgetShadow3: rgba(0, 0, 0, 0.2);--vscode-icube-colorDefaultText: #31353a;--vscode-icube-colorHighlightText: #111214;--vscode-icube-colorGrayText: #5b6066;--vscode-icube-colorGrayText2: #617080;--vscode-icube-colorDisableText: #8a9096;--vscode-icube-colorBlackText: #111314;--vscode-icube-colorBlackText1: #ffffff;--vscode-icube-colorBlackText2: #000000;--vscode-icube-colorDefaultAvatar: #5b92ff;--vscode-icube-colorDefaultAvatarBackground: #1759dd;--vscode-icube-modalLayoutBg: rgba(0, 25, 49, 0.2);--vscode-icube-colorIcon: #939fb8;--vscode-icube-colorCodeCodeInstruction: #b15ef2;--vscode-icube-colorLine1: rgba(77, 107, 153, 0.09);--vscode-icube-colorLine2: rgba(77, 107, 153, 0.18);--vscode-icube-colorLine3: rgba(77, 107, 153, 0.36);--vscode-icube-colorBrand: #36393d;--vscode-icube-colorBrandHover: #72767b;--vscode-icube-colorBrandActive: #1a1b1d;--vscode-icube-colorBrandTransparent: rgba(86, 99, 119, 0.11);--vscode-icube-colorBrandTransparent2: rgba(86, 99, 119, 0.15);--vscode-icube-colorBrandTransparent3: rgba(86, 99, 119, 0.19);--vscode-icube-colorStatusRegular: #2f74ff;--vscode-icube-colorStatusRegularHover: #4c88ff;--vscode-icube-colorStatusRegularActive: #1759dd;--vscode-icube-colorStatusRegularTransparent: rgba(47, 116, 255, 0.12);--vscode-icube-colorStatusRegularTransparent2: rgba(47, 116, 255, 0.18);--vscode-icube-colorStatusRegularTransparent3: rgba(47, 116, 255, 0.36);--vscode-icube-colorSuccess: #26a57b;--vscode-icube-colorSuccessHover: #2ca77f;--vscode-icube-colorSuccessActive: #1e8b56;--vscode-icube-colorSuccessTransparent: rgba(64, 176, 139, 0.12);--vscode-icube-colorSuccessTransparent2: rgba(64, 176, 139, 0.18);--vscode-icube-colorSuccessTransparent3: rgba(64, 176, 139, 0.36);--vscode-icube-colorError: #e8463a;--vscode-icube-colorErrorHover: #ea574c;--vscode-icube-colorErrorActive: #c9382f;--vscode-icube-colorErrorTransparent: rgba(232, 70, 58, 0.12);--vscode-icube-colorErrorTransparent2: rgba(232, 70, 58, 0.16);--vscode-icube-colorErrorTransparent3: rgba(232, 70, 58, 0.36);--vscode-icube-colorWarning: #e28a00;--vscode-icube-colorWarningHover: #f18c13;--vscode-icube-colorWarningActive: #c46f11;--vscode-icube-colorWarningTransparent: rgba(226, 138, 0, 0.12);--vscode-icube-colorWarningTransparent2: rgba(226, 138, 0, 0.16);--vscode-icube-colorWarningTransparent3: rgba(226, 138, 0, 0.36);--vscode-icube-colorAlert: #c6a626;--vscode-icube-colorAlertHover: #dfb716;--vscode-icube-colorAlertActive: #af8d06;--vscode-icube-colorAlertTransparent: rgba(198, 166, 38, 0.14);--vscode-icube-colorAlertTransparent2: rgba(198, 166, 38, 0.2);--vscode-icube-colorAlertTransparent3: rgba(198, 166, 38, 0.36);--vscode-icube-colorErrorTm1: rgba(204, 75, 83, 0.2);--vscode-icube-colorErrorTr1: rgba(232, 70, 58, 0.12);--vscode-icube-colorSpinLoading: #2f74ff;--vscode-icube-colorC1: #00b983;--vscode-icube-colorC2: #ff6b45;--vscode-icube-colorC3: #f2a90c;--vscode-icube-colorC4: #5fbf00;--vscode-icube-colorC5: #00b8f8;--vscode-icube-colorC6: #3f85ff;--vscode-icube-colorC7: #f53cff;--vscode-icube-colorC8: #9570ff;--vscode-icube-colorC9: #747e94;--vscode-icube-colorDiffToggleBtnBg: #8d7aff;--vscode-icube-textPreformatBackground: #9d89eb;--vscode-icube-colorRed1: #dd3730;--vscode-icube-colorRed2: rgba(221, 55, 48, 0.1);--vscode-icube-colorRed3: #dd3730;--vscode-icube-colorGreen1: #00906e;--vscode-icube-colorDiffBtn1: #ffffff;--vscode-icube-diffInsertedTextBackground: rgba(38, 165, 123, 0.32);--vscode-icube-colorChatError: rgba(97, 97, 97, 0);--vscode-icube-chatIconBg1: #ff4a36;--vscode-icube-chatIconColor1: #ffffff;--vscode-icube-emptyExplorerButtonBgColor: rgba(77, 97, 128, 0.08);--vscode-icube-emptyExplorerButtonTextColor: #333940;--vscode-icube-emptyExplorerSplitTextColor: #333940;--vscode-icube-emptyExplorerSplitColor: rgba(77, 107, 153, 0.2);--vscode-icube-lite.colorBg1: #25252d;--vscode-icube-lite.colorBg2: #1d1c23;--vscode-icube-lite.colorLine1: #2e2e38;--vscode-widget-shadow1: rgba(0, 0, 0, 0.08);--vscode-widget-shadow2: rgba(0, 0, 0, 0.1);--vscode-widget-light.shadow1: rgba(0, 0, 0, 0.04);--vscode-widget-light.shadow2: rgba(0, 0, 0, 0.08);--vscode-icube-tooltipsTextColor: #ffffff;--vscode-icube-ai.disableInputBorderColor: rgba(77, 107, 153, 0.4);--vscode-icube-scrollbarBgColor: rgba(100, 100, 100, 0.4);--vscode-icube-scrollbarHoverBgColor: rgba(100, 100, 100, 0.4);--vscode-icube-desktopEmptyWorkspaceIconBg: rgba(77, 97, 128, 0.08);--vscode-icube-desktopEmptyWorkspaceHoverBg: rgba(77, 107, 153, 0.12);--vscode-icube--code-code-text: #17181a;--vscode-icube-primaryButtonBackground: #31353a;--vscode-icube-primaryButtonForeground: #ffffff;--vscode-icube-primaryButtonHoverBackground: #72767b;--vscode-icube-primaryButtonHoverForeground: #ffffff;--vscode-icube-primaryButtonActivateBackground: #1a1b1d;--vscode-icube-primaryButtonActivateForeground: #ffffff;--vscode-icube-primaryButtonDisableBackground: #8a9096;--vscode-icube-primaryButtonDisableForeground: #ffffff;--vscode-icube-defaultButtonBackground: rgba(86, 99, 119, 0.11);--vscode-icube-defaultButtonForeground: #31353a;--vscode-icube-defaultButtonHoverBackground: rgba(86, 99, 119, 0.15);--vscode-icube-defaultButtonHoverForeground: #31353a;--vscode-icube-defaultButtonActivateBackground: rgba(86, 99, 119, 0.19);--vscode-icube-defaultButtonActivateForeground: #31353a;--vscode-icube-defaultButtonDisableBackground: rgba(86, 99, 119, 0.15);--vscode-icube-defaultButtonDisableForeground: #8a9096;--vscode-icube-checkboxBorder: #31353a;--vscode-icube-checkboxBackground: #31353a;--vscode-icube-checkboxDisabledBackground: #8a9096;--vscode-icube-checkboxForeground: #ffffff;--vscode-icube-checkboxUncheckedBorder: rgba(77, 107, 153, 0.18);--vscode-icube-checkboxUncheckedBackground: #ffffff;--vscode-icube-badgeBackground: #2f74ff;--vscode-icube-badgeForeground: #ffffff;--vscode-icube-colorBgTr1: rgba(86, 99, 119, 0.11);--vscode-icube-colorBgTr2: rgba(86, 99, 119, 0.15);--vscode-icube-colorBgTr3: rgba(86, 99, 119, 0.19);--vscode-icube-colorTextDefault: #31353a;--vscode-icube-colorTextHighlight: #111214;--vscode-icube-colorTextGray: #5b6066;--vscode-icube-colorTextDisable: #8a9096;--vscode-icube-colorBrandTr1: rgba(86, 99, 119, 0.11);--vscode-icube-colorBrandTr2: rgba(86, 99, 119, 0.15);--vscode-icube-colorBrandTr3: rgba(86, 99, 119, 0.19);--vscode-icube-colorSuccessTr1: rgba(64, 176, 139, 0.12);--vscode-icube-colorSuccessTr2: rgba(64, 176, 139, 0.18);--vscode-icube-colorSuccessTr3: rgba(64, 176, 139, 0.36);--vscode-icube-colorErrorTr2: rgba(232, 70, 58, 0.16);--vscode-icube-colorErrorTr3: rgba(232, 70, 58, 0.36);--vscode-icube-colorWarningTr1: rgba(226, 138, 0, 0.12);--vscode-icube-colorWarningTr2: rgba(226, 138, 0, 0.16);--vscode-icube-colorWarningTr3: rgba(226, 138, 0, 0.36);--vscode-icube-colorAlertTr1: rgba(198, 166, 38, 0.14);--vscode-icube-colorAlertTr2: rgba(198, 166, 38, 0.2);--vscode-icube-colorAlertTr3: rgba(198, 166, 38, 0.36);--vscode-icube-colorTextButtonHighlight: #111214;--vscode-icube--special-white: #ffffff;--vscode-icube--special-black: #000000;--vscode-icube--bg-bg-base-default: #ffffff;--vscode-icube--bg-bg-tooltip: #ffffff;--vscode-icube--bg-bg-base-secondary: #edeff2;--vscode-icube--bg-bg-base-tertiary: #ffffff;--vscode-icube--bg-bg-overlay-l1: rgba(86, 99, 119, 0.07);--vscode-icube--bg-bg-overlay-l2: rgba(86, 99, 119, 0.11);--vscode-icube--bg-bg-overlay-l3: rgba(86, 99, 119, 0.15);--vscode-icube--bg-bg-overlay-l4: rgba(86, 99, 119, 0.19);--vscode-icube--border-border-neutral-l1: rgba(77, 107, 153, 0.09);--vscode-icube--border-border-neutral-l2: rgba(77, 107, 153, 0.18);--vscode-icube--border-border-neutral-l3: rgba(77, 107, 153, 0.36);--vscode-icube--text-text-default-hover: #111214;--vscode-icube--text-text-default-active: #111214;--vscode-icube--icon-icon-default-hover: #111214;--vscode-icube--icon-icon-default-active: #111214;--vscode-icube--text-text-default: #31353a;--vscode-icube--text-text-secondary-hover: #31353a;--vscode-icube--text-text-secondary-active: #31353a;--vscode-icube--icon-icon-default: #31353a;--vscode-icube--icon-icon-secondary-hover: #31353a;--vscode-icube--icon-icon-secondary-active: #31353a;--vscode-icube--text-text-secondary: #5b6066;--vscode-icube--icon-icon-secondary: #5b6066;--vscode-icube--text-text-tertiary: #8a9096;--vscode-icube--text-text-disabled: #8a9096;--vscode-icube--icon-icon-tertiary: #8a9096;--vscode-icube--icon-icon-disabled: #8a9096;--vscode-icube--status-primary-default: #2f74ff;--vscode-icube--status-primary-hover: #4c88ff;--vscode-icube--status-primary-active: #1759dd;--vscode-icube--status-primary-surface-l1: rgba(47, 116, 255, 0.12);--vscode-icube--status-primary-surface-l2: rgba(47, 116, 255, 0.18);--vscode-icube--status-primary-surface-l3: rgba(47, 116, 255, 0.36);--vscode-icube--status-success-default: #26a57b;--vscode-icube--status-success-hover: #2ca77f;--vscode-icube--status-success-active: #1e8b56;--vscode-icube--status-success-surface-l1: rgba(64, 176, 139, 0.12);--vscode-icube--status-success-surface-l2: rgba(64, 176, 139, 0.18);--vscode-icube--status-success-surface-l3: rgba(64, 176, 139, 0.36);--vscode-icube--status-alert-default: #c6a626;--vscode-icube--status-alert-hover: #dfb716;--vscode-icube--status-alert-active: #af8d06;--vscode-icube--status-alert-surface-l1: rgba(198, 166, 38, 0.14);--vscode-icube--status-alert-surface-l2: rgba(198, 166, 38, 0.2);--vscode-icube--status-alert-surface-l3: rgba(198, 166, 38, 0.36);--vscode-icube--status-warning-default: #e28a00;--vscode-icube--status-warning-hover: #f18c13;--vscode-icube--status-warning-active: #c46f11;--vscode-icube--status-warning-surface-l1: rgba(226, 138, 0, 0.12);--vscode-icube--status-warning-surface-l2: rgba(226, 138, 0, 0.16);--vscode-icube--status-warning-surface-l3: rgba(226, 138, 0, 0.36);--vscode-icube--status-error-default: #e8463a;--vscode-icube--status-error-hover: #ea574c;--vscode-icube--status-error-active: #c9382f;--vscode-icube--status-error-surface-l1: rgba(232, 70, 58, 0.12);--vscode-icube--status-error-surface-l2: rgba(232, 70, 58, 0.16);--vscode-icube--status-error-surface-l3: rgba(232, 70, 58, 0.36);--vscode-icube--bg-bg-invert: #36393d;--vscode-icube--bg-bg-invert-hover: #72767b;--vscode-icube--bg-bg-invert-active: #1a1b1d;--vscode-icube--bg-bg-invert-disabled: rgba(86, 99, 119, 0.19);--vscode-icube--accent-accent-teal: #00b983;--vscode-icube--accent-accent-coral: #ff6b45;--vscode-icube--accent-accent-amber: #f2a90c;--vscode-icube--accent-accent-lime: #5fbf00;--vscode-icube--accent-accent-cyan: #00b8f8;--vscode-icube--accent-accent-blue: #3f85ff;--vscode-icube--accent-accent-magenta: #f53cff;--vscode-icube--accent-accent-violet: #9570ff;--vscode-icube--accent-accent-slate: #747e94;--vscode-icube--bg-bg-menu: #f8f9fa;--vscode-icube--bg-bg-menu-tr0: rgba(255, 255, 255, 0);--vscode-icube--bg-bg-brand: #0fdc78;--vscode-icube--bg-bg-brand-hover: #0ab861;--vscode-icube--bg-bg-brand-disabled: rgba(10, 184, 97, 0.2);--vscode-icube--border-border-contrast: #000000;--vscode-icube--border-border-brand: #0fdc78;--vscode-icube--text-text-brand: #0ab861;--vscode-icube--icon-icon-brand: #0ab861;--vscode-icube--text-text-brand-hover: #0fdc78;--vscode-icube--icon-icon-brand-hover: #0fdc78;--vscode-icube--text-text-onbrand: #0c0c0d;--vscode-icube--icon-icon-onbrand: #0c0c0d;--vscode-icube--text-text-onaccent: #ffffff;--vscode-icube--icon-icon-onaccent: #ffffff;--vscode-icube--special-bgtabsoverlay: rgba(193, 195, 205, 0.12);--vscode-icube--code-code-tag: #e24864;--vscode-icube--code-code-instruction: #b15ef2;--vscode-icube--code-code-doc: #8393a3;--vscode-icube--code-code-parameter: #4da621;--vscode-icube--cue: #0ab861;--vscode-icube--cue-tr0: rgba(10, 184, 97, 0);--vscode-icube--cue-tr1: rgba(10, 184, 97, 0.16);--vscode-icube--cue-tr2: rgba(10, 184, 97, 0.32);--vscode-icube--cue-diff-add: #00a56e;--vscode-icube--cue-diff-add-inline: rgba(0, 165, 110, 0.12);--vscode-icube--cue-diff-add-popup: rgba(0, 165, 110, 0.18);--vscode-icube--cue-diff-remove: rgba(232, 70, 58, 0.14);--vscode-icube--cue-diff-line: rgba(0, 0, 0, 0.32);--vscode-solo-lite-root-background: #edeff2;--vscode-icube-memoryRiskBackground: #fef3e2;--vscode-icube-memoryRiskBorder: #e8a838;--vscode-icube-memoryRiskIcon: #c87a1c;--vscode-icube-blendColor.btnHover.bg2: #e0e3e9;--vscode-icube-blendColor.btnTransparent3.bg2: #d3d8df;--vscode-editor-lineHighlightBackground: rgba(114, 118, 123, 0.08);--vscode-editor-inactiveLineHighlightBackground: rgba(114, 118, 123, 0.08);--vscode-editor-lineHighlightBorder: #eeeeee;--vscode-editor-rangeHighlightBackground: rgba(253, 255, 0, 0.2);--vscode-editor-symbolHighlightBackground: rgba(234, 92, 0, 0.33);--vscode-editorCursor-foreground: #000000;--vscode-editorMultiCursor-primary.foreground: #000000;--vscode-editorMultiCursor-secondary.foreground: #000000;--vscode-editorWhitespace-foreground: rgba(51, 51, 51, 0.2);--vscode-editorLineNumber-foreground: #72767b;--vscode-editorIndentGuide-background: rgba(77, 107, 153, 0.09);--vscode-editorIndentGuide-activeBackground: rgba(77, 107, 153, 0.36);--vscode-editorIndentGuide-background1: rgba(77, 107, 153, 0.09);--vscode-editorIndentGuide-background2: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-background3: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-background4: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-background5: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-background6: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-activeBackground1: rgba(77, 107, 153, 0.36);--vscode-editorIndentGuide-activeBackground2: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-activeBackground3: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-activeBackground4: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-activeBackground5: rgba(0, 0, 0, 0);--vscode-editorIndentGuide-activeBackground6: rgba(0, 0, 0, 0);--vscode-editorActiveLineNumber-foreground: #0b216f;--vscode-editorLineNumber-activeForeground: #111214;--vscode-editorRuler-foreground: #d3d3d3;--vscode-editorCodeLens-foreground: #919191;--vscode-editorBracketMatch-background: rgba(114, 118, 123, 0.24);--vscode-editorBracketMatch-border: #b9b9b9;--vscode-editorOverviewRuler-border: rgba(127, 127, 127, 0.3);--vscode-editorGutter-background: #ffffff;--vscode-editorUnnecessaryCode-opacity: rgba(0, 0, 0, 0.5);--vscode-editorGhostText-foreground: rgba(0, 0, 0, 0.47);--vscode-editorOverviewRuler-rangeHighlightForeground: rgba(0, 122, 204, 0.6);--vscode-editorOverviewRuler-errorForeground: rgba(255, 18, 18, 0.7);--vscode-editorOverviewRuler-warningForeground: #bf8803;--vscode-editorOverviewRuler-infoForeground: #0063d3;--vscode-editorBracketHighlight-foreground1: #0431fa;--vscode-editorBracketHighlight-foreground2: #319331;--vscode-editorBracketHighlight-foreground3: #7b3814;--vscode-editorBracketHighlight-foreground4: rgba(0, 0, 0, 0);--vscode-editorBracketHighlight-foreground5: rgba(0, 0, 0, 0);--vscode-editorBracketHighlight-foreground6: rgba(0, 0, 0, 0);--vscode-editorBracketHighlight-unexpectedBracket.foreground: rgba(255, 18, 18, 0.8);--vscode-editorBracketPairGuide-background1: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-background2: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-background3: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-background4: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-background5: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-background6: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-activeBackground1: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-activeBackground2: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-activeBackground3: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-activeBackground4: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-activeBackground5: rgba(0, 0, 0, 0);--vscode-editorBracketPairGuide-activeBackground6: rgba(0, 0, 0, 0);--vscode-editorUnicodeHighlight-border: #bf8803;--vscode-diffEditor-move.border: rgba(139, 139, 139, 0.61);--vscode-diffEditor-moveActive.border: #ffa500;--vscode-diffEditor-unchangedRegionShadow: rgba(115, 115, 115, 0.75);--vscode-settings-headerForeground: #111214;--vscode-settings-settingsHeaderHoverForeground: rgba(17, 18, 20, 0.7);--vscode-settings-modifiedItemIndicator: #36393d;--vscode-settings-headerBorder: rgba(77, 107, 153, 0.18);--vscode-settings-sashBorder: rgba(128, 128, 128, 0.35);--vscode-settings-dropdownBackground: #ffffff;--vscode-settings-dropdownForeground: #31353a;--vscode-settings-dropdownBorder: rgba(77, 107, 153, 0.09);--vscode-settings-dropdownListBorder: #c8c8c8;--vscode-settings-checkboxBackground: #ffffff;--vscode-settings-checkboxForeground: #31353a;--vscode-settings-checkboxBorder: #919191;--vscode-settings-textInputBackground: rgba(86, 99, 119, 0.07);--vscode-settings-textInputForeground: #31353a;--vscode-settings-textInputBorder: #cecece;--vscode-settings-numberInputBackground: rgba(86, 99, 119, 0.07);--vscode-settings-numberInputForeground: #31353a;--vscode-settings-numberInputBorder: #cecece;--vscode-settings-focusedRowBackground: rgba(86, 99, 119, 0.07);--vscode-settings-rowHoverBackground: rgba(86, 99, 119, 0.03);--vscode-settings-focusedRowBorder: rgba(0, 0, 0, 0);--vscode-editorOverviewRuler-bracketMatchForeground: #a0a0a0;--vscode-actionBar-toggledBackground: #dddddd;--vscode-symbolIcon-arrayForeground: #31353a;--vscode-symbolIcon-booleanForeground: #31353a;--vscode-symbolIcon-classForeground: #d67e00;--vscode-symbolIcon-colorForeground: #31353a;--vscode-symbolIcon-constantForeground: #31353a;--vscode-symbolIcon-constructorForeground: #652d90;--vscode-symbolIcon-enumeratorForeground: #d67e00;--vscode-symbolIcon-enumeratorMemberForeground: #007acc;--vscode-symbolIcon-eventForeground: #d67e00;--vscode-symbolIcon-fieldForeground: #007acc;--vscode-symbolIcon-fileForeground: #31353a;--vscode-symbolIcon-folderForeground: #31353a;--vscode-symbolIcon-functionForeground: #652d90;--vscode-symbolIcon-interfaceForeground: #007acc;--vscode-symbolIcon-keyForeground: #31353a;--vscode-symbolIcon-keywordForeground: #31353a;--vscode-symbolIcon-methodForeground: #b180d7;--vscode-symbolIcon-moduleForeground: #31353a;--vscode-symbolIcon-namespaceForeground: #31353a;--vscode-symbolIcon-nullForeground: #31353a;--vscode-symbolIcon-numberForeground: #31353a;--vscode-symbolIcon-objectForeground: #31353a;--vscode-symbolIcon-operatorForeground: #31353a;--vscode-symbolIcon-packageForeground: #31353a;--vscode-symbolIcon-propertyForeground: #31353a;--vscode-symbolIcon-referenceForeground: #31353a;--vscode-symbolIcon-snippetForeground: #31353a;--vscode-symbolIcon-stringForeground: #31353a;--vscode-symbolIcon-structForeground: #31353a;--vscode-symbolIcon-textForeground: #31353a;--vscode-symbolIcon-typeParameterForeground: #31353a;--vscode-symbolIcon-unitForeground: #31353a;--vscode-symbolIcon-variableForeground: #007acc;--vscode-peekViewTitle-background: #f3f3f3;--vscode-peekViewTitleLabel-foreground: #000000;--vscode-peekViewTitleDescription-foreground: #616161;--vscode-peekView-border: #0063d3;--vscode-peekViewResult-background: #f3f3f3;--vscode-peekViewResult-lineForeground: #646465;--vscode-peekViewResult-fileForeground: #1e1e1e;--vscode-peekViewResult-selectionBackground: rgba(51, 153, 255, 0.2);--vscode-peekViewResult-selectionForeground: #6c6c6c;--vscode-peekViewEditor-background: #f2f8fc;--vscode-peekViewEditorGutter-background: #f2f8fc;--vscode-peekViewEditorStickyScroll-background: #f2f8fc;--vscode-peekViewEditorStickyScrollGutter-background: #f2f8fc;--vscode-peekViewResult-matchHighlightBackground: rgba(234, 92, 0, 0.3);--vscode-peekViewEditor-matchHighlightBackground: rgba(245, 216, 2, 0.87);--vscode-editorMarkerNavigationError-background: #e51400;--vscode-editorMarkerNavigationError-headerBackground: rgba(229, 20, 0, 0.1);--vscode-editorMarkerNavigationWarning-background: #bf8803;--vscode-editorMarkerNavigationWarning-headerBackground: rgba(191, 136, 3, 0.1);--vscode-editorMarkerNavigationInfo-background: #0063d3;--vscode-editorMarkerNavigationInfo-headerBackground: rgba(0, 99, 211, 0.1);--vscode-editorMarkerNavigation-background: #ffffff;--vscode-editor-foldBackground: rgba(47, 116, 255, 0.05);--vscode-editor-foldPlaceholderForeground: #808080;--vscode-editorGutter-foldingControlForeground: #5b6066;--vscode-editorSuggestWidget-background: #f3f3f3;--vscode-editorSuggestWidget-border: #c8c8c8;--vscode-editorSuggestWidget-foreground: #31353a;--vscode-editorSuggestWidget-selectedForeground: #111214;--vscode-editorSuggestWidget-selectedIconForeground: #5b6066;--vscode-editorSuggestWidget-selectedBackground: rgba(86, 99, 119, 0.11);--vscode-editorSuggestWidget-highlightForeground: #0066bf;--vscode-editorSuggestWidget-focusHighlightForeground: #0066bf;--vscode-editorSuggestWidgetStatus-foreground: rgba(49, 53, 58, 0.5);--vscode-inlineEdit-originalBackground: rgba(232, 70, 58, 0.03);--vscode-inlineEdit-modifiedBackground: rgba(64, 176, 139, 0.05);--vscode-inlineEdit-originalChangedLineBackground: rgba(232, 70, 58, 0.13);--vscode-inlineEdit-originalChangedTextBackground: rgba(232, 70, 58, 0.13);--vscode-inlineEdit-modifiedChangedLineBackground: rgba(64, 176, 139, 0.09);--vscode-inlineEdit-modifiedChangedTextBackground: rgba(64, 176, 139, 0.13);--vscode-inlineEdit-gutterIndicator.primaryForeground: #ffffff;--vscode-inlineEdit-gutterIndicator.primaryBorder: #31353a;--vscode-inlineEdit-gutterIndicator.primaryBackground: rgba(49, 53, 58, 0.5);--vscode-inlineEdit-gutterIndicator.secondaryForeground: #ffffff;--vscode-inlineEdit-gutterIndicator.secondaryBorder: #5f6a79;--vscode-inlineEdit-gutterIndicator.secondaryBackground: #5f6a79;--vscode-inlineEdit-gutterIndicator.successfulForeground: #ffffff;--vscode-inlineEdit-gutterIndicator.successfulBorder: #31353a;--vscode-inlineEdit-gutterIndicator.successfulBackground: #31353a;--vscode-inlineEdit-gutterIndicator.background: rgba(95, 95, 95, 0.09);--vscode-inlineEdit-originalBorder: rgba(232, 70, 58, 0.16);--vscode-inlineEdit-modifiedBorder: rgba(26, 70, 55, 0.18);--vscode-inlineEdit-tabWillAcceptModifiedBorder: rgba(26, 70, 55, 0.18);--vscode-inlineEdit-tabWillAcceptOriginalBorder: rgba(232, 70, 58, 0.16);--vscode-editor-linkedEditingBackground: rgba(255, 0, 0, 0.3);--vscode-editor-wordHighlightBackground: rgba(114, 118, 123, 0.24);--vscode-editor-wordHighlightStrongBackground: rgba(14, 99, 156, 0.25);--vscode-editor-wordHighlightTextBackground: rgba(114, 118, 123, 0.24);--vscode-editorOverviewRuler-wordHighlightForeground: rgba(160, 160, 160, 0.8);--vscode-editorOverviewRuler-wordHighlightStrongForeground: rgba(192, 160, 192, 0.8);--vscode-editorOverviewRuler-wordHighlightTextForeground: rgba(160, 160, 160, 0.8);--vscode-editorHoverWidget-highlightForeground: #0066bf;--vscode-editor-placeholder.foreground: rgba(0, 0, 0, 0.47);--vscode-editorGutter-modifiedBackground: #2090d3;--vscode-editorGutter-modifiedSecondaryBackground: #aad8f2;--vscode-editorGutter-addedBackground: #48985d;--vscode-editorGutter-addedSecondaryBackground: #a7d5b3;--vscode-editorGutter-deletedBackground: #e51400;--vscode-editorGutter-deletedSecondaryBackground: #ff3d2b;--vscode-minimapGutter-modifiedBackground: #2090d3;--vscode-minimapGutter-addedBackground: #48985d;--vscode-minimapGutter-deletedBackground: #e51400;--vscode-editorOverviewRuler-modifiedForeground: rgba(32, 144, 211, 0.6);--vscode-editorOverviewRuler-addedForeground: rgba(72, 152, 93, 0.6);--vscode-editorOverviewRuler-deletedForeground: rgba(229, 20, 0, 0.6);--vscode-editorGutter-itemGlyphForeground: #31353a;--vscode-editorGutter-itemBackground: #dee0e5;--vscode-agentSessionReadIndicator-foreground: rgba(49, 53, 58, 0.15);--vscode-terminal-foreground: #333333;--vscode-terminal-selectionBackground: rgba(47, 116, 255, 0.18);--vscode-terminal-inactiveSelectionBackground: #e5ebf1;--vscode-terminalCommandDecoration-defaultBackground: rgba(0, 0, 0, 0.25);--vscode-terminalCommandDecoration-successBackground: #2090d3;--vscode-terminalCommandDecoration-errorBackground: #e51400;--vscode-terminalOverviewRuler-cursorForeground: rgba(160, 160, 160, 0.8);--vscode-terminal-border: rgba(128, 128, 128, 0.35);--vscode-terminalOverviewRuler-border: rgba(127, 127, 127, 0.3);--vscode-terminal-findMatchBackground: #a8ac94;--vscode-terminal-hoverHighlightBackground: rgba(173, 214, 255, 0.07);--vscode-terminal-findMatchHighlightBackground: rgba(234, 92, 0, 0.33);--vscode-terminalOverviewRuler-findMatchForeground: rgba(209, 134, 22, 0.49);--vscode-terminal-dropBackground: rgba(33, 97, 224, 0.16);--vscode-terminal-tab.activeBorder: #ffffff;--vscode-terminal-initialHintForeground: rgba(0, 0, 0, 0.47);--vscode-scmGraph-historyItemRefColor: #0063d3;--vscode-scmGraph-historyItemRemoteRefColor: #652d90;--vscode-scmGraph-historyItemBaseRefColor: #ea5c00;--vscode-scmGraph-historyItemHoverDefaultLabelForeground: #31353a;--vscode-scmGraph-historyItemHoverDefaultLabelBackground: #c4c4c4;--vscode-scmGraph-historyItemHoverLabelForeground: #ffffff;--vscode-scmGraph-historyItemHoverAdditionsForeground: #587c0c;--vscode-scmGraph-historyItemHoverDeletionsForeground: #ad0707;--vscode-scmGraph-foreground1: #ffb000;--vscode-scmGraph-foreground2: #dc267f;--vscode-scmGraph-foreground3: #994f00;--vscode-scmGraph-foreground4: #40b0a6;--vscode-scmGraph-foreground5: #b66dff;--vscode-commentsView-resolvedIcon: #8a9096;--vscode-commentsView-unresolvedIcon: rgba(0, 0, 0, 0);--vscode-editorCommentsWidget-replyInputBackground: #f3f3f3;--vscode-editorCommentsWidget-resolvedBorder: #8a9096;--vscode-editorCommentsWidget-unresolvedBorder: rgba(0, 0, 0, 0);--vscode-editorCommentsWidget-rangeBackground: rgba(0, 0, 0, 0);--vscode-editorCommentsWidget-rangeActiveBackground: rgba(0, 0, 0, 0);--vscode-editorGutter-commentRangeForeground: #dee0e5;--vscode-editorOverviewRuler-commentForeground: #dee0e5;--vscode-editorOverviewRuler-commentUnresolvedForeground: #dee0e5;--vscode-editorOverviewRuler-commentDraftForeground: #dee0e5;--vscode-editorGutter-commentGlyphForeground: #31353a;--vscode-editorGutter-commentUnresolvedGlyphForeground: #31353a;--vscode-editorGutter-commentDraftGlyphForeground: #31353a;--vscode-ports-iconRunningProcessForeground: #369432;--vscode-welcomePage-tileBackground: #f3f3f3;--vscode-welcomePage-tileHoverBackground: #dbdbdb;--vscode-welcomePage-tileBorder: rgba(0, 0, 0, 0.1);--vscode-welcomePage-progress.background: rgba(86, 99, 119, 0.07);--vscode-welcomePage-progress.foreground: #006ab1;--vscode-walkthrough-stepTitle.foreground: #000000;--vscode-extensionIcon-verifiedForeground: #006ab1;--vscode-keybindingTable-headerBackground: rgba(49, 53, 58, 0.04);--vscode-keybindingTable-rowsBackground: rgba(49, 53, 58, 0.04);--vscode-extensionButton-background: #31353a;--vscode-extensionButton-foreground: #ffffff;--vscode-extensionButton-hoverBackground: #72767b;--vscode-extensionButton-separator: rgba(193, 195, 205, 0.12);--vscode-extensionButton-prominentBackground: #31353a;--vscode-extensionButton-prominentForeground: #ffffff;--vscode-extensionButton-prominentHoverBackground: #72767b;--vscode-debugToolBar-background: #edeff2;--vscode-debugIcon-startForeground: #388a34;--vscode-notebook-cellBorderColor: #e8e8e8;--vscode-notebook-focusedEditorBorder: rgba(0, 0, 0, 0);--vscode-notebookStatusSuccessIcon-foreground: #388a34;--vscode-notebookEditorOverviewRuler-runningCellForeground: #388a34;--vscode-notebookStatusErrorIcon-foreground: #cc4b53;--vscode-notebookStatusRunningIcon-foreground: #31353a;--vscode-notebook-cellToolbarSeparator: rgba(128, 128, 128, 0.35);--vscode-notebook-selectedCellBackground: rgba(200, 221, 241, 0.31);--vscode-notebook-selectedCellBorder: #e8e8e8;--vscode-notebook-focusedCellBorder: rgba(0, 0, 0, 0);--vscode-notebook-inactiveFocusedCellBorder: #e8e8e8;--vscode-notebook-cellStatusBarItemHoverBackground: rgba(0, 0, 0, 0.08);--vscode-notebook-cellInsertionIndicator: rgba(0, 0, 0, 0);--vscode-notebookScrollbarSlider-background: rgba(100, 100, 100, 0.4);--vscode-notebookScrollbarSlider-hoverBackground: rgba(100, 100, 100, 0.7);--vscode-notebookScrollbarSlider-activeBackground: rgba(0, 0, 0, 0.6);--vscode-notebook-symbolHighlightBackground: rgba(253, 255, 0, 0.2);--vscode-notebook-cellEditorBackground: #ffffff;--vscode-notebook-editorBackground: #ffffff;--vscode-inlineChat-foreground: #31353a;--vscode-inlineChat-background: #f3f3f3;--vscode-inlineChat-border: #c8c8c8;--vscode-inlineChat-shadow: rgba(0, 0, 0, 0.08);--vscode-inlineChatInput-border: #c8c8c8;--vscode-inlineChatInput-focusBorder: rgba(0, 0, 0, 0);--vscode-inlineChatInput-placeholderForeground: #5b6066;--vscode-inlineChatInput-background: rgba(86, 99, 119, 0.07);--vscode-inlineChatDiff-inserted: rgba(64, 176, 139, 0.09);--vscode-editorOverviewRuler-inlineChatInserted: rgba(64, 176, 139, 0.14);--vscode-editorMinimap-inlineChatInserted: rgba(64, 176, 139, 0.14);--vscode-inlineChatDiff-removed: rgba(232, 70, 58, 0.08);--vscode-editorOverviewRuler-inlineChatRemoved: rgba(232, 70, 58, 0.13);--vscode-chat-requestBorder: rgba(0, 0, 0, 0.1);--vscode-chat-requestBackground: rgba(255, 255, 255, 0.62);--vscode-chat-slashCommandBackground: rgba(173, 206, 255, 0.48);--vscode-chat-slashCommandForeground: #26569e;--vscode-chat-avatarBackground: #f2f2f2;--vscode-chat-avatarForeground: #31353a;--vscode-chat-editedFileForeground: #895503;--vscode-chat-requestCodeBorder: rgba(14, 99, 156, 0.25);--vscode-chat-requestBubbleBackground: rgba(47, 116, 255, 0.05);--vscode-chat-requestBubbleHoverBackground: rgba(47, 116, 255, 0.11);--vscode-chat-checkpointSeparator: #a9a9a9;--vscode-chat-linesAddedForeground: #107c10;--vscode-chat-linesRemovedForeground: #bc2f32;--vscode-extensionIcon-starForeground: #df6100;--vscode-extensionIcon-preReleaseForeground: #1d9271;--vscode-extensionIcon-sponsorForeground: #b51e78;--vscode-extensionIcon-privateForeground: rgba(0, 0, 0, 0.38);--vscode-debugExceptionWidget-border: #a31515;--vscode-debugExceptionWidget-background: #f1dfde;--vscode-editor-inlineValuesForeground: rgba(0, 0, 0, 0.5);--vscode-editor-inlineValuesBackground: rgba(255, 200, 0, 0.2);--vscode-debugIcon-breakpointForeground: #cc4b53;--vscode-debugIcon-breakpointDisabledForeground: #848484;--vscode-debugIcon-breakpointUnverifiedForeground: #848484;--vscode-debugIcon-breakpointCurrentStackframeForeground: #be8700;--vscode-debugIcon-breakpointStackframeForeground: #89d185;--vscode-editor-stackFrameHighlightBackground: rgba(255, 255, 102, 0.45);--vscode-editor-focusedStackFrameHighlightBackground: rgba(206, 231, 206, 0.45);--vscode-multiDiffEditor-headerBackground: #f8f8f9;--vscode-multiDiffEditor-background: #ffffff;--vscode-multiDiffEditor-border: #cccccc;--vscode-minimap-chatEditHighlight: rgba(255, 255, 255, 0.6);--vscode-chatManagement-sashBorder: rgba(128, 128, 128, 0.35);--vscode-gauge-foreground: #007acc;--vscode-gauge-background: rgba(0, 122, 204, 0.3);--vscode-gauge-warningForeground: #b89500;--vscode-gauge-warningBackground: rgba(184, 149, 0, 0.3);--vscode-gauge-errorForeground: #e8463a;--vscode-gauge-errorBackground: rgba(232, 70, 58, 0.3);--vscode-interactive-activeCodeBorder: #007acc;--vscode-interactive-inactiveCodeBorder: rgba(86, 99, 119, 0.11);--vscode-testing-iconFailed: #f14c4c;--vscode-testing-iconErrored: #f14c4c;--vscode-testing-iconPassed: #73c991;--vscode-testing-runAction: #73c991;--vscode-testing-iconQueued: #cca700;--vscode-testing-iconUnset: #848484;--vscode-testing-iconSkipped: #848484;--vscode-testing-peekBorder: #e51400;--vscode-testing-messagePeekBorder: #0063d3;--vscode-testing-peekHeaderBackground: rgba(229, 20, 0, 0.1);--vscode-testing-messagePeekHeaderBackground: rgba(0, 99, 211, 0.1);--vscode-testing-coveredBackground: rgba(64, 176, 139, 0.18);--vscode-testing-coveredBorder: rgba(64, 176, 139, 0.14);--vscode-testing-coveredGutterBackground: rgba(64, 176, 139, 0.11);--vscode-testing-uncoveredBranchBackground: #f7c3bf;--vscode-testing-uncoveredBackground: rgba(232, 70, 58, 0.16);--vscode-testing-uncoveredBorder: rgba(232, 70, 58, 0.12);--vscode-testing-uncoveredGutterBackground: rgba(232, 70, 58, 0.24);--vscode-testing-coverCountBadgeBackground: #c4c4c4;--vscode-testing-coverCountBadgeForeground: #333333;--vscode-testing-message.error.badgeBackground: #e51400;--vscode-testing-message.error.badgeBorder: #e51400;--vscode-testing-message.error.badgeForeground: #ffffff;--vscode-testing-message.info.decorationForeground: rgba(49, 53, 58, 0.5);--vscode-testing-iconErrored.retired: rgba(241, 76, 76, 0.7);--vscode-testing-iconFailed.retired: rgba(241, 76, 76, 0.7);--vscode-testing-iconPassed.retired: rgba(115, 201, 145, 0.7);--vscode-testing-iconQueued.retired: rgba(204, 167, 0, 0.7);--vscode-testing-iconUnset.retired: rgba(132, 132, 132, 0.7);--vscode-testing-iconSkipped.retired: rgba(132, 132, 132, 0.7);--vscode-searchEditor-textInputBorder: #cecece;--vscode-statusBar-debuggingBackground: #cc6633;--vscode-statusBar-debuggingForeground: #ffffff;--vscode-commandCenter-debuggingBackground: rgba(204, 102, 51, 0.26);--vscode-debugTokenExpression-name: #9b46b0;--vscode-debugTokenExpression-type: #4a90e2;--vscode-debugTokenExpression-value: rgba(108, 108, 108, 0.8);--vscode-debugTokenExpression-string: #a31515;--vscode-debugTokenExpression-boolean: #0000ff;--vscode-debugTokenExpression-number: #098658;--vscode-debugTokenExpression-error: #e51400;--vscode-debugView-exceptionLabelForeground: #ffffff;--vscode-debugView-exceptionLabelBackground: #a31515;--vscode-debugView-stateLabelForeground: #31353a;--vscode-debugView-stateLabelBackground: rgba(136, 136, 136, 0.27);--vscode-debugView-valueChangedHighlight: #569cd6;--vscode-debugConsole-infoForeground: #0063d3;--vscode-debugConsole-warningForeground: #bf8803;--vscode-debugConsole-errorForeground: #cc4b53;--vscode-debugConsole-sourceForeground: #31353a;--vscode-debugConsoleInputIcon-foreground: #31353a;--vscode-debugIcon-pauseForeground: #007acc;--vscode-debugIcon-stopForeground: #a1260d;--vscode-debugIcon-disconnectForeground: #a1260d;--vscode-debugIcon-restartForeground: #388a34;--vscode-debugIcon-stepOverForeground: #007acc;--vscode-debugIcon-stepIntoForeground: #007acc;--vscode-debugIcon-stepOutForeground: #007acc;--vscode-debugIcon-continueForeground: #007acc;--vscode-debugIcon-stepBackForeground: #007acc;--vscode-mergeEditor-change.background: rgba(155, 185, 85, 0.2);--vscode-mergeEditor-change.word.background: rgba(156, 204, 44, 0.4);--vscode-mergeEditor-changeBase.background: #ffcccc;--vscode-mergeEditor-changeBase.word.background: #ffa3a3;--vscode-mergeEditor-conflict.unhandledUnfocused.border: #ffa600;--vscode-mergeEditor-conflict.unhandledFocused.border: #ffa600;--vscode-mergeEditor-conflict.handledUnfocused.border: rgba(134, 134, 134, 0.29);--vscode-mergeEditor-conflict.handledFocused.border: rgba(193, 193, 193, 0.8);--vscode-mergeEditor-conflict.handled.minimapOverViewRuler: rgba(173, 172, 168, 0.93);--vscode-mergeEditor-conflict.unhandled.minimapOverViewRuler: #fcba03;--vscode-mergeEditor-conflictingLines.background: rgba(255, 234, 0, 0.28);--vscode-mergeEditor-conflict.input1.background: rgba(64, 200, 174, 0.2);--vscode-mergeEditor-conflict.input2.background: rgba(64, 166, 255, 0.2);--vscode-terminal-ansiBlack: #000000;--vscode-terminal-ansiRed: #cd3131;--vscode-terminal-ansiGreen: #107c10;--vscode-terminal-ansiYellow: #949800;--vscode-terminal-ansiBlue: #0451a5;--vscode-terminal-ansiMagenta: #bc05bc;--vscode-terminal-ansiCyan: #0598bc;--vscode-terminal-ansiWhite: #555555;--vscode-terminal-ansiBrightBlack: #666666;--vscode-terminal-ansiBrightRed: #cd3131;--vscode-terminal-ansiBrightGreen: #14ce14;--vscode-terminal-ansiBrightYellow: #b5ba00;--vscode-terminal-ansiBrightBlue: #0451a5;--vscode-terminal-ansiBrightMagenta: #bc05bc;--vscode-terminal-ansiBrightCyan: #0598bc;--vscode-terminal-ansiBrightWhite: #a5a5a5;--vscode-simpleFindWidget-sashBorder: #c8c8c8;--vscode-terminalStickyScrollHover-background: #f0f0f0;--vscode-terminalCommandGuide-foreground: rgba(86, 99, 119, 0.11);--vscode-terminalSymbolIcon-flagForeground: #d67e00;--vscode-terminalSymbolIcon-aliasForeground: #b180d7;--vscode-terminalSymbolIcon-optionValueForeground: #007acc;--vscode-terminalSymbolIcon-methodForeground: #b180d7;--vscode-terminalSymbolIcon-argumentForeground: #007acc;--vscode-terminalSymbolIcon-optionForeground: #d67e00;--vscode-terminalSymbolIcon-fileForeground: #31353a;--vscode-terminalSymbolIcon-folderForeground: #31353a;--vscode-terminalSymbolIcon-commitForeground: #31353a;--vscode-terminalSymbolIcon-branchForeground: #31353a;--vscode-terminalSymbolIcon-tagForeground: #31353a;--vscode-terminalSymbolIcon-stashForeground: #31353a;--vscode-terminalSymbolIcon-remoteForeground: #31353a;--vscode-terminalSymbolIcon-pullRequestForeground: #31353a;--vscode-terminalSymbolIcon-pullRequestDoneForeground: #31353a;--vscode-terminalSymbolIcon-symbolicLinkFileForeground: #31353a;--vscode-terminalSymbolIcon-symbolicLinkFolderForeground: #31353a;--vscode-terminalSymbolIcon-symbolText: #31353a;--vscode-markdownAlert-note.foreground: #0063d3;--vscode-markdownAlert-tip.foreground: #388a34;--vscode-markdownAlert-important.foreground: #652d90;--vscode-markdownAlert-warning.foreground: #bf8803;--vscode-markdownAlert-caution.foreground: #e51400;--vscode-walkThrough-embeddedEditorBackground: #f4f4f4;--vscode-profiles-sashBorder: rgba(128, 128, 128, 0.35);--vscode-icube-inlineChat.regionHighlight: rgba(225, 225, 225, 0.2);--vscode-icube-inlineChatDiff.inserted: rgba(64, 176, 139, 0.09);--vscode-icube-inlineChatDiff.removed: rgba(232, 70, 58, 0.08);--vscode-icube-simpleInlineChat.regionHighlight: rgba(225, 225, 225, 0.2);--vscode-icube-simpleInlineChatDiff.inserted: rgba(64, 176, 139, 0.12);--vscode-icube-simpleInlineChatDiff.removed: rgba(232, 70, 58, 0.12);--vscode-gitDecoration-addedResourceForeground: #587c0c;--vscode-gitDecoration-modifiedResourceForeground: #f0a50f;--vscode-gitDecoration-deletedResourceForeground: #ad0707;--vscode-gitDecoration-renamedResourceForeground: #00aa62;--vscode-gitDecoration-untrackedResourceForeground: #00aa62;--vscode-gitDecoration-ignoredResourceForeground: #8e8e90;--vscode-gitDecoration-stageModifiedResourceForeground: #f0a50f;--vscode-gitDecoration-stageDeletedResourceForeground: #ad0707;--vscode-gitDecoration-conflictingResourceForeground: #ad0707;--vscode-gitDecoration-submoduleResourceForeground: #1258a7;--vscode-git-blame.editorDecorationForeground: #969696;}</style><style id="solo-lite-theme-variables">:root {
   --workspace-gap-width: 4px;
   --header-height: 48px;
@@ -3646,7 +4322,7 @@
       <input type="file" id="avatarInput" accept="image/*" hidden="">
       <div><h1 id="brandName">檐栖</h1><p id="brandSlogan">Cat Daily News</p></div>
     </div>
-    <nav class="nav" id="nav"><div class="navi active" data-go="home"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6 10.5V19h12v-8.5"></path></svg>首页</div><div class="navi" data-go="agents"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>AI Agent中心</div><div class="nav-sep">猫生日常</div><div class="navi" data-go="todo"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6h11"></path><path d="M8.5 12h11"></path><path d="M8.5 18h11"></path><circle cx="4.5" cy="6" r=".9"></circle><circle cx="4.5" cy="12" r=".9"></circle><circle cx="4.5" cy="18" r=".9"></circle></svg>头版选题</div><div class="navi" data-go="checkin"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 9 4 17c0 1 .1 2 .5 3 5.5-9 9-9.5 15.5-16z"></path><path d="M4.5 20c3-6 7-9.5 13-11.5"></path></svg>日常打卡</div><div class="navi" data-go="read"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg>阅读专栏</div><div class="navi" data-go="sport"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg>运动版面</div><div class="navi" data-go="money"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg>财经版</div><div class="navi" data-go="note"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg>副刊笔记</div><div class="navi" data-go="hot"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 3 5 5.5 5 9a5 5 0 0 1-10 0c0-2 1-3.6 2.6-4.6C9 10.4 10.4 6.2 12 3z"></path></svg>热点追踪</div><div class="nav-sep">IELTS 备考</div><div class="navi" data-go="ielts_read"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg>阅读题库</div><div class="navi" data-go="ielts_listening"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 1 1 16 0v2"></path><rect x="3" y="13" width="4" height="6" rx="1.5"></rect><rect x="17" y="13" width="4" height="6" rx="1.5"></rect></svg>听力题库</div><div class="navi" data-go="ielts_writing"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg>写作题库</div><div class="navi" data-go="ielts_speaking"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>口语题库</div><div class="navi" data-go="ielts_record"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M8 13h8M8 17h5"></path></svg>备考记录</div><div class="nav-sep">统计</div><div class="navi" data-go="insight"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 16v-4"></path><path d="M12 16v-7"></path><path d="M16 16v-2"></path></svg>洞察复盘</div><div class="nav-sep">其他</div><div class="navi" id="navi-settings" title="云同步 / 数据管理"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg> 设置</div></nav>
+    <nav class="nav" id="nav"><div class="navi" data-go="home"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6 10.5V19h12v-8.5"></path></svg>首页</div><div class="navi active" data-go="agents"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>AI Agent中心</div><div class="nav-sep">猫生日常</div><div class="navi" data-go="todo"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6h11"></path><path d="M8.5 12h11"></path><path d="M8.5 18h11"></path><circle cx="4.5" cy="6" r=".9"></circle><circle cx="4.5" cy="12" r=".9"></circle><circle cx="4.5" cy="18" r=".9"></circle></svg>头版选题</div><div class="navi" data-go="checkin"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 9 4 17c0 1 .1 2 .5 3 5.5-9 9-9.5 15.5-16z"></path><path d="M4.5 20c3-6 7-9.5 13-11.5"></path></svg>日常打卡</div><div class="navi" data-go="read"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg>阅读专栏</div><div class="navi" data-go="sport"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg>运动版面</div><div class="navi" data-go="money"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg>财经版</div><div class="navi" data-go="note"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg>副刊笔记</div><div class="navi" data-go="hot"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 3 5 5.5 5 9a5 5 0 0 1-10 0c0-2 1-3.6 2.6-4.6C9 10.4 10.4 6.2 12 3z"></path></svg>热点追踪</div><div class="nav-sep">IELTS 备考</div><div class="navi" data-go="ielts_read"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg>阅读题库</div><div class="navi" data-go="ielts_listening"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 1 1 16 0v2"></path><rect x="3" y="13" width="4" height="6" rx="1.5"></rect><rect x="17" y="13" width="4" height="6" rx="1.5"></rect></svg>听力题库</div><div class="navi" data-go="ielts_writing"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg>写作题库</div><div class="navi" data-go="ielts_speaking"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>口语题库</div><div class="navi" data-go="ielts_record"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M8 13h8M8 17h5"></path></svg>备考记录</div><div class="nav-sep">统计</div><div class="navi" data-go="insight"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 16v-4"></path><path d="M12 16v-7"></path><path d="M16 16v-2"></path></svg>洞察复盘</div><div class="nav-sep">其他</div><div class="navi" id="navi-settings" title="云同步 / 数据管理"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg> 设置</div></nav>
     <div class="cloud-bar" id="cloudBar">
       <div class="cb-status">
         <span class="cb-dot" id="cbDot"></span>
@@ -3705,186 +4381,133 @@
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
   <!-- main -->
-  <main class="main"><div id="screen">
-    <div class="sec-grp"><span class="bar"></span><span class="zh">今日节奏</span><span class="en">TODAY&nbsp;&nbsp;·&nbsp;&nbsp;RHYTHM</span><span class="line"></span></div>
-    <div class="bento">
-      <div class="clock-card b3">
-    <div><div class="hi">夜深了，檐栖</div><div class="sub">周末特刊：整理一下爪子，迎接新的一周。</div></div>
-    <div><div class="clk" id="clk">02:29:52</div>
-      <div class="cmeta"><span>2026年8月15日 周六</span><span class="dot"></span><span>第 1 周</span></div></div></div>
-      <div class="tile b3"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.9l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z"></path></svg></span><div class="tt"><span class="en">TODAY'S FOCUS</span><span class="zh">今日聚焦</span></div><span class="r">0 项</span></div>
-    <div class="focus-list"><div class="focus-empty">在任意模块点击 <span style="display:inline-flex;color:var(--module-3);vertical-align:-2px"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.9l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z"></path></svg></span> 即可把要事置顶到这里。</div></div></div>
-      <div class="tile b3 ai-planner" id="aiPlannerTile">
-      <div class="tile-h">
-        <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
-        <button class="r" id="miaoSettingsBtn" style="border:none;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-weight:500;font-family:var(--font)">设置</button>
+  <main class="main"><div id="screen"><div class="agents-page">
+    <div class="agents-header">
+      <div>
+        <h2>喵喵编辑部 · AI Agent指挥中心</h2>
+        <p>多Agent协作架构 · 6个专业角色Agent · 主编智能调度 · 对应JD：任务规划/工具调用/记忆/多Agent</p>
       </div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
-      <div class="ai-input-wrap">
-        <input type="text" id="aiGoalInput" placeholder="例如：准备秋招，目标字节产品offer">
-        <button class="btn" id="aiPlanBtn" style="padding:9px 14px;white-space:nowrap">生成规划</button>
-      </div>
-      <div class="ai-suggest"><button class="sug-chip" data-ai-goal="准备字节AI Agent PM面试">准备字节AI Agent PM面试</button><button class="sug-chip" data-ai-goal="一周雅思备考计划">一周雅思备考计划</button><button class="sug-chip" data-ai-goal="养成早睡早起习惯">养成早睡早起习惯</button><button class="sug-chip" data-ai-goal="月度消费复盘优化">月度消费复盘优化</button></div>
-      <div class="ai-loading" id="aiLoading"><span>AI 正在生成</span><div class="dots"><i></i><i></i><i></i></div></div>
-      <div class="ai-result" id="aiResult"></div>
-    </div>
-      <div class="tile b3"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span><div class="tt"><span class="en">QUICK ADD</span><span class="zh">快速记录</span></div></div>
-    <div class="quick-grid" style="flex:1;align-content:start"><button class="qbtn" data-quick="sport"><span class="e" style="background:#f3e3dd;color:var(--module-3)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg><i class="qplus"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></i></span><span class="l">记运动</span></button><button class="qbtn" data-quick="checkin"><span class="e" style="background:#d8e5d0;color:var(--module-1)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg><i class="qplus"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></i></span><span class="l">记打卡</span></button><button class="qbtn" data-quick="money"><span class="e" style="background:#efe7d0;color:var(--module-4)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg><i class="qplus"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></i></span><span class="l">记一笔</span></button><button class="qbtn" data-quick="note"><span class="e" style="background:#e6dfd0;color:var(--module-5)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg><i class="qplus"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></i></span><span class="l">记想法</span></button></div></div>
-      <div class="tile b12"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle></svg></span><div class="tt"><span class="en">DAILY VITALS</span><span class="zh">今日概览</span></div><span class="r">2026年8月15日 周六</span></div>
-    <div class="ov2-body">
-      <div class="rings"><div class="ring" data-open="todo"><div class="dial"><svg class="gauge" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet"><circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--border)" stroke-width="8.16"></circle>
-    <circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--accent)" stroke-width="8.16" stroke-linecap="round" stroke-dasharray="241.27431579569614" stroke-dashoffset="241.27431579569614"></circle></svg><span class="mid"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6h11"></path><path d="M8.5 12h11"></path><path d="M8.5 18h11"></path><circle cx="4.5" cy="6" r=".9"></circle><circle cx="4.5" cy="12" r=".9"></circle><circle cx="4.5" cy="18" r=".9"></circle></svg></span></div>
-      <div class="pct">0%</div><div class="lbl">今日选题</div><div class="sub">0/1 项</div></div><div class="ring" data-open="checkin"><div class="dial"><svg class="gauge" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet"><circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--border)" stroke-width="8.16"></circle>
-    <circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--module-1)" stroke-width="8.16" stroke-linecap="round" stroke-dasharray="241.27431579569614" stroke-dashoffset="241.27431579569614"></circle></svg><span class="mid"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 9 4 17c0 1 .1 2 .5 3 5.5-9 9-9.5 15.5-16z"></path><path d="M4.5 20c3-6 7-9.5 13-11.5"></path></svg></span></div>
-      <div class="pct">0%</div><div class="lbl">打卡</div><div class="sub">0/3 项</div></div><div class="ring" data-open="read"><div class="dial"><svg class="gauge" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet"><circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--border)" stroke-width="8.16"></circle>
-    <circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--module-2)" stroke-width="8.16" stroke-linecap="round" stroke-dasharray="241.27431579569614" stroke-dashoffset="132.70087368763288"></circle></svg><span class="mid"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg></span></div>
-      <div class="pct">45%</div><div class="lbl">阅读</div><div class="sub">2 项</div></div><div class="ring" data-open="sport"><div class="dial"><svg class="gauge" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet"><circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--border)" stroke-width="8.16"></circle>
-    <circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--module-3)" stroke-width="8.16" stroke-linecap="round" stroke-dasharray="241.27431579569614" stroke-dashoffset="77.20778105462276"></circle></svg><span class="mid"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg></span></div>
-      <div class="pct">68%</div><div class="lbl">运动</div><div class="sub">2 项</div></div><div class="ring" data-open="ielts_read"><div class="dial"><svg class="gauge" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet"><circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--border)" stroke-width="8.16"></circle>
-    <circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="#4a6c3f" stroke-width="8.16" stroke-linecap="round" stroke-dasharray="241.27431579569614" stroke-dashoffset="241.27431579569614"></circle></svg><span class="mid"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg></span></div>
-      <div class="pct">0%</div><div class="lbl">雅思阅读</div><div class="sub">0/0 完成</div></div><div class="ring" data-open="ielts_listening"><div class="dial"><svg class="gauge" viewBox="0 0 96 96" preserveAspectRatio="xMidYMid meet"><circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="var(--border)" stroke-width="8.16"></circle>
-    <circle cx="48" cy="48" r="38.400000000000006" fill="none" stroke="#8b7355" stroke-width="8.16" stroke-linecap="round" stroke-dasharray="241.27431579569614" stroke-dashoffset="241.27431579569614"></circle></svg><span class="mid"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 1 1 16 0v2"></path><rect x="3" y="13" width="4" height="6" rx="1.5"></rect><rect x="17" y="13" width="4" height="6" rx="1.5"></rect></svg></span></div>
-      <div class="pct">0%</div><div class="lbl">雅思听力</div><div class="sub">0/0 完成</div></div></div>
-      <div class="ov2-side">
-        <div class="ov2-stat" data-open="note"><span class="s-ic" style="color:var(--module-2)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 16v-4"></path><path d="M12 16v-7"></path><path d="M16 16v-2"></path></svg></span><div class="s-tx"><div class="s-v">13</div><div class="s-l">累计记录条数</div></div></div>
-        <div class="ov2-stat"><span class="s-ic" style="color:var(--module-3)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2.6 5.3 5.8.85-4.2 4.1 1 5.8L12 16.9l-5.2 2.75 1-5.8-4.2-4.1 5.8-.85z"></path></svg></span><div class="s-tx"><div class="s-v">0</div><div class="s-l">置顶要事</div></div></div>
-        <div class="ov2-stat" data-open="money"><span class="s-ic" style="color:var(--module-1)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg></span><div class="s-tx"><div class="s-v" style="color:var(--module-1)">¥362</div><div class="s-l">本月结余 · 收¥400 支¥38</div></div></div>
-      </div>
-    </div></div>
+      <div style="flex:1"></div>
+      <span class="date-chip">Multi-Agent System</span>
     </div>
 
-    <div class="sec-grp"><span class="bar"></span><span class="zh">习惯与待办</span><span class="en">HABITS&nbsp;&nbsp;&amp;&nbsp;&nbsp;TASKS</span><span class="line"></span></div>
-    <div class="bento"><div class="tile b7"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 9 4 17c0 1 .1 2 .5 3 5.5-9 9-9.5 15.5-16z"></path><path d="M4.5 20c3-6 7-9.5 13-11.5"></path></svg></span><div class="tt"><span class="en">HABIT TRACKER</span><span class="zh">本周习惯追踪表</span></div><span class="r js-open" data-open="checkin">本周 · 周六</span></div>
-    <table class="habit-tb"><thead><tr><th class="hh">习惯</th><th class="">一</th><th class="">二</th><th class="">三</th><th class="">四</th><th class="">五</th><th class="tdcol">六</th><th class="">日</th><th class="hr">完成率</th></tr></thead><tbody><tr><td class="hn"><span class="hdot" style="background:var(--module-1)"></span>喝够 8 杯水（其实是罐头汤）</td><td class=""><span class="hcell js-habit off" data-id="21" data-day="2026-08-09"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="21" data-day="2026-08-10"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="21" data-day="2026-08-11"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="21" data-day="2026-08-12"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="21" data-day="2026-08-13"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class="tdcol"><span class="hcell js-habit off" data-id="21" data-day="2026-08-14"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="21" data-day="2026-08-15"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class="hrate" style="color:var(--module-1)">0%</td></tr><tr><td class="hn"><span class="hdot" style="background:var(--module-2)"></span>23:00 前睡觉</td><td class=""><span class="hcell js-habit off" data-id="22" data-day="2026-08-09"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="22" data-day="2026-08-10"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="22" data-day="2026-08-11"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="22" data-day="2026-08-12"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="22" data-day="2026-08-13"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class="tdcol"><span class="hcell js-habit off" data-id="22" data-day="2026-08-14"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="22" data-day="2026-08-15"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class="hrate" style="color:var(--module-2)">0%</td></tr><tr><td class="hn"><span class="hdot" style="background:var(--module-3)"></span>舔毛 3 分钟</td><td class=""><span class="hcell js-habit off" data-id="23" data-day="2026-08-09"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="23" data-day="2026-08-10"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="23" data-day="2026-08-11"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="23" data-day="2026-08-12"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="23" data-day="2026-08-13"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class="tdcol"><span class="hcell js-habit off" data-id="23" data-day="2026-08-14"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class=""><span class="hcell js-habit off" data-id="23" data-day="2026-08-15"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></span></td><td class="hrate" style="color:var(--module-3)">0%</td></tr></tbody></table></div><div class="tile b5"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6h11"></path><path d="M8.5 12h11"></path><path d="M8.5 18h11"></path><circle cx="4.5" cy="6" r=".9"></circle><circle cx="4.5" cy="12" r=".9"></circle><circle cx="4.5" cy="18" r=".9"></circle></svg></span><div class="tt"><span class="en">TODO LIST</span><span class="zh">待办清单</span></div><span class="r js-open" data-open="todo">查看全部</span></div>
-    <div class="tk-head"><span class="pct">0<span style="color:var(--text-secondary)">/1</span></span><span class="cnt">完成 0%</span><span class="bar"><i style="width:0%"></i></span></div>
-    <div class="tk-list"><div class="tk-row"><div class="tk-chk js-pin-chk " data-mkey="todo" data-id="11"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"></path></svg></div>
-      <span class="tk-name  js-pin-open" data-mkey="todo" data-id="11">审核今日稿件：《论纸箱的舒适性》</span>
-      <span class="badge" style="background:#f3e3dd;color:#c25d4f"><span class="dot"></span>重要</span></div></div></div></div>
-
-    <div class="sec-grp"><span class="bar"></span><span class="zh">专注与状态</span><span class="en">FOCUS&nbsp;&nbsp;&amp;&nbsp;&nbsp;MOOD</span><span class="line"></span></div>
-    <div class="bento"><div class="pomo b4"><div><div class="pen">POMODORO · 25 / 5</div><div class="pzh">专注番茄钟</div></div>
-    <div class="ring-wrap"><svg width="140" height="140" viewBox="0 0 150 150">
-      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--border)" stroke-width="6"></circle>
-      <circle id="pomo-fg" cx="75" cy="75" r="64" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="402.1238596594935" stroke-dashoffset="0"></circle></svg>
-      <div class="ptime"><span class="t" id="pomo-time">25:00</span><span class="s" id="pomo-status">保持专注</span></div></div>
-    <div class="pctl"><button class="primary" id="pomo-toggle">开始</button><button id="pomo-reset">重置</button></div>
-    <div class="pstats"><div class="ps"><div class="pv" id="pomo-count">0</div><div class="pl">今日番茄</div></div>
-      <div class="ps"><div class="pv" id="pomo-min">0</div><div class="pl">专注分钟</div></div>
-      <div class="ps"><div class="pv">0</div><div class="pl">轮次</div></div></div></div><div class="tile b8"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 16v-4"></path><path d="M12 16v-7"></path><path d="M16 16v-2"></path></svg></span><div class="tt"><span class="en">MOOD TREND · 近 7 天</span><span class="zh">本周心情指数</span></div></div>
-    <div class="trend-empty"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 16v-4"></path><path d="M12 16v-7"></path><path d="M16 16v-2"></path></svg><span>暂无本周数据 · 在洞察中记录每日状态</span></div></div><div class="tile ielts-tile"><div class="tile-h"><span class="tic" style="background:linear-gradient(135deg,#6b8e5a,#8fbc8f);color:#fff"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg></span><div class="tt"><span class="en">IELTS PREP</span><span class="zh">雅思备考</span></div><span class="r" style="color:#6b8e5a">0/0 完成</span></div>
-    <div class="ielts-body">
-      <div class="ielts-overview">
-        <div class="ielts-ring-wrap"><svg class="gauge" viewBox="0 0 80 80" preserveAspectRatio="xMidYMid meet"><circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="6.800000000000001"></circle>
-    <circle cx="40" cy="40" r="32" fill="none" stroke="#6b8e5a" stroke-width="6.800000000000001" stroke-linecap="round" stroke-dasharray="201.06192982974676" stroke-dashoffset="201.06192982974676"></circle></svg><div class="ielts-ring-label"><b>0%</b><span>完成率</span></div></div>
-        <div class="ielts-stats">
-          <div class="ielts-stat"><b style="color:#6b8e5a">0%</b><span>平均正确率</span></div>
-          <div class="ielts-stat"><b>0</b><span>今日计划</span></div>
-          <div class="ielts-stat"><b>0</b><span>已完成项</span></div>
-        </div>
-      </div>
-      <div class="ielts-subjects"><div class="ielts-sub-row" data-open="ielts_read" style="cursor:pointer">
-      <span class="ielts-sub-name" style="color:#4a6c3f"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg> 阅读题库</span>
-      <div class="ielts-sub-bar"><i style="width:0%;background:#4a6c3f"></i></div>
-      <span class="ielts-sub-pct">0%</span>
-      <span class="ielts-sub-today"></span>
-    </div><div class="ielts-sub-row" data-open="ielts_listening" style="cursor:pointer">
-      <span class="ielts-sub-name" style="color:#8b7355"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 1 1 16 0v2"></path><rect x="3" y="13" width="4" height="6" rx="1.5"></rect><rect x="17" y="13" width="4" height="6" rx="1.5"></rect></svg> 听力题库</span>
-      <div class="ielts-sub-bar"><i style="width:0%;background:#8b7355"></i></div>
-      <span class="ielts-sub-pct">0%</span>
-      <span class="ielts-sub-today"></span>
-    </div><div class="ielts-sub-row" data-open="ielts_writing" style="cursor:pointer">
-      <span class="ielts-sub-name" style="color:#3d5a6c"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg> 写作题库</span>
-      <div class="ielts-sub-bar"><i style="width:0%;background:#3d5a6c"></i></div>
-      <span class="ielts-sub-pct">0%</span>
-      <span class="ielts-sub-today"></span>
-    </div><div class="ielts-sub-row" data-open="ielts_speaking" style="cursor:pointer">
-      <span class="ielts-sub-name" style="color:#a0522d"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg> 口语题库</span>
-      <div class="ielts-sub-bar"><i style="width:0%;background:#a0522d"></i></div>
-      <span class="ielts-sub-pct">0%</span>
-      <span class="ielts-sub-today"></span>
-    </div></div>
-      <div class="ielts-tile-actions">
-        <span class="ielts-action" data-open="ielts_read">📖 阅读</span>
-        <span class="ielts-action" data-open="ielts_listening">🎧 听力</span>
-        <span class="ielts-action" data-open="ielts_writing">✍️ 写作</span>
-        <span class="ielts-action" data-open="ielts_speaking">🗣️ 口语</span>
-        <span class="ielts-action" data-open="ielts_record">📊 记录</span>
-      </div>
-    </div></div></div>
-
-    <div class="sec-grp"><span class="bar"></span><span class="zh">收支与成长</span><span class="en">MONEY&nbsp;&nbsp;&amp;&nbsp;&nbsp;GROWTH</span><span class="line"></span></div>
-    <div class="bento"><div class="tile b3"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg></span><div class="tt"><span class="en">MONTHLY SPENDING</span><span class="zh">月度开销</span></div><span class="r js-open" data-open="money">明细</span></div>
-    <div class="spend-sum"><span class="spend-total">¥38</span><span class="spend-cap">本月支出 · 共 2 笔</span></div>
-    <div class="book-list"><div class="book-row js-open" data-open="money"><span class="spine" style="background:var(--module-4)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg></span>
-      <div class="bmid"><div class="btt">罐头</div><div class="bsub">¥32</div>
-        <div class="bbar"><i style="width:84%;background:var(--module-4)"></i></div></div><span class="bpct" style="color:var(--module-4)">84%</span></div><div class="book-row js-open" data-open="money"><span class="spine" style="background:var(--module-3)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg></span>
-      <div class="bmid"><div class="btt">玩具</div><div class="bsub">¥6</div>
-        <div class="bbar"><i style="width:16%;background:var(--module-3)"></i></div></div><span class="bpct" style="color:var(--module-3)">16%</span></div></div></div><div class="tile b3"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg></span><div class="tt"><span class="en">CURRENTLY READING</span><span class="zh">在读好书</span></div><span class="r">2 本</span></div>
-    <div class="book-list"><div class="book-row js-open" data-open="read"><span class="spine" style="background:var(--module-2)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg></span>
-      <div class="bmid"><div class="btt">《如何与人类沟通》</div><div class="bsub">第 7 章：关于人类听不懂呼噜声的研究</div>
-        <div class="bbar"><i style="width:56%;background:var(--module-2)"></i></div></div><span class="bpct" style="color:var(--module-2)">56%</span></div><div class="book-row js-open" data-open="read"><span class="spine" style="background:var(--module-1)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg></span>
-      <div class="bmid"><div class="btt">《纸箱建筑学》</div><div class="bsub">经典之作，常读常新</div>
-        <div class="bbar"><i style="width:35%;background:var(--module-1)"></i></div></div><span class="bpct" style="color:var(--module-1)">35%</span></div></div></div><div class="tile b3"><div class="tile-h"><span class="tic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg></span><div class="tt"><span class="en">WEEKLY GOALS</span><span class="zh">本周目标</span></div><span class="r js-open" data-open="sport">2 项</span></div>
-    <div class="book-list"><div class="book-row"><span class="spine" style="background:var(--module-3)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg></span>
-      <div class="bmid"><div class="btt">半夜疯跑</div>
-        <div class="bsub">12/20 分钟</div>
-        <div class="bbar"><i style="width:60%;background:var(--module-3)"></i></div></div><span class="bpct" style="color:var(--module-3)">60%</span></div><div class="book-row"><span class="spine" style="background:var(--module-1)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg></span>
-      <div class="bmid"><div class="btt">偷袭人类</div>
-        <div class="bsub">30/40 次</div>
-        <div class="bbar"><i style="width:75%;background:var(--module-1)"></i></div></div><span class="bpct" style="color:var(--module-1)">75%</span></div></div></div><div class="tile b3 rag-insight" id="ragTile">
-      <div class="tile-h">
-        <div class="tt"><span class="en">RAG INSIGHTS</span><span class="zh">个人数据洞察</span></div>
-      </div>
-      <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:6px">个人数据资产化 · AI基于你的历史数据给出洞察</p>
-      <div class="rag-metrics">
-        <div class="rag-metric"><div class="rm-val">0%</div><div class="rm-label">待办完成率</div></div>
-        <div class="rag-metric"><div class="rm-val">0</div><div class="rm-label">今日打卡</div></div>
-        <div class="rag-metric"><div class="rm-val">13</div><div class="rm-label">总数据条目</div></div>
-      </div>
-      <div class="rag-actions">
-        <button id="ragExportBtn">导出数据</button>
-        <button id="ragAskBtn">AI 问数据</button>
-      </div>
-      <div class="rag-qa" id="ragQa">
-        <div class="rag-qa-history" id="ragHistory">
-          <div class="rag-qa-a">我可以分析你的待办完成率、打卡习惯、消费趋势、阅读进度、雅思错题等！试着问我：<br>• 我最近消费有什么问题？<br>• 我哪类待办总是拖延？<br>• 雅思阅读应该重点练什么？</div>
-        </div>
-        <div class="rag-input-row">
-          <input type="text" id="ragQInput" placeholder="问关于你的数据问题...">
-          <button id="ragQSend">→</button>
-        </div>
-      </div>
-    </div></div>
-
-    <div class="sec-grp"><span class="bar"></span><span class="zh">AI Agent能力展示</span><span class="en">MIAO AI FEATURES</span><span class="line"></span></div>
-    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+    <div class="sec-title" style="margin-bottom:14px;">Agent 团队成员</div>
+    <div class="agents-grid">
+    <div class="agent-card ac-chief">
+      <div class="agent-head">
+        <div class="agent-ava"><img src="assets/chief.jpg?v=1" alt="喵喵主编"></div>
         <div>
-          <div style="font-size:15px;font-weight:600;">MiaoAI 多模型集成能力展示</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);margin-top:2px;">为字节AI Agent PM面试准备 — 展示工具调用、RAG、多Agent、工作流</div>
-        </div>
-        <div style="flex:1"></div>
-        <button onclick="go('agents')" class="btn ghost" style="font-size:12px;">查看多Agent指挥中心</button>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:12px;font-weight:600;">AI对话助手</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">右下角悬浮 · Prompt工程</div>
-        </div>
-        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:12px;font-weight:600;">任务智能拆解</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">Function Call工具调用 · 一键导入</div>
-        </div>
-        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:12px;font-weight:600;">RAG数据洞察</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">个人数据资产化 · 智能问答</div>
-        </div>
-        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:12px;font-weight:600;">多Agent协作</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">6个角色Agent · 主编调度</div>
+          <div class="agent-name">喵喵主编</div>
+          <div class="agent-role">Orchestrator · 调度中枢</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
         </div>
       </div>
-    </div></div></main>
+      <div class="agent-desc">理解用户意图，智能分配任务给专业编辑Agent，协调多Agent并行工作，整合最终结果。负责任务规划、记忆管理、工具调用路由。</div>
+      <div class="agent-skills">
+        <span class="agent-skill">意图识别</span><span class="agent-skill">任务拆分</span><span class="agent-skill">Agent调度</span><span class="agent-skill">结果整合</span><span class="agent-skill">记忆管理</span><span class="agent-skill">工具路由</span>
+      </div>
+      <div class="agent-actions">
+        <button onclick="MiaoAI.chatWithAgent('chief')">对话</button>
+        <button onclick="MiaoAI.assignTask('chief')">派任务</button>
+      </div>
+    </div>
+  
+    <div class="agent-card ac-editor">
+      <div class="agent-head">
+        <div class="agent-ava"><img src="assets/editor.jpg?v=1" alt="选题编辑"></div>
+        <div>
+          <div class="agent-name">选题编辑</div>
+          <div class="agent-role">Todo/Task Specialist</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
+        </div>
+      </div>
+      <div class="agent-desc">负责待办任务拆解、优先级排序（P0/P1/P2）、SMART原则校验、周计划/月计划生成、进度追踪与提醒。</div>
+      <div class="agent-skills">
+        <span class="agent-skill">任务拆解</span><span class="agent-skill">优先级排序</span><span class="agent-skill">SMART原则</span><span class="agent-skill">计划生成</span><span class="agent-skill">进度追踪</span><span class="agent-skill">周报生成</span>
+      </div>
+      <div class="agent-actions">
+        <button onclick="MiaoAI.chatWithAgent('editor')">对话</button>
+        <button onclick="MiaoAI.assignTask('editor')">派任务</button>
+      </div>
+    </div>
+  
+    <div class="agent-card ac-reporter">
+      <div class="agent-head">
+        <div class="agent-ava"><img src="assets/reporter.jpg?v=1" alt="生活记者"></div>
+        <div>
+          <div class="agent-name">生活记者</div>
+          <div class="agent-role">Habit/Activity Analyst</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
+        </div>
+      </div>
+      <div class="agent-desc">分析打卡数据、运动记录、睡眠习惯，给出习惯养成建议，识别中断模式，设计激励机制，生成生活洞察报告。</div>
+      <div class="agent-skills">
+        <span class="agent-skill">习惯分析</span><span class="agent-skill">运动建议</span><span class="agent-skill">数据可视化</span><span class="agent-skill">模式识别</span><span class="agent-skill">激励设计</span><span class="agent-skill">健康洞察</span>
+      </div>
+      <div class="agent-actions">
+        <button onclick="MiaoAI.chatWithAgent('reporter')">对话</button>
+        <button onclick="MiaoAI.assignTask('reporter')">派任务</button>
+      </div>
+    </div>
+  
+    <div class="agent-card ac-finance">
+      <div class="agent-head">
+        <div class="agent-ava"><img src="assets/finance.jpg?v=1" alt="财经编辑"></div>
+        <div>
+          <div class="agent-name">财经编辑</div>
+          <div class="agent-role">Finance Analyst</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
+        </div>
+      </div>
+      <div class="agent-desc">分析收支结构、识别非必要支出、预算预警、消费趋势预测、储蓄建议、财务健康度评分，生成月度财经报告。</div>
+      <div class="agent-skills">
+        <span class="agent-skill">收支分析</span><span class="agent-skill">预算管理</span><span class="agent-skill">消费洞察</span><span class="agent-skill">趋势预测</span><span class="agent-skill">储蓄建议</span><span class="agent-skill">财务评分</span>
+      </div>
+      <div class="agent-actions">
+        <button onclick="MiaoAI.chatWithAgent('finance')">对话</button>
+        <button onclick="MiaoAI.assignTask('finance')">派任务</button>
+      </div>
+    </div>
+  
+    <div class="agent-card ac-reviewer">
+      <div class="agent-head">
+        <div class="agent-ava"><img src="assets/reviewer.jpg?v=1" alt="书评人"></div>
+        <div>
+          <div class="agent-name">书评人</div>
+          <div class="agent-role">Reading/Content Curator</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
+        </div>
+      </div>
+      <div class="agent-desc">管理阅读计划、生成书籍摘要、做知识点关联、推荐相关书籍、阅读速度分析、读书笔记整理与知识图谱构建。</div>
+      <div class="agent-skills">
+        <span class="agent-skill">阅读规划</span><span class="agent-skill">内容摘要</span><span class="agent-skill">知识关联</span><span class="agent-skill">书籍推荐</span><span class="agent-skill">笔记整理</span><span class="agent-skill">知识图谱</span>
+      </div>
+      <div class="agent-actions">
+        <button onclick="MiaoAI.chatWithAgent('reviewer')">对话</button>
+        <button onclick="MiaoAI.assignTask('reviewer')">派任务</button>
+      </div>
+    </div>
+  
+    <div class="agent-card ac-coach">
+      <div class="agent-head">
+        <div class="agent-ava"><img src="assets/coach.jpg?v=1" alt="雅思教练"></div>
+        <div>
+          <div class="agent-name">雅思教练</div>
+          <div class="agent-role">IELTS Tutor</div>
+          <div class="agent-status online"><span class="dot"></span>在线就绪</div>
+        </div>
+      </div>
+      <div class="agent-desc">分析听说读写四项薄弱点、错题分类归因、针对性练习推荐、学习路径规划、模考评分、口语写作素材生成。</div>
+      <div class="agent-skills">
+        <span class="agent-skill">错题分析</span><span class="agent-skill">薄弱点定位</span><span class="agent-skill">练习推荐</span><span class="agent-skill">路径规划</span><span class="agent-skill">模考评分</span><span class="agent-skill">素材生成</span>
+      </div>
+      <div class="agent-actions">
+        <button onclick="MiaoAI.chatWithAgent('coach')">对话</button>
+        <button onclick="MiaoAI.assignTask('coach')">派任务</button>
+      </div>
+    </div>
+  </div>
+</div></div></main>
 </div>
 
 <!-- MiaoAI 喵喵智能助手 -->
@@ -4441,69 +5064,8 @@ function renderAgents(){
       <span class="date-chip">Multi-Agent System</span>
     </div>
 
-    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <div style="font-size:14px;font-weight:600;">多Agent协作工作流演示</div>
-        <div style="flex:1"></div>
-        <button onclick="MiaoAI.runWorkflowDemo()" class="btn ghost" style="font-size:12px;">运行演示</button>
-      </div>
-      <div class="workflow-demo" id="workflowDemo">
-        <div class="workflow-step">
-          <div class="ws-num n-user" style="background:var(--surface-nested);color:var(--text-secondary);font-size:12px;font-weight:600;font-family:var(--font-mono);width:28px;height:28px;border-radius:var(--radius-control);">1</div>
-          <div class="ws-content">
-            <div class="ws-title">用户输入指令</div>
-            <div class="ws-desc">"帮我复盘下这周，顺便规划下秋招准备"</div>
-          </div>
-        </div>
-        <div class="workflow-step">
-          <div class="ws-num n-chief" style="background:var(--accent-muted);color:var(--accent);font-size:12px;font-weight:600;font-family:var(--font-mono);width:28px;height:28px;border-radius:var(--radius-control);">2</div>
-          <div class="ws-content">
-            <div class="ws-title">喵喵主编分析意图，分配任务</div>
-            <div class="ws-desc">识别到"复盘"和"规划"两个意图，并行调用4个专业Agent收集数据</div>
-            <div class="ws-agents">
-              <span class="ws-agent-tag" style="background:var(--surface-nested);color:var(--text);border:1px solid var(--border);">财经编辑</span>
-              <span class="ws-agent-tag" style="background:var(--surface-nested);color:var(--text);border:1px solid var(--border);">生活记者</span>
-              <span class="ws-agent-tag" style="background:var(--surface-nested);color:var(--text);border:1px solid var(--border);">选题编辑</span>
-              <span class="ws-agent-tag" style="background:var(--accent-muted);color:var(--accent);border:1px solid var(--accent);">雅思教练</span>
-            </div>
-          </div>
-        </div>
-        <div class="workflow-step">
-          <div class="ws-num n-agent" style="background:var(--surface-nested);color:var(--text-secondary);font-size:12px;font-weight:600;font-family:var(--font-mono);width:28px;height:28px;border-radius:var(--radius-control);">3</div>
-          <div class="ws-content">
-            <div class="ws-title">各Agent并行执行，返回结果</div>
-            <div class="ws-desc" style="color:var(--text-tertiary)">点击上方「运行演示」查看完整流程</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="sec-title" style="margin-bottom:14px;">Agent 团队成员</div>
     <div class="agents-grid">${agentsHtml}</div>
-
-    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:20px;">
-      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">
-        架构设计亮点（面试可讲）
-      </h3>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">主编调度（Orchestrator）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">不是多个Bot堆砌，而是有中枢调度的Multi-Agent架构。主编负责意图识别、任务拆分、并行调用、结果整合，专业Agent只做自己擅长的事。</div>
-        </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">工具调用（Function Call）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">每个Agent都有专属工具集，通过Function Call真实操作工作台数据（创建待办、记录打卡、生成报告），不是只聊天。</div>
-        </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">记忆机制（Memory）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">三层记忆：短期会话记忆、用户偏好记忆、跨模块数据记忆。主编能记住你上周的计划，延续上下文。</div>
-        </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">RBAC权限控制</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">不同Agent有不同权限：财经编辑只能读/写记账数据，不能删除雅思记录；删除操作需要用户二次确认，保障数据安全。</div>
-        </div>
-      </div>
-    </div>
   </div>`;
 }
 
@@ -7589,5 +8151,6 @@ function debounce(fn, ms){
 }
 </script>
 
-</body>
-</html>
+
+
+<div class="light"><div class="trae-browser-inspect-highlight-tag"></div><div class="trae-browser-inspect-highlight-tag"></div><div class="trae-browser-inspect-highlight-box"></div><div class="trae-browser-inspect-highlight-box trae-browser-inspect-select-highlight-box" style="cursor: grab; pointer-events: auto;"></div><div class="trae-browser-inspect-overlay" style="display: none;"></div><div class="trae-browser-inspect-comment-card-container"></div><div class="trae-browser-inspect-drop-indicator" style="position: fixed; pointer-events: none; z-index: 999999; display: none; background: linear-gradient(90deg, rgb(0, 102, 255), rgb(0, 170, 255)); box-shadow: rgba(0, 102, 255, 0.4) 0px 0px 4px 1px, rgba(0, 102, 255, 0.3) 0px 0px 8px 2px, rgba(0, 102, 255, 0.2) 0px 0px 12px 3px; transition: transform 0.15s, width 0.15s, height 0.15s;"></div></div><div class="trae-browser-inspect-text-selection-container light"><div class="trae-browser-inspect-comment-card-container"></div></div><div class="trae-browser-inspect-operation light"></div></body></html>
