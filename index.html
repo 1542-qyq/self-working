@@ -925,27 +925,23 @@
 </div>
 
 <!-- MiaoAI 喵喵智能助手 -->
-<button class="miao-fab" id="miaoFab" title="喵喵智能助手">
-  <span class="fab-pulse"></span>
-  🤖
+<button class="miao-fab" id="miaoFab" title="AI助手" style="font-size:13px;font-weight:600;font-family:var(--font-mono);">
+  AI
 </button>
 
 <!-- MiaoAI 聊天面板 -->
 <div class="miao-chat" id="miaoChat">
   <div class="miao-chat-head">
-    <div class="c-ava">🤖</div>
     <div class="c-info">
-      <div class="c-name">喵喵智能助手</div>
-      <div class="c-status"><span class="dot"></span>在线 · MiaoAI 多模型驱动</div>
+      <div class="c-name">智能助手</div>
+      <div class="c-status"><span class="dot"></span>在线</div>
     </div>
-    <button class="c-cfg" id="miaoCfg" title="配置">⚙️</button>
-    <button class="c-close" id="miaoClose">✕</button>
+    <button class="c-close" id="miaoClose" style="font-size:16px;font-family:var(--font);background:transparent;border:none;color:var(--text-secondary);cursor:pointer;width:28px;height:28px;border-radius:var(--radius-control);">✕</button>
   </div>
   <div class="miao-chat-body" id="miaoMsgs">
     <div class="c-msg bot">
-      <div class="m-ava">🤖</div>
       <div>
-        <div class="m-bubble">喵～我是喵喵编辑部的智能助手！我可以帮你：<br>
+        <div class="m-bubble">你好！我可以帮你：<br>
           • 拆解任务，自动创建待办<br>
           • 分析你的工作/学习数据<br>
           • 解答产品/AI Agent相关问题<br>
@@ -957,15 +953,13 @@
   </div>
   <div class="c-typing" id="miaoTyping"><i></i><i></i><i></i></div>
   <div class="c-quick">
-    <button class="cq" data-q="帮我拆解秋招准备计划">🎯 秋招计划</button>
-    <button class="cq" data-q="我今天的待办完成率如何">📊 今日分析</button>
-    <button class="cq" data-q="给我一些AI Agent产品设计建议">💡 产品建议</button>
+    <button class="cq" data-q="帮我拆解秋招准备计划">秋招计划</button>
+    <button class="cq" data-q="我今天的待办完成率如何">今日分析</button>
+    <button class="cq" data-q="给我一些AI Agent产品设计建议">产品建议</button>
   </div>
   <div class="miao-chat-input">
     <input type="text" id="miaoInput" placeholder="输入你的问题或目标..." />
-    <button id="miaoSend">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-    </button>
+    <button id="miaoSend" style="font-size:14px;">→</button>
   </div>
 </div>
 
@@ -1305,35 +1299,30 @@ function renderHome(){
 
     ${grp("AI Agent能力展示","MIAO AI FEATURES")}
     <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent));color:#fff;display:grid;place-items:center;font-size:18px;">🤖</span>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
         <div>
-          <div style="font-size:15px;font-weight:700;">MiaoAI 多模型集成能力展示</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);">为字节AI Agent PM面试准备 — 展示工具调用、RAG、多Agent、工作流</div>
+          <div style="font-size:15px;font-weight:600;">MiaoAI 多模型集成能力展示</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);margin-top:2px;">为字节AI Agent PM面试准备 — 展示工具调用、RAG、多Agent、工作流</div>
         </div>
         <div style="flex:1"></div>
-        <button onclick="go('agents')" style="padding:8px 16px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);">→ 查看多Agent指挥中心</button>
+        <button onclick="go('agents')" class="btn ghost" style="font-size:12px;">查看多Agent指挥中心</button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--accent);">
-          <div style="font-size:16px;margin-bottom:4px;">💬</div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
           <div style="font-size:12px;font-weight:600;">AI对话助手</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">右下角悬浮球 · Prompt工程</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">右下角悬浮 · Prompt工程</div>
         </div>
-        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--module-2);">
-          <div style="font-size:16px;margin-bottom:4px;">📋</div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
           <div style="font-size:12px;font-weight:600;">任务智能拆解</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">Function Call工具调用 · 一键导入</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">Function Call工具调用 · 一键导入</div>
         </div>
-        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--accent);">
-          <div style="font-size:16px;margin-bottom:4px;">🧠</div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
           <div style="font-size:12px;font-weight:600;">RAG数据洞察</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">个人数据资产化 · 智能问答</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">个人数据资产化 · 智能问答</div>
         </div>
-        <div style="padding:12px;background:var(--surface-nested);border-radius:10px;border-left:3px solid var(--module-1);">
-          <div style="font-size:16px;margin-bottom:4px;">👥</div>
+        <div style="padding:12px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
           <div style="font-size:12px;font-weight:600;">多Agent协作</div>
-          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:2px;">6个角色Agent · 主编调度</div>
+          <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">6个角色Agent · 主编调度</div>
         </div>
       </div>
     </div>`;
@@ -1396,7 +1385,7 @@ function renderAgents(){
     {
       key: "chief",
       className: "ac-chief",
-      avatar: "🐱",
+      avatar: "主",
       name: "喵喵主编",
       role: "Orchestrator · 调度中枢",
       desc: "理解用户意图，智能分配任务给专业编辑Agent，协调多Agent并行工作，整合最终结果。负责任务规划、记忆管理、工具调用路由。",
@@ -1405,7 +1394,7 @@ function renderAgents(){
     {
       key: "editor",
       className: "ac-editor",
-      avatar: "📋",
+      avatar: "待",
       name: "选题编辑",
       role: "Todo/Task Specialist",
       desc: "负责待办任务拆解、优先级排序（P0/P1/P2）、SMART原则校验、周计划/月计划生成、进度追踪与提醒。",
@@ -1414,7 +1403,7 @@ function renderAgents(){
     {
       key: "reporter",
       className: "ac-reporter",
-      avatar: "🏃",
+      avatar: "习",
       name: "生活记者",
       role: "Habit/Activity Analyst",
       desc: "分析打卡数据、运动记录、睡眠习惯，给出习惯养成建议，识别中断模式，设计激励机制，生成生活洞察报告。",
@@ -1423,7 +1412,7 @@ function renderAgents(){
     {
       key: "finance",
       className: "ac-finance",
-      avatar: "💰",
+      avatar: "财",
       name: "财经编辑",
       role: "Finance Analyst",
       desc: "分析收支结构、识别非必要支出、预算预警、消费趋势预测、储蓄建议、财务健康度评分，生成月度财经报告。",
@@ -1432,7 +1421,7 @@ function renderAgents(){
     {
       key: "reviewer",
       className: "ac-reviewer",
-      avatar: "📚",
+      avatar: "读",
       name: "书评人",
       role: "Reading/Content Curator",
       desc: "管理阅读计划、生成书籍摘要、做知识点关联、推荐相关书籍、阅读速度分析、读书笔记整理与知识图谱构建。",
@@ -1441,7 +1430,7 @@ function renderAgents(){
     {
       key: "coach",
       className: "ac-coach",
-      avatar: "🎯",
+      avatar: "雅",
       name: "雅思教练",
       role: "IELTS Tutor",
       desc: "分析听说读写四项薄弱点、错题分类归因、针对性练习推荐、学习路径规划、模考评分、口语写作素材生成。",
@@ -1464,84 +1453,82 @@ function renderAgents(){
         ${a.skills.map(s=>`<span class="agent-skill">${s}</span>`).join("")}
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('${a.key}')">💬 对话</button>
-        <button onclick="MiaoAI.assignTask('${a.key}')">📋 派任务</button>
+        <button onclick="MiaoAI.chatWithAgent('${a.key}')">对话</button>
+        <button onclick="MiaoAI.assignTask('${a.key}')">派任务</button>
       </div>
     </div>
   `).join("");
 
   $("#screen").innerHTML = `<div class="agents-page">
     <div class="agents-header">
-      <div class="agents-title-icon">🤖</div>
       <div>
         <h2>喵喵编辑部 · AI Agent指挥中心</h2>
         <p>多Agent协作架构 · 6个专业角色Agent · 主编智能调度 · 对应JD：任务规划/工具调用/记忆/多Agent</p>
       </div>
       <div style="flex:1"></div>
-      <span class="date-chip">${icon("cpu",14)} Multi-Agent System</span>
+      <span class="date-chip">Multi-Agent System</span>
     </div>
 
-    <div style="background:linear-gradient(135deg,rgba(74,108,63,.08),rgba(124,58,237,.08));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:24px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span style="font-size:20px;">⚡</span>
-        <div style="font-size:15px;font-weight:700;">多Agent协作工作流演示</div>
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="font-size:14px;font-weight:600;">多Agent协作工作流演示</div>
         <div style="flex:1"></div>
-        <button onclick="MiaoAI.runWorkflowDemo()" style="padding:8px 18px;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--accent));color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);">▶ 运行演示：周复盘+秋招规划</button>
+        <button onclick="MiaoAI.runWorkflowDemo()" class="btn ghost" style="font-size:12px;">运行演示</button>
       </div>
       <div class="workflow-demo" id="workflowDemo">
         <div class="workflow-step">
-          <div class="ws-num n-user">👤</div>
+          <div class="ws-num n-user" style="background:var(--surface-nested);color:var(--text-secondary);font-size:12px;font-weight:600;font-family:var(--font-mono);width:28px;height:28px;border-radius:var(--radius-control);">1</div>
           <div class="ws-content">
             <div class="ws-title">用户输入指令</div>
             <div class="ws-desc">"帮我复盘下这周，顺便规划下秋招准备"</div>
           </div>
         </div>
         <div class="workflow-step">
-          <div class="ws-num n-chief">🐱</div>
+          <div class="ws-num n-chief" style="background:var(--accent-muted);color:var(--accent);font-size:12px;font-weight:600;font-family:var(--font-mono);width:28px;height:28px;border-radius:var(--radius-control);">2</div>
           <div class="ws-content">
             <div class="ws-title">喵喵主编分析意图，分配任务</div>
             <div class="ws-desc">识别到"复盘"和"规划"两个意图，并行调用4个专业Agent收集数据</div>
             <div class="ws-agents">
-              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-3) 15%,transparent);color:var(--module-3)">💰 财经编辑</span>
-              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-2) 15%,transparent);color:var(--module-2)">🏃 生活记者</span>
-              <span class="ws-agent-tag" style="background:color-mix(in srgb,var(--module-1) 15%,transparent);color:var(--module-1)">📋 选题编辑</span>
-              <span class="ws-agent-tag" style="background:var(--accent-muted);color:var(--accent)">🎯 雅思教练</span>
+              <span class="ws-agent-tag" style="background:var(--surface-nested);color:var(--text);border:1px solid var(--border);">财经编辑</span>
+              <span class="ws-agent-tag" style="background:var(--surface-nested);color:var(--text);border:1px solid var(--border);">生活记者</span>
+              <span class="ws-agent-tag" style="background:var(--surface-nested);color:var(--text);border:1px solid var(--border);">选题编辑</span>
+              <span class="ws-agent-tag" style="background:var(--accent-muted);color:var(--accent);border:1px solid var(--accent);">雅思教练</span>
             </div>
           </div>
         </div>
         <div class="workflow-step">
-          <div class="ws-num n-agent">⏳</div>
+          <div class="ws-num n-agent" style="background:var(--surface-nested);color:var(--text-secondary);font-size:12px;font-weight:600;font-family:var(--font-mono);width:28px;height:28px;border-radius:var(--radius-control);">3</div>
           <div class="ws-content">
             <div class="ws-title">各Agent并行执行，返回结果</div>
-            <div class="ws-desc" style="color:var(--text-tertiary)">点击上方「运行演示」查看完整流程 →</div>
+            <div class="ws-desc" style="color:var(--text-tertiary)">点击上方「运行演示」查看完整流程</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="sec-title" style="margin-bottom:14px;">👥 Agent 团队成员</div>
+    <div class="sec-title" style="margin-bottom:14px;">Agent 团队成员</div>
     <div class="agents-grid">${agentsHtml}</div>
 
-    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:16px;padding:20px;">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-        🎯 架构设计亮点（面试可讲）
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">
+        架构设计亮点（面试可讲）
       </h3>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🧠 主编调度（Orchestrator）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">不是多个Bot堆砌，而是有中枢调度的Multi-Agent架构。主编负责意图识别、任务拆分、并行调用、结果整合，专业Agent只做自己擅长的事。</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">主编调度（Orchestrator）</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">不是多个Bot堆砌，而是有中枢调度的Multi-Agent架构。主编负责意图识别、任务拆分、并行调用、结果整合，专业Agent只做自己擅长的事。</div>
         </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔧 工具调用（Function Call）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">每个Agent都有专属工具集，通过Function Call真实操作工作台数据（创建待办、记录打卡、生成报告），不是只聊天。</div>
+        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">工具调用（Function Call）</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">每个Agent都有专属工具集，通过Function Call真实操作工作台数据（创建待办、记录打卡、生成报告），不是只聊天。</div>
         </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">💾 记忆机制（Memory）</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">三层记忆：短期会话记忆、用户偏好记忆、跨模块数据记忆。主编能记住你上周的计划，延续上下文。</div>
+        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">记忆机制（Memory）</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">三层记忆：短期会话记忆、用户偏好记忆、跨模块数据记忆。主编能记住你上周的计划，延续上下文。</div>
         </div>
-        <div style="padding:14px;background:var(--surface-nested);border-radius:10px;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔐 RBAC权限控制</div>
-          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;">不同Agent有不同权限：财经编辑只能读/写记账数据，不能删除雅思记录；删除操作需要用户二次确认，保障数据安全。</div>
+        <div style="padding:14px;background:var(--surface-nested);border-radius:var(--radius-control);border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px;">RBAC权限控制</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.6;font-weight:500;">不同Agent有不同权限：财经编辑只能读/写记账数据，不能删除雅思记录；删除操作需要用户二次确认，保障数据安全。</div>
         </div>
       </div>
     </div>
@@ -2198,7 +2185,7 @@ function buildNav(){
   const normalModules = CONFIG.modules.filter(m => m.type !== 'ielts');
   const ieltsModules = CONFIG.modules.filter(m => m.type === 'ielts');
   const html=[`<div class="navi" data-go="home">${icon("home",19)}首页</div>`,
-    `<div class="navi" data-go="agents" style="background:linear-gradient(90deg,rgba(74,108,63,.12),var(--accent-muted));color:var(--accent);font-weight:700;">${icon("sparkles",19)}🤖 AI Agent中心</div>`,
+    `<div class="navi" data-go="agents">${icon("sparkles",19)}AI Agent中心</div>`,
     `<div class="nav-sep">猫生日常</div>`]
     .concat(normalModules.map(m=>`<div class="navi" data-go="${m.key}">${icon(m.icon,19)}${m.name}</div>`))
     .concat([`<div class="nav-sep">IELTS 备考</div>`])
@@ -2265,37 +2252,36 @@ const MiaoAI = {
 
   // 模型提供商配置
   providers: {
-    mock: { name: "演示模式", icon: "🎭", desc: "无需API Key，使用内置模拟数据，适合快速演示" },
-    deepseek: { name: "DeepSeek V4", icon: "🧠", desc: "最新V4版本，中文能力顶级，工具调用极强，成本极低", model: "deepseek-v4-pro", path: "/deepseek/chat/completions" },
-    deepseek_flash: { name: "DeepSeek V4 Flash", icon: "⚡", desc: "V4快速版，响应更快，成本更低", model: "deepseek-v4-flash", path: "/deepseek/chat/completions" },
-    doubao: { name: "豆包 Pro", icon: "🫘", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/chat/completions" },
-    ollama: { name: "Ollama本地", icon: "💻", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
+    mock: { name: "演示模式", desc: "无需API Key，使用内置模拟数据，适合快速演示" },
+    deepseek: { name: "DeepSeek V4", desc: "最新V4版本，中文能力顶级，工具调用极强，成本极低", model: "deepseek-v4-pro", path: "/deepseek/chat/completions" },
+    deepseek_flash: { name: "DeepSeek V4 Flash", desc: "V4快速版，响应更快，成本更低", model: "deepseek-v4-flash", path: "/deepseek/chat/completions" },
+    doubao: { name: "豆包 Pro", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/chat/completions" },
+    ollama: { name: "Ollama本地", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
   },
 
   // AI规划瓷砖HTML
   plannerTileHTML(){
     const suggestions = [
-      {text:"准备字节AI Agent PM面试", icon:"🎯"},
-      {text:"一周雅思备考计划", icon:"📚"},
-      {text:"养成早睡早起习惯", icon:"🌅"},
-      {text:"月度消费复盘优化", icon:"💰"},
+      "准备字节AI Agent PM面试",
+      "一周雅思备考计划",
+      "养成早睡早起习惯",
+      "月度消费复盘优化",
     ];
     const sugHtml = suggestions.map(s =>
-      `<button class="sug-chip" data-ai-goal="${s.text}">${s.icon} ${s.text}</button>`
+      `<button class="sug-chip" data-ai-goal="${s}">${s}</button>`
     ).join('');
     return `<div class="tile b3 ai-planner" id="aiPlannerTile">
       <div class="tile-h">
-        <span class="tic">${icon("bolt",16)}</span>
         <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
-        <span class="r" style="cursor:pointer" id="miaoSettingsBtn">⚙️</span>
+        <button class="r" id="miaoSettingsBtn" style="border:none;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-weight:500;font-family:var(--font)">设置</button>
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
       <div class="ai-input-wrap">
         <input type="text" id="aiGoalInput" placeholder="例如：准备秋招，目标字节产品offer" />
-        <button class="btn" id="aiPlanBtn" style="padding:9px 14px;white-space:nowrap">✨ 规划</button>
+        <button class="btn" id="aiPlanBtn" style="padding:9px 14px;white-space:nowrap">生成规划</button>
       </div>
       <div class="ai-suggest">${sugHtml}</div>
-      <div class="ai-loading" id="aiLoading"><span>🤔 AI正在思考</span><div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="ai-loading" id="aiLoading"><span>AI 正在生成</span><div class="dots"><i></i><i></i><i></i></div></div>
       <div class="ai-result" id="aiResult"></div>
     </div>`;
   },
@@ -2314,9 +2300,7 @@ const MiaoAI = {
 
     return `<div class="tile b3 rag-insight" id="ragTile">
       <div class="tile-h">
-        <span class="tic" style="background:var(--accent-muted);color:var(--accent)">🧠</span>
         <div class="tt"><span class="en">RAG INSIGHTS</span><span class="zh">个人数据洞察</span></div>
-        <button class="r" id="ragConfigBtn" title="知识库配置" style="border:none;background:transparent;cursor:pointer;font-size:14px">⚙️</button>
       </div>
       <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:6px">个人数据资产化 · AI基于你的历史数据给出洞察</p>
       <div class="rag-metrics">
@@ -2325,16 +2309,16 @@ const MiaoAI = {
         <div class="rag-metric"><div class="rm-val">${entries}</div><div class="rm-label">总数据条目</div></div>
       </div>
       <div class="rag-actions">
-        <button id="ragExportBtn">${icon('download',13)}&nbsp;导出数据</button>
-        <button id="ragAskBtn">${icon('message-circle',13)}&nbsp;AI 问数据</button>
+        <button id="ragExportBtn">导出数据</button>
+        <button id="ragAskBtn">AI 问数据</button>
       </div>
       <div class="rag-qa" id="ragQa">
         <div class="rag-qa-history" id="ragHistory">
-          <div class="rag-qa-a">喵～我可以分析你的待办完成率、打卡习惯、消费趋势、阅读进度、雅思错题等！试着问我：<br>• 我最近消费有什么问题？<br>• 我哪类待办总是拖延？<br>• 雅思阅读应该重点练什么？</div>
+          <div class="rag-qa-a">我可以分析你的待办完成率、打卡习惯、消费趋势、阅读进度、雅思错题等！试着问我：<br>• 我最近消费有什么问题？<br>• 我哪类待办总是拖延？<br>• 雅思阅读应该重点练什么？</div>
         </div>
         <div class="rag-input-row">
           <input type="text" id="ragQInput" placeholder="问关于你的数据问题..." />
-          <button id="ragQSend">${icon('send',14)}</button>
+          <button id="ragQSend">→</button>
         </div>
       </div>
     </div>`;
@@ -2449,7 +2433,7 @@ const MiaoAI = {
     } else {
       // 真实LLM调用
       try {
-        showToast(`正在用${this.providers[this.config.provider].icon} ${this.providers[this.config.provider].name}思考中...`, 'info');
+        showToast(`正在用${this.providers[this.config.provider].name}思考中...`, 'info');
         items = await this.callLLMPlan(goal);
         
         if(items.length === 0){
@@ -2782,7 +2766,6 @@ ${dataSummary}
     // 添加用户消息
     const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
     msgsEl.innerHTML += `<div class="c-msg user">
-      <div class="m-ava">👤</div>
       <div><div class="m-bubble">${esc(text)}</div><div class="m-time">${time}</div></div>
     </div>`;
     msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -2830,7 +2813,6 @@ ${dataSummary}
     typing.classList.remove('show');
 
     msgsEl.innerHTML += `<div class="c-msg bot">
-      <div class="m-ava">🤖</div>
       <div><div class="m-bubble">${reply}</div><div class="m-time">${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div></div>
     </div>`;
     msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -2842,42 +2824,42 @@ ${dataSummary}
     overlay.className = 'overlay';
     
     const providerOptions = Object.entries(this.providers).map(([key, p]) => 
-      `<option value="${key}" ${this.config.provider === key ? 'selected' : ''}>${p.icon} ${p.name}</option>`
+      `<option value="${key}" ${this.config.provider === key ? 'selected' : ''}>${p.name}</option>`
     ).join('');
 
     overlay.innerHTML = `<div class="modal" style="width:560px;max-height:90vh;overflow-y:auto">
-      <h3>🤖 MiaoAI 喵喵助手配置</h3>
+      <h3>智能助手配置</h3>
       <div class="sub">选择AI提供商，接入真实大模型获得个性化任务规划能力</div>
       
-      <div style="margin-top:12px;padding:12px;background:var(--accent-muted);border-radius:10px;font-size:12px;line-height:1.7;color:var(--text-secondary)">
-        <b style="color:var(--accent)">🚀 最快接入方式（10分钟，约¥2/月）：</b><br>
-        1. 打开新终端，在项目目录运行：<code style="background:#fff;padding:2px 6px;border-radius:4px">node proxy.js</code><br>
+      <div style="margin-top:12px;padding:12px;background:var(--accent-muted);border-radius:var(--radius-control);font-size:12px;line-height:1.7;color:var(--text-secondary)">
+        <b style="color:var(--accent)">最快接入方式（约¥2/月）：</b><br>
+        1. 打开新终端，在项目目录运行：<code style="background:var(--surface-card);padding:2px 6px;border-radius:4px">node proxy.js</code><br>
         2. 访问 <a href="https://platform.deepseek.com/" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> 注册，获取API Key<br>
         3. 下方选择「DeepSeek V4」，填入API Key，保存即可<br>
-        4. ⚠️ <b>proxy.js不需要修改</b>，直接运行即可，它只是个转发代理，不需要你的密钥<br>
-        5. 想部署到云端？把proxy.js复制到Cloudflare Workers就行，代码不用改
+        4. <b>proxy.js不需要修改</b>，直接运行即可<br>
+        5. 云端部署：把proxy.js复制到Cloudflare Workers即可
       </div>
 
       <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
         <div class="field">
           <label>AI 提供商</label>
-          <select id="cfg-provider" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-family:inherit">
+          <select id="cfg-provider" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-card);font-family:inherit">
             ${providerOptions}
           </select>
-          <div id="cfg-provider-desc" style="font-size:11px;color:var(--text-tertiary);margin-top:4px"></div>
+          <div id="cfg-provider-desc" style="font-size:11px;color:var(--text-tertiary);margin-top:4px;font-weight:500"></div>
         </div>
 
         <div class="field" id="cfg-api-key-wrap">
-          <label>API Key <span style="color:var(--red)">*</span></label>
+          <label>API Key <span style="color:var(--danger)">*</span></label>
           <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="sk-xxxxxxxxxxxxxxxx" />
-          <div id="cfg-api-key-hint" style="font-size:11px;color:var(--text-tertiary);margin-top:4px"></div>
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">🔒 密钥只保存在你本地浏览器，不会上传到任何服务器</div>
+          <div id="cfg-api-key-hint" style="font-size:11px;color:var(--text-tertiary);margin-top:4px;font-weight:500"></div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;font-weight:500">密钥只保存在你本地浏览器，不会上传到任何服务器</div>
         </div>
 
         <div class="field">
           <label>代理地址</label>
           <input type="text" id="cfg-proxy-url" value="${this.config.proxyUrl}" placeholder="http://localhost:8787" />
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">本地代理默认跑在8787端口；云端部署后改成你的Worker地址</div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;font-weight:500">本地代理默认跑在8787端口；云端部署后改成你的Worker地址</div>
         </div>
 
         <div class="field" id="cfg-model-wrap">
@@ -2885,8 +2867,8 @@ ${dataSummary}
           <input type="text" id="cfg-model" value="${this.config.model}" placeholder="留空使用默认模型" />
         </div>
 
-        <div id="cfg-proxy-help" style="display:none;padding:10px;background:#fff3cd;border:1px solid #ffeaa7;border-radius:8px;font-size:11px;line-height:1.6;color:#856404">
-          <b>⚠️ 还没启动本地代理？</b><br>
+        <div id="cfg-proxy-help" style="display:none;padding:10px;background:var(--surface-nested);border:1px solid var(--border);border-radius:var(--radius-control);font-size:11px;line-height:1.6;color:var(--text-secondary)">
+          <b>还没启动本地代理？</b><br>
           在项目目录打开终端运行：<code>node proxy.js</code><br>
           代理启动后再使用AI功能。代理文件就是项目根目录的 <code>proxy.js</code>，<b>不需要修改它</b>
         </div>
@@ -2956,7 +2938,7 @@ ${dataSummary}
       if(this.config.provider === 'mock'){
         showToast('已切换到演示模式 ✓');
       } else {
-        showToast(`AI配置已保存，使用${this.providers[this.config.provider].icon} ${this.providers[this.config.provider].name} ✓`);
+        showToast(`AI配置已保存，使用${this.providers[this.config.provider].name} ✓`);
       }
     };
   },
