@@ -1346,7 +1346,7 @@ function spendTileHTML(){
       <div class="bmid"><div class="btt">${esc(c[0])}</div><div class="bsub">¥${c[1]}</div>
         <div class="bbar"><i style="width:${pc}%;background:${col}"></i></div></div><span class="bpct" style="color:${col}">${pc}%</span></div>`; }).join("")
     : `<div class="focus-empty">暂无支出记录</div>`;
-  return `<div class="tile b4"><div class="tile-h"><span class="tic">${icon("wallet",16)}</span><div class="tt"><span class="en">MONTHLY SPENDING</span><span class="zh">月度开销</span></div><span class="r js-open" data-open="money">明细</span></div>
+  return `<div class="tile b3"><div class="tile-h"><span class="tic">${icon("wallet",16)}</span><div class="tt"><span class="en">MONTHLY SPENDING</span><span class="zh">月度开销</span></div><span class="r js-open" data-open="money">明细</span></div>
     <div class="spend-sum"><span class="spend-total">¥${exp}</span><span class="spend-cap">本月支出 · 共 ${all.filter(x=>x.type==='expense').length} 笔</span></div>
     <div class="book-list">${rows}</div></div>`;
 }
@@ -1359,7 +1359,7 @@ function booksTileHTML(){
       <div class="bmid"><div class="btt">${esc(x.title)}</div><div class="bsub">${x.note?esc(x.note):`${x.current}/${x.target} ${x.unit||'页'}`}</div>
         <div class="bbar"><i style="width:${pct}%;background:${col}"></i></div></div><span class="bpct" style="color:${col}">${pct}%</span></div>`; }).join("")
     : `<div class="focus-empty">还没有在读书籍，去「阅读打卡」添加吧</div>`;
-  return `<div class="tile b4"><div class="tile-h"><span class="tic">${icon("book",16)}</span><div class="tt"><span class="en">CURRENTLY READING</span><span class="zh">在读好书</span></div><span class="r">${all.length} 本</span></div>
+  return `<div class="tile b3"><div class="tile-h"><span class="tic">${icon("book",16)}</span><div class="tt"><span class="en">CURRENTLY READING</span><span class="zh">在读好书</span></div><span class="r">${all.length} 本</span></div>
     <div class="book-list">${rows}</div></div>`;
 }
 
@@ -1415,7 +1415,7 @@ function goalsTileHTML(){
         <div class="bsub">${x.current}/${x.target} ${x.unit||'次'}</div>
         <div class="bbar"><i style="width:${pct}%;background:${col}"></i></div></div><span class="bpct" style="color:${col}">${pct}%</span></div>`; }).join("")
     : `<div class="focus-empty">还没有锻炼目标，去「每日锻炼」添加吧</div>`;
-  return `<div class="tile b4"><div class="tile-h"><span class="tic">${icon("activity",16)}</span><div class="tt"><span class="en">WEEKLY GOALS</span><span class="zh">本周目标</span></div><span class="r js-open" data-open="sport">${all.length} 项</span></div>
+  return `<div class="tile b3"><div class="tile-h"><span class="tic">${icon("activity",16)}</span><div class="tt"><span class="en">WEEKLY GOALS</span><span class="zh">本周目标</span></div><span class="r js-open" data-open="sport">${all.length} 项</span></div>
     <div class="book-list">${rows}</div></div>`;
 }
 
@@ -2465,11 +2465,11 @@ const MiaoAI = {
     const notes = data.note||[];
     const entries = Object.keys(data).reduce((a,k)=>a+(data[k]||[]).length,0);
 
-    return `<div class="tile rag-insight">
-      <div class="ti">
+    return `<div class="tile b3 rag-insight" id="ragTile">
+      <div class="tile-h">
         <span class="tic" style="background:rgba(124,58,237,.15);color:#7c3aed">🧠</span>
-        <div class="tt"><b>RAG 个人数据洞察</b></div>
-        <button class="ti-more" id="ragConfigBtn" title="知识库配置">⚙️</button>
+        <div class="tt"><span class="en">RAG INSIGHTS</span><span class="zh">个人数据洞察</span></div>
+        <button class="r" id="ragConfigBtn" title="知识库配置" style="border:none;background:transparent;cursor:pointer;font-size:14px">⚙️</button>
       </div>
       <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:6px">个人数据资产化 · AI基于你的历史数据给出洞察</p>
       <div class="rag-metrics">
