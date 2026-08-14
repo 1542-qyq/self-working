@@ -592,6 +592,10 @@
   .notion-bar .nb-last { font-size:10px; color:var(--drawer-text-mute); text-align:center; margin-top:5px; }
   .notion-bar .nb-last.success { color:var(--accent); }
   .notion-bar .nb-last.error { color:var(--danger); }
+  .config-row { display:flex; border-top:1px solid var(--drawer-hover); }
+  .config-row .notion-bar { flex:1; border-top:none; border-right:1px solid var(--drawer-hover); padding:10px 10px; }
+  .config-row .notion-bar:last-child { border-right:none; }
+  .config-row .notion-bar .nb-title { font-size:11px; }
   .cloud-config { display:flex; flex-direction:column; gap:10px; }
   .cloud-config .cfg-row { display:flex; flex-direction:column; gap:4px; }
   .cloud-config label { font-size:12px; font-weight:600; color:var(--text-secondary); }
@@ -910,41 +914,43 @@
       </div>
       <div class="cb-logo" id="cbLogo"></div>
     </div>
-    <div class="notion-bar" id="notionBar">
-      <div class="nb-header">
-        <span class="nb-icon" id="nbIcon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 4v16"/><path d="M8 12h12"/></svg>
-        </span>
-        <span class="nb-title">Notion 同步</span>
-        <button class="nb-cfg" id="btn-notion-cfg" title="Notion 配置">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1"/></svg>
-        </button>
+    <div class="config-row">
+      <div class="notion-bar" id="notionBar">
+        <div class="nb-header">
+          <span class="nb-icon" id="nbIcon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 4v16"/><path d="M8 12h12"/></svg>
+          </span>
+          <span class="nb-title">Notion</span>
+          <button class="nb-cfg" id="btn-notion-cfg" title="Notion 配置">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1"/></svg>
+          </button>
+        </div>
+        <div class="nb-status" id="nbStatus">未配置</div>
+        <div class="nb-modules" id="nbModules" style="display:none"></div>
+        <div class="nb-actions" id="nbActions" style="display:none">
+          <button class="nb-btn" id="btn-notion-pull" title="从 Notion 拉取数据">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+            拉取
+          </button>
+          <button class="nb-btn" id="btn-notion-push" title="推送到 Notion">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+            推送
+          </button>
+        </div>
+        <div class="nb-last" id="nbLast"></div>
       </div>
-      <div class="nb-status" id="nbStatus">未配置</div>
-      <div class="nb-modules" id="nbModules" style="display:none"></div>
-      <div class="nb-actions" id="nbActions" style="display:none">
-        <button class="nb-btn" id="btn-notion-pull" title="从 Notion 拉取数据">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
-          拉取
-        </button>
-        <button class="nb-btn" id="btn-notion-push" title="推送到 Notion">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
-          推送
-        </button>
+      <div class="notion-bar" id="aiConfigBar">
+        <div class="nb-header">
+          <span class="nb-icon" id="aiIcon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/><polyline points="16 3 21 3 21 8"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="14" y1="17" x2="21" y2="17"/><line x1="14" y1="13" x2="21" y2="13"/></svg>
+          </span>
+          <span class="nb-title">AI</span>
+          <button class="nb-cfg" id="btn-ai-cfg" title="AI 配置">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1"/></svg>
+          </button>
+        </div>
+        <div class="nb-status" id="aiStatus">未配置</div>
       </div>
-      <div class="nb-last" id="nbLast"></div>
-    </div>
-    <div class="notion-bar" id="aiConfigBar">
-      <div class="nb-header">
-        <span class="nb-icon" id="aiIcon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/><polyline points="16 3 21 3 21 8"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="14" y1="17" x2="21" y2="17"/><line x1="14" y1="13" x2="21" y2="13"/></svg>
-        </span>
-        <span class="nb-title">AI 配置</span>
-        <button class="nb-cfg" id="btn-ai-cfg" title="AI 配置">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1"/></svg>
-        </button>
-      </div>
-      <div class="nb-status" id="aiStatus">未配置</div>
     </div>
     <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
   </aside>
