@@ -609,14 +609,19 @@
   .cloud-config .cfg-help { font-size:11px; color:var(--text-tertiary); line-height:1.5; }
   .cloud-config .cfg-help code { background:var(--surface-nested); padding:1px 5px; border-radius:3px; }
   /* Notion config modal styles */
-  .notion-config .nc-row { display:flex; flex-direction:column; gap:4px; }
-  .notion-config .nc-row label { font-size:12px; font-weight:600; color:var(--text-secondary); }
-  .notion-config .nc-input { font-family:var(--font); font-size:13px; }
-  .notion-config .nc-help { font-size:11px; color:var(--text-tertiary); line-height:1.5; }
-  .notion-config .nc-section-title { font-size:13px; font-weight:700; color:var(--text); margin:8px 0 4px; border-bottom:1px solid var(--border); padding-bottom:6px; }
-  .notion-config .nc-mod-row { display:flex; align-items:center; gap:8px; margin:4px 0; }
-  .notion-config .nc-mod-name { font-size:12px; font-weight:600; color:var(--text); width:90px; }
+  .notion-config .nc-row { display:flex; flex-direction:column; gap:5px; margin-bottom:4px; }
+  .notion-config .nc-row label { font-size:12px; font-weight:500; color:var(--text-secondary); }
+  .notion-config .nc-input { font-family:var(--font); font-size:13px; padding:7px 10px; }
+  .notion-config .nc-help { font-size:11px; color:var(--text-tertiary); line-height:1.4; margin-top:-1px; }
+  .notion-config .nc-section-title { font-size:12px; font-weight:600; color:var(--text-secondary); margin:16px 0 8px; text-transform:uppercase; letter-spacing:.05em; }
+  .notion-config .nc-mod-row { display:flex; align-items:center; gap:8px; margin:5px 0; }
+  .notion-config .nc-mod-name { font-size:12.5px; font-weight:500; color:var(--text); width:72px; flex:0 0 auto; }
+  .notion-config .nc-mod-row .nc-input { flex:1; }
+  .notion-config .nc-mod-row .btn { padding:6px 10px; font-size:11.5px; }
   .notion-config .nc-field-select { font-family:var(--font); font-size:12px; }
+  .modal.notion-modal { width:480px; border-radius:8px; padding:24px; }
+  .modal.notion-modal h3 { font-size:17px; font-weight:600; }
+  .modal.notion-modal .sub { font-size:12.5px; line-height:1.5; }
   /* IELTS tile & card styles */
   .ielts-tile { min-height: 160px; grid-column: 1 / -1 !important; }
   .ielts-tile .tile-h { margin-bottom: 10px; }
@@ -4415,32 +4420,29 @@ const NotionSync = {
       return `<div class="nc-mod-row">
         <div class="nc-mod-name">${m.name}</div>
         <input type="text" class="nc-input" data-mod="${m.key}" data-field="databaseId"
-          value="${mapping.databaseId || ''}" placeholder="Notion 数据库 ID"
-          style="flex:1; min-width:100px"/>
-        <button class="btn ghost" data-test="${m.key}" ${!mapping.databaseId ? 'disabled' : ''}>获取结构</button>
+          value="${mapping.databaseId || ''}" placeholder="数据库 ID"/>
+        <button class="btn ghost" data-test="${m.key}" ${!mapping.databaseId ? 'disabled' : ''}>获取</button>
       </div>`;
     }).join('');
 
-    overlay.innerHTML = `<div class="modal" style="width:640px; max-height:85vh; overflow-y:auto">
+    overlay.innerHTML = `<div class="modal notion-modal">
       <h3>Notion 同步配置</h3>
-      <div class="sub">连接到你的 Notion 工作区，将数据库映射到工作台模块。<br>
-      需要先在 <a href="https://www.notion.so/my-integrations" target="_blank">Notion Developers</a> 创建 Integration 并授权访问数据库</div>
-      <div class="notion-config" style="display:flex; flex-direction:column; gap:14px; margin-top:16px">
+      <div class="sub">连接 Notion 工作区，将数据库映射到工作台模块。<br>
+      需要先在 <a href="https://www.notion.so/my-integrations" target="_blank">Notion Developers</a> 创建 Integration 并授权</div>
+      <div class="notion-config">
         <div class="nc-row">
           <label>Notion API Key</label>
           <input type="password" class="nc-input" id="nc-api-key"
             value="${attr(this.config?.apiKey || '')}"
-            placeholder="ntn_xxxxxxxxxxxxxxxx"
-            style="flex:1"/>
-          <span class="nc-help">在 <a href="https://www.notion.so/my-integrations" target="_blank">Notion Developers</a> 创建 Integration 后获取</span>
+            placeholder="ntn_xxxxxxxxxxxxxxxx"/>
+          <span class="nc-help">在 Notion Developers 创建 Integration 后获取</span>
         </div>
         <div class="nc-row">
           <label>代理服务器 URL</label>
           <input type="text" class="nc-input" id="nc-proxy-url"
             value="${attr(this.config?.proxyUrl || '')}"
-            placeholder="/notion 或 http://localhost:8081/notion"
-            style="flex:1"/>
-          <span class="nc-help">本地使用（python3 notion-proxy.py）填 /notion；GitHub Pages 部署需填 Cloudflare Worker 完整 URL（如 https://your-worker.workers.dev/notion）</span>
+            placeholder="/notion 或 https://your-worker.workers.dev/notion"/>
+          <span class="nc-help">本地运行填 /notion；线上部署填 Cloudflare Worker 地址</span>
         </div>
         <div class="nc-section-title">模块映射</div>
         ${modules}
@@ -4449,8 +4451,8 @@ const NotionSync = {
       </div>
       <div class="modal-actions"><div class="spacer"></div>
         <button class="btn ghost" id="nc-cancel">取消</button>
-        <button class="btn" id="nc-test">测试连接</button>
-        <button class="btn primary" id="nc-save">保存</button></div></div>`;
+        <button class="btn ghost" id="nc-test">测试连接</button>
+        <button class="btn" id="nc-save">保存</button></div></div>`;
     document.body.appendChild(overlay);
     const close = () => overlay.remove();
     overlay.onclick = e => { if(e.target === overlay) close(); };
