@@ -2117,134 +2117,147 @@ function wireModule(key){ const m=modOf(key);
 /* ---------- EDITOR MODAL (per type) ---------- */
 function openEditor(key,item){
   const m=modOf(key); const editing=!!item; const d=item||newItem(m);
-  let fields="";
-  if(m.type==="todo"){
-    fields=`<div class="field"><label>任务</label><input id="f-title" value="${attr(d.title)}" placeholder="要做什么？"/></div>
-      <div class="field"><label>优先级</label><div class="seg" id="f-prio">${(m.priorities||[]).map(p=>`<div class="opt ${p.key===d.priority?'on':''}" data-v="${p.key}">${p.label}</div>`).join("")}</div></div>
-      <div class="field"><label>备注</label><textarea id="f-note" placeholder="补充说明">${esc(d.note||'')}</textarea></div>`;
-  } else if(m.type==="checkin"){
+
+  // 生成checkin类型字段的函数
+  function buildCheckinFields(){
     const typeSeg=`<div class="seg" id="f-ctype">
       <div class="opt ${d.type!=="word"?'on':''}" data-v="habit">习惯打卡</div>
       <div class="opt ${d.type==="word"?'on':''}" data-v="word">单词打卡</div></div>`;
     if(d.type==="word"){
-      fields=`<div class="field"><label>类型</label>${typeSeg}</div>
+      return `<div class="field"><label>类型</label>${typeSeg}</div>
         <div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="背单词"/></div>
         <div class="field"><label>每日目标(词)</label><input id="f-target" type="number" min="1" value="${d.target||50}"/></div>
         <p class="sub" style="margin:0">保存后可在卡片快速打卡，记录每天的学习时间、新词和复习量。</p>`;
     } else {
-      fields=`<div class="field"><label>类型</label>${typeSeg}</div>
+      return `<div class="field"><label>类型</label>${typeSeg}</div>
         <div class="field"><label>打卡项</label><input id="f-title" value="${attr(d.title)}" placeholder="例如：喝够 8 杯水"/></div>
         <p class="sub" style="margin:0">保存后可在卡片点击左侧方块打卡；连续天数自动统计，每天从零开始。</p>`;
     }
-  } else if(m.type==="progress"){
-    fields=`<div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="书名 / 目标"/></div>
-      <div class="frow"><div class="field"><label>当前</label><input id="f-cur" type="number" value="${d.current??0}"/></div>
-      <div class="field"><label>目标</label><input id="f-tgt" type="number" value="${d.target??1}"/></div>
-      <div class="field"><label>单位</label><input id="f-unit" value="${attr(d.unit||m.unit||'')}"/></div></div>
-      <div class="field"><label>摘录 / 想法</label><textarea id="f-note" placeholder="随手记">${esc(d.note||'')}</textarea></div>`;
-  } else if(m.type==="finance"){
-    fields=`<div class="field"><label>类型</label><div class="seg" id="f-ftype">
-        <div class="opt ${d.type!=='income'?'on':''}" data-v="expense">支出</div><div class="opt ${d.type==='income'?'on':''}" data-v="income">收入</div></div></div>
-      <div class="frow"><div class="field"><label>项目</label><input id="f-title" value="${attr(d.title)}" placeholder="午餐 / 稿费"/></div>
-      <div class="field"><label>金额 ¥</label><input id="f-amt" type="number" value="${d.amount??''}" placeholder="0"/></div></div>
-      <div class="field"><label>分类</label><div class="seg" id="f-cat">${(m.categories||[]).map(c=>`<div class="opt ${c===d.category?'on':''}" data-v="${attr(c)}" style="flex:0 0 auto;min-width:auto">${esc(c)}</div>`).join("")}</div></div>
-      <div class="field"><label>日期</label><input id="f-date" type="date" value="${d.date||isoToday()}"/></div>`;
-  } else if(m.type==="ielts"){
-    const statusOpts=['☐ 未练习','📋 今日任务','⏳ 进行中','✅ 已完成'];
-    const statusSeg=`<div class="seg" id="f-status">${statusOpts.map(s=>`<div class="opt ${s===d.status?'on':''}" data-v="${s}">${s}</div>`).join("")}</div>`;
-    let ieltsFields="";
-    if(m.key==="ielts_read"){
-      ieltsFields=`
-        <div class="field"><label>文章标题</label><input id="f-title" value="${attr(d.title)}" placeholder="Cambridge 18 Test 2 Passage 1"/></div>
-        <div class="frow">
-          <div class="field"><label>部分</label><div class="seg" id="f-section">${['P1','P2','P3'].map(s=>`<div class="opt ${s===d.section?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-          <div class="field"><label>正确率 %</label><input id="f-accuracy" type="number" min="0" max="100" value="${d.accuracy??''}" placeholder="0-100"/></div>
-        </div>
-        <div class="frow">
-          <div class="field"><label>难度</label><input id="f-difficulty" type="number" min="1" max="5" value="${d.difficulty??3}" placeholder="1-5星"/></div>
-          <div class="field"><label>频次</label><div class="seg" id="f-frequency">${['高频','中频','低频'].map(s=>`<div class="opt ${s===d.frequency?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-        </div>
-        <div class="field"><label>今日计划</label>${statusSeg}</div>
-        <div class="field"><label>薄弱环节</label><textarea id="f-weakness" placeholder="如：段落信息匹配题正确率低">${esc(d.weakness||'')}</textarea></div>
-        <div class="field"><label>明日计划</label><textarea id="f-tomorrowPlan" placeholder="针对薄弱环节的练习计划">${esc(d.tomorrowPlan||'')}</textarea></div>
-        <div class="field"><label>备注</label><textarea id="f-note" placeholder="做题笔记 / 生词摘录">${esc(d.note||'')}</textarea></div>`;
-    } else if(m.key==="ielts_listening"){
-      ieltsFields=`
-        <div class="field"><label>听力场景</label><input id="f-title" value="${attr(d.title)}" placeholder="Section 2 - 博物馆参观"/></div>
-        <div class="frow">
-          <div class="field"><label>Section</label><div class="seg" id="f-section">${['S1','S2','S3','S4'].map(s=>`<div class="opt ${s===d.section?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-          <div class="field"><label>正确率 %</label><input id="f-accuracy" type="number" min="0" max="100" value="${d.accuracy??''}" placeholder="0-100"/></div>
-        </div>
-        <div class="frow">
-          <div class="field"><label>难度</label><div class="seg" id="f-difficulty">${['简单','中等','困难'].map(s=>`<div class="opt ${s===d.difficulty?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-          <div class="field"><label>题型</label><input id="f-questionType" value="${attr(d.questionType||'')}" placeholder="填空题 / 选择题 / 地图题"/></div>
-        </div>
-        <div class="field"><label>今日计划</label>${statusSeg}</div>
-        <div class="field"><label>易错点</label><textarea id="f-weakness" placeholder="如：数字信息容易混淆">${esc(d.weakness||'')}</textarea></div>
-        <div class="field"><label>改进计划</label><textarea id="f-tomorrowPlan" placeholder="针对性训练计划">${esc(d.tomorrowPlan||'')}</textarea></div>
-        <div class="field"><label>备注</label><textarea id="f-note" placeholder="听力笔记">${esc(d.note||'')}</textarea></div>`;
-    } else if(m.key==="ielts_writing"){
-      ieltsFields=`
-        <div class="field"><label>作文题目</label><input id="f-title" value="${attr(d.title)}" placeholder="Some people believe..."/></div>
-        <div class="frow">
-          <div class="field"><label>任务</label><div class="seg" id="f-task">${['Task 1','Task 2'].map(s=>`<div class="opt ${s===d.task?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-          <div class="field"><label>预估分数</label><input id="f-estimatedScore" type="number" min="0" max="9" step="0.5" value="${d.estimatedScore??''}" placeholder="0-9"/></div>
-        </div>
-        <div class="frow">
-          <div class="field"><label>中文题目</label><input id="f-titleCn" value="${attr(d.titleCn||'')}" placeholder="题目中文翻译"/></div>
-          <div class="field"><label>题目来源</label><input id="f-source" value="${attr(d.source||'')}" placeholder="Cambridge / 九分达人..."/></div>
-        </div>
-        <div class="field"><label>今日计划</label>${statusSeg}</div>
-        <div class="field"><label>批改报告链接</label><input id="f-correctionLink" value="${attr(d.correctionLink||'')}" placeholder="https://..."/></div>
-        <div class="field"><label>薄弱项</label><textarea id="f-weakness" placeholder="如：论证逻辑 / 词汇多样性">${esc(d.weakness||'')}</textarea></div>
-        <div class="field"><label>改进计划</label><textarea id="f-tomorrowPlan" placeholder="复习计划">${esc(d.tomorrowPlan||'')}</textarea></div>
-        <div class="field"><label>范文/思路</label><textarea id="f-note" placeholder="论点 / 素材 / 范文摘录">${esc(d.note||'')}</textarea></div>`;
-    } else if(m.key==="ielts_speaking"){
-      ieltsFields=`
-        <div class="field"><label>话题</label><input id="f-title" value="${attr(d.title)}" placeholder="Describe your favorite..."/></div>
-        <div class="frow">
-          <div class="field"><label>Part</label><div class="seg" id="f-part">${['Part 1','Part 2','Part 3'].map(s=>`<div class="opt ${s===d.part?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-          <div class="field"><label>自我评估</label><div class="seg" id="f-selfAssessment">${['差','一般','良好','优秀'].map(s=>`<div class="opt ${s===d.selfAssessment?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-        </div>
-        <div class="field"><label>Cue Card</label><textarea id="f-cueCard" placeholder="完整话题卡片内容">${esc(d.cueCard||'')}</textarea></div>
-        <div class="field"><label>话题分类</label><input id="f-topicCategory" value="${attr(d.topicCategory||'')}" placeholder="科技 / 教育 / 环境..."/></div>
-        <div class="field"><label>今日计划</label>${statusSeg}</div>
-        <div class="field"><label>薄弱环节</label><textarea id="f-weakness" placeholder="如：流利度 / 发音 / 词汇">${esc(d.weakness||'')}</textarea></div>
-        <div class="field"><label>改进计划</label><textarea id="f-tomorrowPlan" placeholder="练习计划">${esc(d.tomorrowPlan||'')}</textarea></div>
-        <div class="field"><label>笔记 / 素材</label><textarea id="f-note" placeholder="常用表达 / 话题素材">${esc(d.note||'')}</textarea></div>`;
-    } else if(m.key==="ielts_record"){
-      ieltsFields=`
-        <div class="field"><label>标题</label><input id="f-title" value="${attr(d.title)}" placeholder="第X周学习总结"/></div>
-        <div class="frow">
-          <div class="field"><label>学科</label><div class="seg" id="f-subject">${['听力','阅读','写作','口语','综合'].map(s=>`<div class="opt ${s===d.subject?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
-          <div class="field"><label>正确率 %</label><input id="f-accuracy" type="number" min="0" max="100" value="${d.accuracy??''}" placeholder="0-100"/></div>
-        </div>
-        <div class="field"><label>预估总分</label><input id="f-estimatedScore" type="number" min="0" max="9" step="0.5" value="${d.estimatedScore??''}" placeholder="0-9"/></div>
-        <div class="field"><label>今日计划</label>${statusSeg}</div>
-        <div class="field"><label>主要收获</label><textarea id="f-note" placeholder="本周/本次练习收获">${esc(d.note||'')}</textarea></div>
-        <div class="field"><label>需要改进</label><textarea id="f-weakness" placeholder="需要加强的方面">${esc(d.weakness||'')}</textarea></div>
-        <div class="field"><label>下一步计划</label><textarea id="f-tomorrowPlan" placeholder="下阶段学习计划">${esc(d.tomorrowPlan||'')}</textarea></div>`;
-    }
-    fields=ieltsFields;
-  } else {
-    fields=`<div class="field"><label>标题</label><input id="f-title" value="${attr(d.title)}" placeholder="给这条起个名"/></div>
-      ${(m.moods&&m.moods.length)?`<div class="field"><label>标签 / 心情</label><div class="seg" id="f-mood">${m.moods.map(md=>`<div class="opt ${md===d.mood?'on':''}" data-v="${attr(md)}" style="flex:0 0 auto;min-width:auto">${md}</div>`).join("")}</div></div>`:''}
-      <div class="field"><label>内容</label><textarea id="f-content" placeholder="写点什么…">${esc(d.content||'')}</textarea></div>
-      <div class="field"><label>日期</label><input id="f-date" type="date" value="${d.date||isoToday()}"/></div>`;
   }
+
   // layout variant selector
   const layoutOpts=[{v:'default',l:'标准'},{v:'feature',l:'大图'},{v:'quote',l:'引文'}];
-  fields=`<div class="field"><label>卡片样式</label><div class="seg" id="f-layout">${layoutOpts.map(o=>`<div class="opt ${o.v===(d.layout||'default')?'on':''}" data-v="${o.v}">${o.l}</div>`).join("")}</div></div>`+fields;
-  // custom fields (from m.fields config) — rendered after type-specific fields
-  (m.fields||[]).forEach(f=>{
-    const v=d[f.key]||"";
-    if(f.type==="select") fields+=`<div class="field"><label>${esc(f.label)}</label><div class="seg" id="f-cf-${f.key}">${(f.options||[]).map(o=>`<div class="opt ${o===v?'on':''}" data-v="${attr(o)}" style="flex:0 0 auto;min-width:auto">${esc(o)}</div>`).join("")}</div></div>`;
-    else if(f.type==="textarea") fields+=`<div class="field"><label>${esc(f.label)}</label><textarea id="f-cf-${f.key}" placeholder="${attr(f.placeholder||'')}">${esc(v)}</textarea></div>`;
-    else if(f.type==="number") fields+=`<div class="field"><label>${esc(f.label)}</label><input id="f-cf-${f.key}" type="number" value="${attr(v)}" placeholder="${attr(f.placeholder||'')}"/></div>`;
-    else fields+=`<div class="field"><label>${esc(f.label)}</label><input id="f-cf-${f.key}" value="${attr(v)}" placeholder="${attr(f.placeholder||'')}"/></div>`;
-  });
-  // shared image URL field (all types)
-  fields+=`<div class="field"><label>图片 URL（可选）</label><input id="f-image" value="${attr(d.image||'')}" placeholder="https://..."/></div>`;
+
+  // 构建完整表单字段的函数
+  function buildAllFields(){
+    let f="";
+    if(m.type==="todo"){
+      f=`<div class="field"><label>任务</label><input id="f-title" value="${attr(d.title)}" placeholder="要做什么？"/></div>
+        <div class="field"><label>优先级</label><div class="seg" id="f-prio">${(m.priorities||[]).map(p=>`<div class="opt ${p.key===d.priority?'on':''}" data-v="${p.key}">${p.label}</div>`).join("")}</div></div>
+        <div class="field"><label>备注</label><textarea id="f-note" placeholder="补充说明">${esc(d.note||'')}</textarea></div>`;
+    } else if(m.type==="checkin"){
+      f=buildCheckinFields();
+    } else if(m.type==="progress"){
+      f=`<div class="field"><label>名称</label><input id="f-title" value="${attr(d.title)}" placeholder="书名 / 目标"/></div>
+        <div class="frow"><div class="field"><label>当前</label><input id="f-cur" type="number" value="${d.current??0}"/></div>
+        <div class="field"><label>目标</label><input id="f-tgt" type="number" value="${d.target??1}"/></div>
+        <div class="field"><label>单位</label><input id="f-unit" value="${attr(d.unit||m.unit||'')}"/></div></div>
+        <div class="field"><label>摘录 / 想法</label><textarea id="f-note" placeholder="随手记">${esc(d.note||'')}</textarea></div>`;
+    } else if(m.type==="finance"){
+      f=`<div class="field"><label>类型</label><div class="seg" id="f-ftype">
+          <div class="opt ${d.type!=='income'?'on':''}" data-v="expense">支出</div><div class="opt ${d.type==='income'?'on':''}" data-v="income">收入</div></div></div>
+        <div class="frow"><div class="field"><label>项目</label><input id="f-title" value="${attr(d.title)}" placeholder="午餐 / 稿费"/></div>
+        <div class="field"><label>金额 ¥</label><input id="f-amt" type="number" value="${d.amount??''}" placeholder="0"/></div></div>
+        <div class="field"><label>分类</label><div class="seg" id="f-cat">${(m.categories||[]).map(c=>`<div class="opt ${c===d.category?'on':''}" data-v="${attr(c)}" style="flex:0 0 auto;min-width:auto">${esc(c)}</div>`).join("")}</div></div>
+        <div class="field"><label>日期</label><input id="f-date" type="date" value="${d.date||isoToday()}"/></div>`;
+    } else if(m.type==="ielts"){
+      const statusOpts=['☐ 未练习','📋 今日任务','⏳ 进行中','✅ 已完成'];
+      const statusSeg=`<div class="seg" id="f-status">${statusOpts.map(s=>`<div class="opt ${s===d.status?'on':''}" data-v="${s}">${s}</div>`).join("")}</div>`;
+      let ieltsFields="";
+      if(m.key==="ielts_read"){
+        ieltsFields=`
+          <div class="field"><label>文章标题</label><input id="f-title" value="${attr(d.title)}" placeholder="Cambridge 18 Test 2 Passage 1"/></div>
+          <div class="frow">
+            <div class="field"><label>部分</label><div class="seg" id="f-section">${['P1','P2','P3'].map(s=>`<div class="opt ${s===d.section?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+            <div class="field"><label>正确率 %</label><input id="f-accuracy" type="number" min="0" max="100" value="${d.accuracy??''}" placeholder="0-100"/></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>难度</label><input id="f-difficulty" type="number" min="1" max="5" value="${d.difficulty??3}" placeholder="1-5星"/></div>
+            <div class="field"><label>频次</label><div class="seg" id="f-frequency">${['高频','中频','低频'].map(s=>`<div class="opt ${s===d.frequency?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+          </div>
+          <div class="field"><label>今日计划</label>${statusSeg}</div>
+          <div class="field"><label>薄弱环节</label><textarea id="f-weakness" placeholder="如：段落信息匹配题正确率低">${esc(d.weakness||'')}</textarea></div>
+          <div class="field"><label>明日计划</label><textarea id="f-tomorrowPlan" placeholder="针对薄弱环节的练习计划">${esc(d.tomorrowPlan||'')}</textarea></div>
+          <div class="field"><label>备注</label><textarea id="f-note" placeholder="做题笔记 / 生词摘录">${esc(d.note||'')}</textarea></div>`;
+      } else if(m.key==="ielts_listening"){
+        ieltsFields=`
+          <div class="field"><label>听力场景</label><input id="f-title" value="${attr(d.title)}" placeholder="Section 2 - 博物馆参观"/></div>
+          <div class="frow">
+            <div class="field"><label>Section</label><div class="seg" id="f-section">${['S1','S2','S3','S4'].map(s=>`<div class="opt ${s===d.section?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+            <div class="field"><label>正确率 %</label><input id="f-accuracy" type="number" min="0" max="100" value="${d.accuracy??''}" placeholder="0-100"/></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>难度</label><div class="seg" id="f-difficulty">${['简单','中等','困难'].map(s=>`<div class="opt ${s===d.difficulty?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+            <div class="field"><label>题型</label><input id="f-questionType" value="${attr(d.questionType||'')}" placeholder="填空题 / 选择题 / 地图题"/></div>
+          </div>
+          <div class="field"><label>今日计划</label>${statusSeg}</div>
+          <div class="field"><label>易错点</label><textarea id="f-weakness" placeholder="如：数字信息容易混淆">${esc(d.weakness||'')}</textarea></div>
+          <div class="field"><label>改进计划</label><textarea id="f-tomorrowPlan" placeholder="针对性训练计划">${esc(d.tomorrowPlan||'')}</textarea></div>
+          <div class="field"><label>备注</label><textarea id="f-note" placeholder="听力笔记">${esc(d.note||'')}</textarea></div>`;
+      } else if(m.key==="ielts_writing"){
+        ieltsFields=`
+          <div class="field"><label>作文题目</label><input id="f-title" value="${attr(d.title)}" placeholder="Some people believe..."/></div>
+          <div class="frow">
+            <div class="field"><label>任务</label><div class="seg" id="f-task">${['Task 1','Task 2'].map(s=>`<div class="opt ${s===d.task?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+            <div class="field"><label>预估分数</label><input id="f-estimatedScore" type="number" min="0" max="9" step="0.5" value="${d.estimatedScore??''}" placeholder="0-9"/></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label>中文题目</label><input id="f-titleCn" value="${attr(d.titleCn||'')}" placeholder="题目中文翻译"/></div>
+            <div class="field"><label>题目来源</label><input id="f-source" value="${attr(d.source||'')}" placeholder="Cambridge / 九分达人..."/></div>
+          </div>
+          <div class="field"><label>今日计划</label>${statusSeg}</div>
+          <div class="field"><label>批改报告链接</label><input id="f-correctionLink" value="${attr(d.correctionLink||'')}" placeholder="https://..."/></div>
+          <div class="field"><label>薄弱项</label><textarea id="f-weakness" placeholder="如：论证逻辑 / 词汇多样性">${esc(d.weakness||'')}</textarea></div>
+          <div class="field"><label>改进计划</label><textarea id="f-tomorrowPlan" placeholder="复习计划">${esc(d.tomorrowPlan||'')}</textarea></div>
+          <div class="field"><label>范文/思路</label><textarea id="f-note" placeholder="论点 / 素材 / 范文摘录">${esc(d.note||'')}</textarea></div>`;
+      } else if(m.key==="ielts_speaking"){
+        ieltsFields=`
+          <div class="field"><label>话题</label><input id="f-title" value="${attr(d.title)}" placeholder="Describe your favorite..."/></div>
+          <div class="frow">
+            <div class="field"><label>Part</label><div class="seg" id="f-part">${['Part 1','Part 2','Part 3'].map(s=>`<div class="opt ${s===d.part?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+            <div class="field"><label>自我评估</label><div class="seg" id="f-selfAssessment">${['差','一般','良好','优秀'].map(s=>`<div class="opt ${s===d.selfAssessment?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+          </div>
+          <div class="field"><label>Cue Card</label><textarea id="f-cueCard" placeholder="完整话题卡片内容">${esc(d.cueCard||'')}</textarea></div>
+          <div class="field"><label>话题分类</label><input id="f-topicCategory" value="${attr(d.topicCategory||'')}" placeholder="科技 / 教育 / 环境..."/></div>
+          <div class="field"><label>今日计划</label>${statusSeg}</div>
+          <div class="field"><label>薄弱环节</label><textarea id="f-weakness" placeholder="如：流利度 / 发音 / 词汇">${esc(d.weakness||'')}</textarea></div>
+          <div class="field"><label>改进计划</label><textarea id="f-tomorrowPlan" placeholder="练习计划">${esc(d.tomorrowPlan||'')}</textarea></div>
+          <div class="field"><label>笔记 / 素材</label><textarea id="f-note" placeholder="常用表达 / 话题素材">${esc(d.note||'')}</textarea></div>`;
+      } else if(m.key==="ielts_record"){
+        ieltsFields=`
+          <div class="field"><label>标题</label><input id="f-title" value="${attr(d.title)}" placeholder="第X周学习总结"/></div>
+          <div class="frow">
+            <div class="field"><label>学科</label><div class="seg" id="f-subject">${['听力','阅读','写作','口语','综合'].map(s=>`<div class="opt ${s===d.subject?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+            <div class="field"><label>正确率 %</label><input id="f-accuracy" type="number" min="0" max="100" value="${d.accuracy??''}" placeholder="0-100"/></div>
+          </div>
+          <div class="field"><label>预估总分</label><input id="f-estimatedScore" type="number" min="0" max="9" step="0.5" value="${d.estimatedScore??''}" placeholder="0-9"/></div>
+          <div class="field"><label>今日计划</label>${statusSeg}</div>
+          <div class="field"><label>主要收获</label><textarea id="f-note" placeholder="本周/本次练习收获">${esc(d.note||'')}</textarea></div>
+          <div class="field"><label>需要改进</label><textarea id="f-weakness" placeholder="需要加强的方面">${esc(d.weakness||'')}</textarea></div>
+          <div class="field"><label>下一步计划</label><textarea id="f-tomorrowPlan" placeholder="下阶段学习计划">${esc(d.tomorrowPlan||'')}</textarea></div>`;
+      }
+      f=ieltsFields;
+    } else {
+      f=`<div class="field"><label>标题</label><input id="f-title" value="${attr(d.title)}" placeholder="给这条起个名"/></div>
+        ${(m.moods&&m.moods.length)?`<div class="field"><label>标签 / 心情</label><div class="seg" id="f-mood">${m.moods.map(md=>`<div class="opt ${md===d.mood?'on':''}" data-v="${attr(md)}" style="flex:0 0 auto;min-width:auto">${md}</div>`).join("")}</div></div>`:''}
+        <div class="field"><label>内容</label><textarea id="f-content" placeholder="写点什么…">${esc(d.content||'')}</textarea></div>
+        <div class="field"><label>日期</label><input id="f-date" type="date" value="${d.date||isoToday()}"/></div>`;
+    }
+    f=`<div class="field"><label>卡片样式</label><div class="seg" id="f-layout">${layoutOpts.map(o=>`<div class="opt ${o.v===(d.layout||'default')?'on':''}" data-v="${o.v}">${o.l}</div>`).join("")}</div></div>`+f;
+    // custom fields (from m.fields config) — rendered after type-specific fields
+    (m.fields||[]).forEach(cf=>{
+      const v=d[cf.key]||"";
+      if(cf.type==="select") f+=`<div class="field"><label>${esc(cf.label)}</label><div class="seg" id="f-cf-${cf.key}">${(cf.options||[]).map(o=>`<div class="opt ${o===v?'on':''}" data-v="${attr(o)}" style="flex:0 0 auto;min-width:auto">${esc(o)}</div>`).join("")}</div></div>`;
+      else if(cf.type==="textarea") f+=`<div class="field"><label>${esc(cf.label)}</label><textarea id="f-cf-${cf.key}" placeholder="${attr(cf.placeholder||'')}">${esc(v)}</textarea></div>`;
+      else if(cf.type==="number") f+=`<div class="field"><label>${esc(cf.label)}</label><input id="f-cf-${cf.key}" type="number" value="${attr(v)}" placeholder="${attr(cf.placeholder||'')}"/></div>`;
+      else f+=`<div class="field"><label>${esc(cf.label)}</label><input id="f-cf-${cf.key}" value="${attr(v)}" placeholder="${attr(cf.placeholder||'')}"/></div>`;
+    });
+    // shared image URL field (all types)
+    f+=`<div class="field"><label>图片 URL（可选）</label><input id="f-image" value="${attr(d.image||'')}" placeholder="https://..."/></div>`;
+    return f;
+  }
+
+  let fields=buildAllFields();
   const overlay=document.createElement("div"); overlay.className="overlay";
   overlay.innerHTML=`<div class="modal"><h3>${editing?'编辑':'新建'} · ${m.name}</h3><div class="sub">${m.desc}</div>${fields}
     <div class="modal-actions">${editing?'<button class="link-danger" id="m-del">删除</button>':''}<div class="spacer"></div>
@@ -2253,7 +2266,35 @@ function openEditor(key,item){
   const close=()=>overlay.remove();
   overlay.onclick=e=>{ if(e.target===overlay) close(); };
   overlay.querySelector("#m-cancel").onclick=close;
-  overlay.querySelectorAll(".seg").forEach(seg=>seg.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{ seg.querySelectorAll(".opt").forEach(x=>x.classList.remove("on")); o.classList.add("on"); }));
+
+  // 绑定seg点击事件，处理打卡类型切换的特殊逻辑
+  function bindSegEvents(){
+    overlay.querySelectorAll(".seg").forEach(seg=>seg.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
+      seg.querySelectorAll(".opt").forEach(x=>x.classList.remove("on"));
+      o.classList.add("on");
+      // 如果是打卡类型切换，保存当前输入并重新打开编辑器
+      if(seg.id==="f-ctype"&&m.type==="checkin"){
+        const newType=o.dataset.v;
+        // 保存当前已输入的内容
+        const titleInput=overlay.querySelector("#f-title");
+        if(titleInput) d.title=(titleInput.value||"").trim();
+        const targetInput=overlay.querySelector("#f-target");
+        if(targetInput) d.target=Math.max(1,+targetInput.value||50);
+        // 更新类型
+        if(newType==="word"){
+          d.type="word";
+          if(!d.target) d.target=50;
+          if(!d.title) d.title="背单词";
+        } else {
+          delete d.type;
+        }
+        // 关闭当前弹窗并重新打开
+        close();
+        openEditor(key,d);
+      }
+    }));
+  }
+  bindSegEvents();
   if(editing) overlay.querySelector("#m-del").onclick=()=>{ close(); confirmDelete(key,d.id); };
   overlay.querySelector("#m-save").onclick=()=>{
     const val=id=>{ const el=overlay.querySelector(id); return el?el.value:undefined; };
