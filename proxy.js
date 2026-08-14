@@ -5,12 +5,13 @@ const https = require('https');
 
 const PORT = process.env.PORT || 8787;
 
-// 支持的API目标地址
+// 支持的API目标地址（与Cloudflare Worker保持一致）
 const TARGETS = {
-  deepseek: 'api.deepseek.com',
-  doubao: 'ark.cn-beijing.volces.com',
-  qwen: 'dashscope.aliyuncs.com',
-  ollama: 'localhost:11434'
+  deepseek: { host: 'api.deepseek.com', basePath: '/v1' },
+  doubao: { host: 'ark.cn-beijing.volces.com', basePath: '/api/v3' },
+  qwen: { host: 'dashscope.aliyuncs.com', basePath: '/compatible-mode/v1' },
+  ollama: { host: 'localhost', port: 11434, basePath: '' },
+  notion: { host: 'api.notion.com', basePath: '/v1' }
 };
 
 const server = http.createServer((req, res) => {
@@ -27,7 +28,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 路由格式：/deepseek/v1/chat/completions
+  // 路由格式：/deepseek/chat/completions
   const url = new URL(req.url, `http://localhost:${PORT}`);
   const parts = url.pathname.split('/').filter(Boolean);
   
@@ -35,37 +36,48 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'ok',
-      message: 'AI Proxy is running',
+      message: 'MiaoAI Proxy is running',
       supported_targets: Object.keys(TARGETS),
-      usage: '例如：POST /deepseek/v1/chat/completions'
+      usage: '例如：POST /deepseek/chat/completions'
     }));
     return;
   }
 
   const targetKey = parts[0];
-  const targetHost = TARGETS[targetKey];
+  const target = TARGETS[targetKey];
   
-  if (!targetHost) {
+  if (!target) {
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: `Unknown target: ${targetKey}`, supported: Object.keys(TARGETS) }));
     return;
   }
 
   // 构建目标路径
-  const targetPath = '/' + parts.slice(1).join('/') + url.search;
+  const targetPath = parts.slice(1).join('/');
+  let fullPath = target.basePath || '';
+  if (targetPath) {
+    fullPath += '/' + targetPath;
+  }
+  if (url.search) {
+    fullPath += url.search;
+  }
   
   // 转发请求
   const isLocal = targetKey === 'ollama';
   const protocol = isLocal ? http : https;
-  const [hostname, port] = targetHost.split(':');
+  const hostname = target.host;
+  const port = target.port || (isLocal ? 11434 : 443);
 
   const options = {
     hostname: hostname,
-    port: port || (isLocal ? 11434 : 443),
-    path: targetPath,
+    port: port,
+    path: fullPath,
     method: req.method,
-    headers: { ...req.headers, host: targetHost }
+    headers: { ...req.headers, host: `${hostname}${port ? ':' + port : ''}` }
   };
+
+  // 删除可能导致问题的头
+  delete options.headers['accept-encoding'];
 
   const proxyReq = protocol.request(options, (proxyRes) => {
     res.writeHead(proxyRes.statusCode, proxyRes.headers);
@@ -84,15 +96,16 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════════════════════╗
-║           🚀 AI Proxy Server 已启动                        ║
+║           🚀 MiaoAI Proxy Server 已启动                    ║
 ╠════════════════════════════════════════════════════════════╣
 ║  本地代理地址: http://localhost:${PORT}                      ║
 ║                                                            ║
 ║  支持的模型提供商:                                          ║
-║   • DeepSeek:  http://localhost:${PORT}/deepseek           ║
-║   • 豆包/方舟:  http://localhost:${PORT}/doubao             ║
-║   • 通义千问:   http://localhost:${PORT}/qwen               ║
-║   • Ollama本地: http://localhost:${PORT}/ollama            ║
+║   • DeepSeek V4: http://localhost:${PORT}/deepseek         ║
+║   • 豆包/方舟:    http://localhost:${PORT}/doubao           ║
+║   • 通义千问:     http://localhost:${PORT}/qwen             ║
+║   • Ollama本地:  http://localhost:${PORT}/ollama           ║
+║   • Notion:      http://localhost:${PORT}/notion           ║
 ║                                                            ║
 ║  保持这个窗口开着，工作台就能调用真实AI啦！                  ║
 ╚════════════════════════════════════════════════════════════╝

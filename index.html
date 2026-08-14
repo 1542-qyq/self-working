@@ -2388,17 +2388,40 @@ const MiaoAI = {
     provider: localStorage.getItem('cat-news-miao-provider') || localStorage.getItem('cat-news-ai-provider') || 'mock', // mock/deepseek/doubao/ollama
     apiKey: localStorage.getItem('cat-news-miao-api-key') || localStorage.getItem('cat-news-ai-api-key') || '',
     proxyUrl: localStorage.getItem('cat-news-miao-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787',
-    model: localStorage.getItem('cat-news-miao-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-chat',
+    model: localStorage.getItem('cat-news-miao-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro',
     botId: localStorage.getItem('cat-news-coze-bot-id') || '', // 保留兼容旧版本Coze配置
     useMock: true  // 兼容旧字段，自动根据provider判断
+  },
+
+  // 旧模型名迁移映射
+  migrateOldModel(){
+    const oldModels = {
+      'deepseek-chat': 'deepseek-v4-pro',
+      'deepseek-reasoner': 'deepseek-v4-flash',
+      'deepseek-r1': 'deepseek-v4-flash'
+    };
+    if(oldModels[this.config.model]){
+      this.config.model = oldModels[this.config.model];
+      localStorage.setItem('cat-news-miao-model', this.config.model);
+      localStorage.setItem('cat-news-ai-model', this.config.model);
+      console.log('MiaoAI: 已自动迁移旧模型名到新版本');
+    }
+    // 确保当前provider对应的模型存在
+    const p = this.providers[this.config.provider];
+    if(p && p.model && this.config.model && this.config.model !== p.model){
+      // 如果是deepseek但用了不存在的模型，重置为默认
+      if(this.config.provider.startsWith('deepseek') && !['deepseek-v4-pro','deepseek-v4-flash'].includes(this.config.model)){
+        this.config.model = p.model;
+      }
+    }
   },
 
   // 模型提供商配置
   providers: {
     mock: { name: "演示模式", icon: "🎭", desc: "无需API Key，使用内置模拟数据，适合快速演示" },
-    deepseek: { name: "DeepSeek V3", icon: "🧠", desc: "中文能力顶级，工具调用极强，成本极低（约¥2/月）", model: "deepseek-chat", path: "/deepseek/v1/chat/completions" },
-    deepseek_r1: { name: "DeepSeek R1", icon: "🤔", desc: "推理增强模型，适合复杂面试问题分析", model: "deepseek-reasoner", path: "/deepseek/v1/chat/completions" },
-    doubao: { name: "豆包 Pro", icon: "🫘", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/api/v3/chat/completions" },
+    deepseek: { name: "DeepSeek V4", icon: "🧠", desc: "最新V4版本，中文能力顶级，工具调用极强，成本极低", model: "deepseek-v4-pro", path: "/deepseek/chat/completions" },
+    deepseek_flash: { name: "DeepSeek V4 Flash", icon: "⚡", desc: "V4快速版，响应更快，成本更低", model: "deepseek-v4-flash", path: "/deepseek/chat/completions" },
+    doubao: { name: "豆包 Pro", icon: "🫘", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/chat/completions" },
     ollama: { name: "Ollama本地", icon: "💻", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
   },
 
@@ -2983,7 +3006,7 @@ ${dataSummary}
         <b style="color:var(--accent)">🚀 最快接入方式（10分钟，约¥2/月）：</b><br>
         1. 打开新终端，在项目目录运行：<code style="background:#fff;padding:2px 6px;border-radius:4px">node proxy.js</code><br>
         2. 访问 <a href="https://platform.deepseek.com/" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> 注册，获取API Key<br>
-        3. 下方选择「DeepSeek V3」，填入API Key，保存即可<br>
+        3. 下方选择「DeepSeek V4」，填入API Key，保存即可<br>
         4. ⚠️ <b>proxy.js不需要修改</b>，直接运行即可，它只是个转发代理，不需要你的密钥<br>
         5. 想部署到云端？把proxy.js复制到Cloudflare Workers就行，代码不用改
       </div>
@@ -3048,7 +3071,7 @@ ${dataSummary}
         apiKeyWrap.style.display = 'none';
         keyHintEl.textContent = '本地运行Ollama不需要API Key，确保ollama serve已启动';
         overlay.querySelector('#cfg-proxy-help').style.display = 'block';
-      } else if(key === 'deepseek' || key === 'deepseek_r1'){
+      } else if(key === 'deepseek' || key === 'deepseek_flash'){
         apiKeyWrap.style.display = 'block';
         keyHintEl.innerHTML = '在 <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com/api_keys</a> 获取';
         overlay.querySelector('#cfg-proxy-help').style.display = 'block';
@@ -3093,6 +3116,9 @@ ${dataSummary}
 
   // 初始化
   init(){
+    // 自动迁移旧模型名
+    this.migrateOldModel();
+
     // 悬浮按钮
     const fab = document.getElementById('miaoFab');
     const chat = document.getElementById('miaoChat');
