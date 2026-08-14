@@ -1,8 +1,6 @@
-name = "notion-proxy"
+name = "miaoai-proxy"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
-# 可选: 绑定自定义路由
-# routes = [
-#   { pattern = "your-domain.com/notion/*", zone_name = "your-domain.com" }
-# ]
+# MiaoAI API Proxy
+# 部署后地址类似: https://miaoai-proxy.your-subdomain.workers.dev
