@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#64748b" />
 <meta name="description" content="个人工作台 · Minimal Dashboard" />
 <link rel="manifest" href="manifest.json" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='%23475569' d='M25,18 L32,5 L40,22 L45,15 L55,25 L70,18 L65,35 Q72,40 72,55 L75,80 L65,82 L60,60 L45,65 L38,62 L35,80 L25,82 L22,55 Q18,42 25,35 Z'/></svg>" />
+<link rel="icon" href="assets/cat.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -2355,7 +2355,11 @@ const MiaoAI = {
     const todayStr = today();
     const checkinDone = checkins.filter(x=>x.log&&x.log[todayStr]).length;
     const notes = data.note||[];
-    const entries = Object.keys(data).reduce((a,k)=>a+(data[k]||[]).length,0);
+    // 只统计CONFIG.modules里定义的真正业务数据数组，排除配置/对象/字符串等非数据字段
+    const entries = CONFIG.modules.reduce((sum,m)=>{
+      const arr = data[m.key];
+      return sum + (Array.isArray(arr) ? arr.length : 0);
+    },0);
 
     return `<div class="tile b3 rag-insight" id="ragTile">
       <div class="tile-h">
