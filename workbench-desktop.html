@@ -749,53 +749,66 @@
   .miao-fab:hover img { transform:scale(1.08); }
   .miao-fab .fab-pulse { display:none; }
 
-  /* AI聊天面板 - 统一Minimal风格 */
-  .miao-chat { position:fixed; right:24px; bottom:88px; width:380px; max-width:calc(100vw - 48px); max-height:560px;
-    background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); box-shadow:0 8px 28px rgba(0,0,0,.08);
+  /* AI聊天面板 - 极简印刷风：像在白纸上对话，无气泡无框线 */
+  .miao-chat { position:fixed; right:28px; bottom:92px; width:400px; max-width:calc(100vw - 56px); max-height:580px;
+    background:var(--surface-card); border:1px solid var(--border); border-radius:8px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04), 0 8px 28px rgba(0,0,0,.06);
     z-index:75; display:flex; flex-direction:column; overflow:hidden; transform-origin:bottom right;
-    transform:translateY(8px) scale(.98); opacity:0; pointer-events:none; transition:all .18s cubic-bezier(.4,0,.2,1); }
-  .miao-chat.open { transform:translateY(0) scale(1); opacity:1; pointer-events:auto; }
-  .miao-chat-head { background:var(--surface-card); color:var(--text); border-bottom:1px solid var(--border); padding:12px 14px; display:flex; align-items:center; gap:10px; }
-  .miao-chat-head .c-ava { width:32px; height:32px; border-radius:var(--radius-control); background:transparent; display:grid; place-items:center; flex:0 0 auto; padding:0; overflow:hidden; }
-  .miao-chat-head .c-ava img { width:24px; height:24px; display:block; }
+    transform:translateY(12px); opacity:0; pointer-events:none; transition:all .2s cubic-bezier(.4,0,.2,1); }
+  .miao-chat.open { transform:translateY(0); opacity:1; pointer-events:auto; }
+
+  /* 极简头部：无背景分隔线，紧凑留白 */
+  .miao-chat-head { background:transparent; padding:20px 24px 14px; display:flex; align-items:center; gap:10px; border-bottom:none; }
+  .miao-chat-head .c-ava { width:26px; height:26px; border-radius:0; background:transparent; display:grid; place-items:center; flex:0 0 auto; padding:0; overflow:hidden; }
+  .miao-chat-head .c-ava img { width:22px; height:22px; display:block; opacity:.7; }
   .miao-chat-head .c-info { flex:1; }
-  .miao-chat-head .c-name { font-size:14px; font-weight:600; }
-  .miao-chat-head .c-status { font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:5px; margin-top:1px; }
-  .miao-chat-head .c-status .dot { width:6px; height:6px; border-radius:50%; background:#4ade80; }
+  .miao-chat-head .c-name { font-size:14px; font-weight:600; color:var(--text); letter-spacing:.01em; }
+  .miao-chat-head .c-status { font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:4px; margin-top:1px; font-weight:400; }
+  .miao-chat-head .c-status .dot { width:5px; height:5px; border-radius:50%; background:#86efac; }
   .miao-chat-head .c-cfg { display:none; }
-  .miao-chat-head .c-close { width:28px; height:28px; border-radius:var(--radius-control); background:transparent; border:none; color:var(--text-secondary); cursor:pointer;
-    display:grid; place-items:center; transition:background .12s; font-size:14px; font-family:var(--font); }
-  .miao-chat-head .c-close:hover { background:var(--surface-nested); }
-  .miao-chat-body { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; background:var(--page-bg); }
-  .miao-chat-body::-webkit-scrollbar { width:5px; }
-  .miao-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:5px; }
-  .c-msg { display:flex; gap:8px; max-width:85%; }
+  .miao-chat-head .c-close { width:28px; height:28px; border-radius:4px; background:transparent; border:none; color:var(--text-tertiary); cursor:pointer;
+    display:grid; place-items:center; transition:all .12s; font-size:14px; font-family:var(--font); opacity:.6; }
+  .miao-chat-head .c-close:hover { opacity:1; background:var(--surface-nested); color:var(--text); }
+
+  /* 消息区域：纯白背景，舒适行高，大留白 */
+  .miao-chat-body { flex:1; overflow-y:auto; padding:8px 24px 14px; display:flex; flex-direction:column; gap:16px; background:transparent; }
+  .miao-chat-body::-webkit-scrollbar { width:3px; }
+  .miao-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  .miao-chat-body::-webkit-scrollbar-track { background:transparent; }
+
+  /* 消息：无头像无气泡，纯文字靠对齐区分 */
+  .c-msg { display:flex; max-width:100%; }
   .c-msg.bot { align-self:flex-start; }
-  .c-msg.user { align-self:flex-end; flex-direction:row-reverse; }
-  .c-msg .m-ava { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; font-size:15px; }
-  .c-msg.bot .m-ava { background:var(--accent-muted); color:var(--accent); }
-  .c-msg.user .m-ava { background:var(--module-2); color:#fff; }
-  .c-msg .m-bubble { padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.6; }
-  .c-msg.bot .m-bubble { background:#fff; border:1px solid var(--border); border-bottom-left-radius:4px; color:var(--text); }
-  .c-msg.user .m-bubble { background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
-  .c-msg .m-time { font-size:10px; color:var(--text-tertiary); margin-top:4px; }
-  .c-msg.user .m-time { text-align:right; }
-  .c-quick { display:flex; flex-wrap:wrap; gap:6px; padding:0 16px 10px; background:var(--page-bg); }
-  .c-quick .cq { font-size:11.5px; padding:6px 12px; border-radius:999px; background:#fff; border:1px solid var(--border);
-    color:var(--text-secondary); cursor:pointer; font-family:var(--font); transition:all .12s; }
-  .c-quick .cq:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-muted); }
-  .miao-chat-input { padding:12px 14px; background:#fff; border-top:1px solid var(--border); display:flex; gap:8px; }
-  .miao-chat-input input { flex:1; border:1px solid var(--border-input); border-radius:12px; padding:10px 14px; font-size:13px; font-family:var(--font); outline:none; }
-  .miao-chat-input input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-muted); }
-  .miao-chat-input button { width:40px; height:40px; border-radius:12px; background:var(--accent); color:#fff; border:none; cursor:pointer;
-    display:grid; place-items:center; transition:filter .12s; flex:0 0 auto; }
-  .miao-chat-input button:hover { filter:brightness(1.1); }
-  .miao-chat-input button:disabled { opacity:.5; cursor:not-allowed; }
-  .c-typing { display:none; gap:4px; padding:4px 0; }
+  .c-msg.user { align-self:flex-end; justify-content:flex-end; }
+  .c-msg .m-ava { display:none; }
+  .c-msg .m-bubble { padding:0; border-radius:0; font-size:14px; line-height:1.75; font-weight:400; max-width:85%; word-wrap:break-word; }
+  .c-msg.bot .m-bubble { color:var(--text); border:none; background:transparent; }
+  .c-msg.user .m-bubble { color:var(--text-secondary); text-align:right; font-style:italic; opacity:.85; }
+  .c-msg .m-time { display:none; }
+
+  /* 快捷问题：纯文字链接样式，无按钮背景 */
+  .c-quick { display:flex; flex-wrap:wrap; gap:14px; padding:4px 24px 14px; background:transparent; }
+  .c-quick .cq { font-size:12px; padding:0; border-radius:0; background:transparent; border:none;
+    color:var(--text-tertiary); cursor:pointer; font-family:var(--font); transition:color .12s; font-weight:400;
+    text-decoration:underline; text-decoration-color:var(--border); text-underline-offset:3px; }
+  .c-quick .cq:hover { color:var(--accent); text-decoration-color:var(--accent); background:transparent; }
+
+  /* 输入区域：只有顶部一条细线，无边框 */
+  .miao-chat-input { padding:14px 24px 18px; background:transparent; border-top:1px solid var(--border); display:flex; gap:10px; align-items:center; }
+  .miao-chat-input input { flex:1; border:none; border-radius:0; padding:6px 0; font-size:14px; font-family:var(--font); outline:none; background:transparent; color:var(--text); }
+  .miao-chat-input input::placeholder { color:var(--text-tertiary); }
+  .miao-chat-input input:focus { border:none; box-shadow:none; background:transparent; }
+  .miao-chat-input button { width:auto; height:auto; border-radius:0; background:transparent; color:var(--text-tertiary); border:none; cursor:pointer;
+    display:grid; place-items:center; transition:color .12s; flex:0 0 auto; padding:4px; font-size:17px; }
+  .miao-chat-input button:hover { color:var(--accent); background:transparent; }
+  .miao-chat-input button:disabled { opacity:.3; cursor:not-allowed; }
+
+  /* 输入动画：极简三个点 */
+  .c-typing { display:none; gap:3px; padding:4px 0; }
   .c-typing.show { display:flex; }
-  .c-typing i { width:7px; height:7px; border-radius:50%; background:var(--text-tertiary); animation: bounce 1.2s infinite ease-in-out; }
-  .c-typing i:nth-child(2) { animation-delay:.15s; }
-  .c-typing i:nth-child(3) { animation-delay:.3s; }
+  .c-typing i { width:4px; height:4px; border-radius:50%; background:var(--text-tertiary); opacity:.5; animation: bounce 1.4s infinite ease-in-out; }
+  .c-typing i:nth-child(2) { animation-delay:.2s; }
+  .c-typing i:nth-child(3) { animation-delay:.4s; }
 
   /* ============================================================
      方案3：RAG 个人数据洞察 样式
