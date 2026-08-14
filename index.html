@@ -727,14 +727,14 @@
   .ai-loading .dots i:nth-child(3) { animation-delay:.3s; }
   @keyframes bounce { 0%,80%,100% { transform:scale(.6); opacity:.4; } 40% { transform:scale(1); opacity:1; } }
 
-  /* 悬浮AI助手按钮 - 原图小猫，无任何修改 */
+  /* 悬浮AI助手按钮 - 简笔画小猫，原图风格 */
   .miao-fab { position:fixed; right:20px; bottom:20px; width:auto; height:auto; border-radius:0;
     background:transparent; border:none; cursor:pointer;
     box-shadow:none; z-index:70; display:block; padding:0; line-height:0;
     transition:transform .15s ease; }
   .miao-fab:hover { transform:scale(1.08); background:transparent; border:none; }
   .miao-fab:active { transform:scale(.95); }
-  .miao-fab img { display:block; width:52px; height:auto; }
+  .miao-fab svg { display:block; width:52px; height:52px; }
   .miao-fab .fab-pulse { display:none; }
 
   /* AI聊天面板 - Minimal */
@@ -927,14 +927,69 @@
 
 <!-- MiaoAI 喵喵智能助手 -->
 <button class="miao-fab" id="miaoFab" title="喵喵智能助手">
-  <img src="assets/miao-cat.png" alt="喵喵助手" width="52" height="52">
+  <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+    <!-- 严格还原用户提供的简笔画小猫原图线条 -->
+    <g fill="none" stroke="#3a3a3a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <!-- 左耳外轮廓 -->
+      <path d="M13 42 Q8 18 42 6 L48 28"/>
+      <!-- 左耳内三角 -->
+      <path d="M24 25 L44 17 L44 33"/>
+      <!-- 右耳外轮廓 -->
+      <path d="M50 26 Q65 10 85 14 Q95 32 90 52"/>
+      <!-- 右耳内三角 -->
+      <path d="M68 25 L82 22 L77 41"/>
+      <!-- 头顶小弧线 -->
+      <path d="M48 28 Q54 25 60 29"/>
+      <!-- 左脸轮廓 -->
+      <path d="M13 42 Q5 60 20 76"/>
+      <!-- 右脸轮廓 -->
+      <path d="M90 52 Q96 65 88 76"/>
+      <!-- 左眼 实心黑椭圆 -->
+      <ellipse cx="34" cy="50" rx="8" ry="10" fill="#3a3a3a" stroke="none"/>
+      <!-- 右眼 实心黑椭圆 位置比左眼稍低 -->
+      <ellipse cx="65" cy="57" rx="8" ry="10" fill="#3a3a3a" stroke="none"/>
+      <!-- w形嘴 -->
+      <path d="M39 64 Q45 73 51 64 Q57 73 63 64"/>
+      <!-- 左边胡须 两根 -->
+      <path d="M10 54 L28 56 M9 63 L28 62"/>
+      <!-- 右边胡须 两根 -->
+      <path d="M72 67 L90 65 M73 74 L92 72"/>
+      <!-- 身体左下轮廓 -->
+      <path d="M20 76 Q16 90 30 99"/>
+      <!-- 身体右下轮廓 -->
+      <path d="M88 76 Q82 94 68 99"/>
+      <!-- 底部w形爪子 -->
+      <path d="M30 99 Q38 104 45 94 Q52 104 59 94 Q66 104 68 99"/>
+      <!-- 尾巴轮廓 弯弯的 -->
+      <path d="M73 90 Q92 85 95 70 Q96 54 79 60"/>
+    </g>
+  </svg>
 </button>
 
 <!-- MiaoAI 聊天面板 -->
 <div class="miao-chat" id="miaoChat">
   <div class="miao-chat-head">
     <div class="c-ava" style="background:transparent;display:grid;place-items:center;padding:0;">
-      <img src="assets/miao-cat.png" alt="" width="28" height="28" style="display:block;">
+      <svg viewBox="0 0 110 110" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke="#3a3a3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 42 Q8 18 42 6 L48 28"/>
+          <path d="M24 25 L44 17 L44 33"/>
+          <path d="M50 26 Q65 10 85 14 Q95 32 90 52"/>
+          <path d="M68 25 L82 22 L77 41"/>
+          <path d="M48 28 Q54 25 60 29"/>
+          <path d="M13 42 Q5 60 20 76"/>
+          <path d="M90 52 Q96 65 88 76"/>
+          <ellipse cx="34" cy="50" rx="8" ry="10" fill="#3a3a3a" stroke="none"/>
+          <ellipse cx="65" cy="57" rx="8" ry="10" fill="#3a3a3a" stroke="none"/>
+          <path d="M39 64 Q45 73 51 64 Q57 73 63 64"/>
+          <path d="M10 54 L28 56 M9 63 L28 62"/>
+          <path d="M72 67 L90 65 M73 74 L92 72"/>
+          <path d="M20 76 Q16 90 30 99"/>
+          <path d="M88 76 Q82 94 68 99"/>
+          <path d="M30 99 Q38 104 45 94 Q52 104 59 94 Q66 104 68 99"/>
+          <path d="M73 90 Q92 85 95 70 Q96 54 79 60"/>
+        </g>
+      </svg>
     </div>
     <div class="c-info">
       <div class="c-name">喵喵助手</div>
