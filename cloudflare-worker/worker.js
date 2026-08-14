@@ -1,11 +1,15 @@
-// Notion API Proxy for Cloudflare Workers
-const NOTION_API = "https://api.notion.com/v1";
-const NOTION_VERSION = "2022-06-28";
+// AI API Proxy for Cloudflare Workers - 支持DeepSeek、豆包、通义千问等
+const TARGETS = {
+  deepseek: { host: 'api.deepseek.com', basePath: '/v1' },
+  doubao: { host: 'ark.cn-beijing.volces.com', basePath: '/api/v3' },
+  qwen: { host: 'dashscope.aliyuncs.com', basePath: '/compatible-mode/v1' },
+  notion: { host: 'api.notion.com', basePath: '/v1' }
+};
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-  "Access-Control-Allow-Headers": "Authorization,Notion-Version,Content-Type,Accept,Origin",
+  "Access-Control-Allow-Headers": "Authorization,Content-Type,Accept,Origin,Notion-Version",
   "Access-Control-Max-Age": "86400",
 };
 
@@ -22,45 +26,76 @@ export default {
     if (url.pathname === "/" || url.pathname === "/health") {
       return jsonResponse({
         status: "ok",
-        service: "Notion API Proxy",
-        target: NOTION_API,
+        service: "MiaoAI API Proxy",
+        supported_targets: Object.keys(TARGETS),
+        usage: "例如：POST /deepseek/chat/completions"
       });
     }
 
-    // Notion proxy
-    if (url.pathname.startsWith("/notion")) {
-      const notionPath = url.pathname.replace(/^\/notion/, "") || "/";
-      const targetUrl = NOTION_API + notionPath + url.search;
-
-      const headers = {
-        "Notion-Version": NOTION_VERSION,
-        "Content-Type": request.headers.get("Content-Type") || "application/json",
-      };
-      const auth = request.headers.get("Authorization");
-      if (auth) headers["Authorization"] = auth;
-
-      try {
-        const res = await fetch(targetUrl, {
-          method: request.method,
-          headers,
-          body: ["GET", "DELETE"].includes(request.method) ? null : request.body,
-        });
-        const responseHeaders = new Headers();
-        for (const [k, v] of res.headers) {
-          if (["content-type", "x-notion-request-id"].includes(k.toLowerCase())) {
-            responseHeaders.set(k, v);
-          }
-        }
-        for (const [k, v] of Object.entries(CORS_HEADERS)) {
-          responseHeaders.set(k, v);
-        }
-        return new Response(res.body, { status: res.status, headers: responseHeaders });
-      } catch (err) {
-        return jsonResponse({ error: err.message }, 502);
-      }
+    // 解析目标服务
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (parts.length === 0) {
+      return jsonResponse({ error: "Please specify target, e.g., /deepseek/..." }, 400);
     }
 
-    return jsonResponse({ error: "Not Found" }, 404);
+    const targetKey = parts[0];
+    const target = TARGETS[targetKey];
+    
+    if (!target) {
+      return jsonResponse({ 
+        error: `Unknown target: ${targetKey}`, 
+        supported: Object.keys(TARGETS) 
+      }, 404);
+    }
+
+    // 构建目标路径
+    const targetPath = parts.slice(1).join('/');
+    let fullPath = target.basePath;
+    if (targetPath) {
+      fullPath += '/' + targetPath;
+    }
+    if (url.search) {
+      fullPath += url.search;
+    }
+
+    const targetUrl = `https://${target.host}${fullPath}`;
+
+    // 转发请求头
+    const headers = new Headers();
+    const contentType = request.headers.get("Content-Type");
+    if (contentType) headers.set("Content-Type", contentType);
+    
+    const auth = request.headers.get("Authorization");
+    if (auth) headers.set("Authorization", auth);
+    
+    if (targetKey === 'notion') {
+      headers.set("Notion-Version", "2022-06-28");
+    }
+
+    try {
+      const res = await fetch(targetUrl, {
+        method: request.method,
+        headers,
+        body: ["GET", "DELETE"].includes(request.method) ? null : request.body,
+      });
+
+      // 复制响应头
+      const responseHeaders = new Headers();
+      for (const [k, v] of res.headers) {
+        const lowerK = k.toLowerCase();
+        if (['content-type', 'x-notion-request-id'].includes(lowerK) ||
+            lowerK.startsWith('x-') || lowerK.startsWith('openai-')) {
+          responseHeaders.set(k, v);
+        }
+      }
+      for (const [k, v] of Object.entries(CORS_HEADERS)) {
+        responseHeaders.set(k, v);
+      }
+
+      return new Response(res.body, { status: res.status, headers: responseHeaders });
+    } catch (err) {
+      return jsonResponse({ error: err.message }, 502);
+    }
   },
 };
 

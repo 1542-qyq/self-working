@@ -24,10 +24,10 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html dist/index.html
+          cp workbench-desktop.html dist/workbench-desktop.html
           cp manifest.json dist/
-          cp notion-proxy.py dist/
+          cp service-worker.js dist/
           cp -r assets dist/assets
-          cp cat-news-workbench/workbench-desktop.html dist/workbench-desktop.html
           echo "文件已准备"
           ls -la dist/
 
