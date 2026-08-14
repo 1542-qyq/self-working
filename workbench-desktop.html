@@ -737,13 +737,14 @@
   .ai-loading .dots i:nth-child(3) { animation-delay:.3s; }
   @keyframes bounce { 0%,80%,100% { transform:scale(.6); opacity:.4; } 40% { transform:scale(1); opacity:1; } }
 
-  /* 悬浮AI助手按钮 - Minimal小猫 */
-  .miao-fab { position:fixed; right:20px; bottom:20px; width:48px; height:48px; border-radius:50%;
-    background:var(--surface-card); color:var(--accent); border:1px solid var(--border); cursor:pointer;
-    box-shadow:0 2px 8px rgba(0,0,0,.06); z-index:70; display:grid; place-items:center; padding:0;
-    transition:all .15s ease; }
-  .miao-fab:hover { border-color:var(--accent); background:var(--accent-muted); transform:scale(1.05); }
+  /* 悬浮AI助手按钮 - 原图小猫，无任何修改 */
+  .miao-fab { position:fixed; right:20px; bottom:20px; width:auto; height:auto; border-radius:0;
+    background:transparent; border:none; cursor:pointer;
+    box-shadow:none; z-index:70; display:block; padding:0; line-height:0;
+    transition:transform .15s ease; }
+  .miao-fab:hover { transform:scale(1.08); background:transparent; border:none; }
   .miao-fab:active { transform:scale(.95); }
+  .miao-fab img { display:block; width:52px; height:auto; }
   .miao-fab .fab-pulse { display:none; }
 
   /* AI聊天面板 */
@@ -936,19 +937,8 @@
 </div>
 
 <!-- MiaoAI 喵喵智能助手 -->
-<button class="miao-fab" id="miaoFab" title="喵喵智能助手" style="padding:0;background:transparent;border:none;">
-  <svg viewBox="0 0 100 100" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M20 25 L40 8 L50 28 Z" fill="none"/>
-    <path d="M50 28 L60 8 L80 25 Z" fill="none"/>
-    <path d="M15 35 Q10 55 25 70 Q40 85 50 82 Q60 85 75 70 Q90 55 85 35 Q80 20 50 20 Q20 20 15 35 Z"/>
-    <circle cx="35" cy="48" r="5" fill="currentColor" stroke="none"/>
-    <circle cx="65" cy="50" r="5" fill="currentColor" stroke="none"/>
-    <path d="M42 60 Q47 65 50 60 Q53 65 58 60"/>
-    <path d="M20 52 L30 54 M18 58 L30 58"/>
-    <path d="M70 54 L80 52 M70 58 L82 58"/>
-    <path d="M28 75 Q25 92 50 95 Q75 92 72 75"/>
-    <path d="M72 80 Q88 75 85 60 Q82 48 70 55"/>
-  </svg>
+<button class="miao-fab" id="miaoFab" title="喵喵智能助手">
+  <img src="assets/miao-cat.png" alt="喵喵助手" width="52" height="52">
 </button>
 
 <!-- MiaoAI 聊天面板 -->
