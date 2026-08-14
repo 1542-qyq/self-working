@@ -831,7 +831,8 @@
   .agent-card.ac-coach::before { background:var(--accent); }
   .agent-card.ac-chief::before { background:var(--accent); }
   .agent-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-  .agent-ava { width:44px; height:44px; border-radius:var(--radius-tile); display:grid; place-items:center; font-size:22px; flex:0 0 auto; background:var(--accent-muted); color:var(--accent); }
+  .agent-ava { width:44px; height:44px; border-radius:var(--radius-tile); display:grid; place-items:center; font-size:22px; flex:0 0 auto; background:var(--accent-muted); color:var(--accent); overflow:hidden; }
+  .agent-ava img { width:100%; height:100%; object-fit:cover; display:block; }
   .agent-card.ac-chief .agent-ava { background:var(--accent); color:#fff; }
   .agent-card.ac-editor .agent-ava { background:var(--accent-muted); color:var(--accent); }
   .agent-card.ac-reporter .agent-ava { background:var(--accent-muted); color:var(--accent); }
@@ -1389,7 +1390,8 @@ function renderAgents(){
     {
       key: "chief",
       className: "ac-chief",
-      avatar: "主",
+      avatar: "assets/chief.svg?v=1",
+      isImage: true,
       name: "喵喵主编",
       role: "Orchestrator · 调度中枢",
       desc: "理解用户意图，智能分配任务给专业编辑Agent，协调多Agent并行工作，整合最终结果。负责任务规划、记忆管理、工具调用路由。",
@@ -1445,7 +1447,7 @@ function renderAgents(){
   const agentsHtml = agents.map(a => `
     <div class="agent-card ${a.className}">
       <div class="agent-head">
-        <div class="agent-ava">${a.avatar}</div>
+        <div class="agent-ava">${a.isImage ? `<img src="${a.avatar}" alt="${a.name}">` : a.avatar}</div>
         <div>
           <div class="agent-name">${a.name}</div>
           <div class="agent-role">${a.role}</div>
