@@ -757,6 +757,32 @@
   .modal.notion-modal-v3::-webkit-scrollbar-thumb:hover {
     background:var(--text-tertiary);
   }
+  /* select下拉框也用极简下划线样式 */
+  .modal.notion-modal-v3 select {
+    width:100% !important;
+    border:none !important;
+    border-bottom:1px solid var(--border) !important;
+    border-radius:0 !important;
+    padding:8px 0 !important;
+    background:transparent !important;
+    font-size:14px;
+    font-family:var(--font);
+    transition:border-color .15s;
+    box-shadow:none !important;
+    cursor:pointer;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 0 center;
+    padding-right:20px !important;
+  }
+  .modal.notion-modal-v3 select:focus {
+    outline:none !important;
+    border-bottom-color:var(--accent) !important;
+    box-shadow:none !important;
+  }
   /* IELTS tile & card styles */
   .ielts-tile { min-height: 160px; grid-column: 1 / -1 !important; }
   .ielts-tile .tile-h { margin-bottom: 10px; }
@@ -5777,56 +5803,47 @@ ${dataSummary}
       `<option value="${key}" ${this.config.provider === key ? 'selected' : ''}>${p.name}</option>`
     ).join('');
 
-    overlay.innerHTML = `<div class="modal" style="width:560px;max-height:90vh;overflow-y:auto">
-      <h3>智能助手配置</h3>
-      <div class="sub">选择AI提供商，接入真实大模型获得个性化任务规划能力</div>
-      
-      <div style="margin-top:12px;padding:12px;background:var(--accent-muted);border-radius:var(--radius-control);font-size:12px;line-height:1.7;color:var(--text-secondary)">
-        <b style="color:var(--accent)">最快接入方式（约¥2/月）：</b><br>
-        1. 打开新终端，在项目目录运行：<code style="background:var(--surface-card);padding:2px 6px;border-radius:4px">node proxy.js</code><br>
-        2. 访问 <a href="https://platform.deepseek.com/" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> 注册，获取API Key<br>
-        3. 下方选择「DeepSeek V4」，填入API Key，保存即可<br>
-        4. <b>proxy.js不需要修改</b>，直接运行即可<br>
-        5. 云端部署：把proxy.js复制到Cloudflare Workers即可
+    overlay.innerHTML = `<div class="modal notion-modal-v3">
+      <h3>AI 配置</h3>
+      <div class="sub">选择AI提供商，接入大模型获得个性化任务规划能力</div>
+
+      <div class="hint-box">
+        <b>最快接入：</b> 本地运行 <code>node proxy.js</code>，到 <a href="https://platform.deepseek.com/" target="_blank">DeepSeek</a> 获取API Key即可使用
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
-        <div class="field">
-          <label>AI 提供商</label>
-          <select id="cfg-provider" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-card);font-family:inherit">
-            ${providerOptions}
-          </select>
-          <div id="cfg-provider-desc" style="font-size:11px;color:var(--text-tertiary);margin-top:4px;font-weight:500"></div>
-        </div>
-
-        <div class="field" id="cfg-api-key-wrap">
-          <label>API Key <span style="color:var(--danger)">*</span></label>
-          <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="sk-xxxxxxxxxxxxxxxx" />
-          <div id="cfg-api-key-hint" style="font-size:11px;color:var(--text-tertiary);margin-top:4px;font-weight:500"></div>
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;font-weight:500">密钥只保存在你本地浏览器，不会上传到任何服务器</div>
-        </div>
-
-        <div class="field">
-          <label>代理地址</label>
-          <input type="text" id="cfg-proxy-url" value="${this.config.proxyUrl}" placeholder="http://localhost:8787" />
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;font-weight:500">本地代理默认跑在8787端口；云端部署后改成你的Worker地址</div>
-        </div>
-
-        <div class="field" id="cfg-model-wrap">
-          <label>模型名称（可选）</label>
-          <input type="text" id="cfg-model" value="${this.config.model}" placeholder="留空使用默认模型" />
-        </div>
-
-        <div id="cfg-proxy-help" style="display:none;padding:10px;background:var(--surface-nested);border:1px solid var(--border);border-radius:var(--radius-control);font-size:11px;line-height:1.6;color:var(--text-secondary)">
-          <b>还没启动本地代理？</b><br>
-          在项目目录打开终端运行：<code>node proxy.js</code><br>
-          代理启动后再使用AI功能。代理文件就是项目根目录的 <code>proxy.js</code>，<b>不需要修改它</b>
-        </div>
+      <div class="field">
+        <label>AI 提供商</label>
+        <select id="cfg-provider">
+          ${providerOptions}
+        </select>
+        <div id="cfg-provider-desc"></div>
       </div>
 
-      <div class="modal-actions" style="margin-top:20px">
-        <button class="btn ghost" id="cfg-cancel" style="margin-right:auto">关闭</button>
-        <button class="btn" id="cfg-save">保存配置</button>
+      <div class="field" id="cfg-api-key-wrap">
+        <label>API Key</label>
+        <input type="password" id="cfg-api-key" value="${this.config.apiKey}" placeholder="sk-xxxxxxxxxxxxxxxx"/>
+        <div id="cfg-api-key-hint"></div>
+        <div>密钥只保存在本地浏览器，不会上传</div>
+      </div>
+
+      <div class="field">
+        <label>代理地址</label>
+        <input type="text" id="cfg-proxy-url" value="${this.config.proxyUrl}" placeholder="http://localhost:8787"/>
+        <div>本地代理默认8787端口；线上填Cloudflare Worker地址</div>
+      </div>
+
+      <div class="field" id="cfg-model-wrap">
+        <label>模型名称（可选）</label>
+        <input type="text" id="cfg-model" value="${this.config.model}" placeholder="留空使用默认模型"/>
+      </div>
+
+      <div id="cfg-proxy-help" style="display:none;padding:10px 0;border-top:1px solid var(--border);margin-top:12px;font-size:11px;line-height:1.6;color:var(--text-secondary)">
+        <b>还没启动本地代理？</b><br>
+        在项目目录运行：<code>node proxy.js</code>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" id="cfg-save">保存</button>
       </div>
     </div>`;
 
@@ -5865,7 +5882,6 @@ ${dataSummary}
 
     const close = () => overlay.remove();
     overlay.onclick = e => { if(e.target === overlay) close(); };
-    overlay.querySelector('#cfg-cancel').onclick = close;
     overlay.querySelector('#cfg-save').onclick = () => {
       this.config.provider = providerSelect.value;
       this.config.apiKey = overlay.querySelector('#cfg-api-key').value.trim();
