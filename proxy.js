@@ -36,7 +36,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'ok',
-      message: 'MiaoAI Proxy is running',
+      message: 'MewAI Proxy is running',
       supported_targets: Object.keys(TARGETS),
       usage: '例如：POST /deepseek/chat/completions'
     }));
@@ -96,7 +96,7 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════════════════════╗
-║           🚀 MiaoAI Proxy Server 已启动                    ║
+║           🚀 MewAI Proxy Server 已启动                    ║
 ╠════════════════════════════════════════════════════════════╣
 ║  本地代理地址: http://localhost:${PORT}                      ║
 ║                                                            ║

@@ -866,7 +866,7 @@
   .word-stats .ws-item .ws-val { font-size:18px; font-weight:600; color:var(--accent); font-family:var(--font-mono); }
 
   /* ============================================================
-     MiaoAI 助手样式 - Minimal Dashboard
+     MewAI 助手样式 - Minimal Dashboard
      ============================================================ */
   /* AI规划瓷砖 */
   .ai-planner { background:var(--surface-card); position:relative; overflow:hidden; border:1px solid var(--border); }
@@ -904,43 +904,43 @@
   @keyframes bounce { 0%,80%,100% { transform:scale(.6); opacity:.4; } 40% { transform:scale(1); opacity:1; } }
 
   /* 悬浮AI助手按钮 - 方案三：圆形徽章，和网站favicon统一风格（侧脸铅笔小猫） */
-  .miao-fab { position:fixed; right:20px; bottom:20px; width:48px; height:48px; border-radius:999px;
+  .mew-fab { position:fixed; right:20px; bottom:20px; width:48px; height:48px; border-radius:999px;
     background:var(--surface-card); border:1px solid var(--border); cursor:pointer;
     box-shadow:0 2px 10px rgba(0,0,0,.06); z-index:70; display:grid; place-items:center; padding:0; overflow:hidden;
     transition:all .18s cubic-bezier(.4,0,.2,1); }
-  .miao-fab:hover { background:var(--surface-nested); border-color:var(--accent);
+  .mew-fab:hover { background:var(--surface-nested); border-color:var(--accent);
     box-shadow:0 4px 16px rgba(71,85,105,.15); transform:translateY(-2px); }
-  .miao-fab:active { transform:translateY(0) scale(.97); }
-  .miao-fab img { display:block; width:30px; height:30px; transition:transform .18s ease; }
-  .miao-fab:hover img { transform:scale(1.08); }
-  .miao-fab .fab-pulse { display:none; }
+  .mew-fab:active { transform:translateY(0) scale(.97); }
+  .mew-fab img { display:block; width:30px; height:30px; transition:transform .18s ease; }
+  .mew-fab:hover img { transform:scale(1.08); }
+  .mew-fab .fab-pulse { display:none; }
 
   /* AI聊天面板 - 极简印刷风：像在白纸上对话，无气泡无框线 */
-  .miao-chat { position:fixed; right:24px; bottom:84px; width:360px; max-width:calc(100vw - 48px); max-height:520px;
+  .mew-chat { position:fixed; right:24px; bottom:84px; width:360px; max-width:calc(100vw - 48px); max-height:520px;
     background:var(--surface-card); border:1px solid var(--border); border-radius:8px;
     box-shadow:0 1px 3px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
     z-index:75; display:flex; flex-direction:column; overflow:hidden; transform-origin:bottom right;
     transform:translateY(12px); opacity:0; pointer-events:none; transition:all .2s cubic-bezier(.4,0,.2,1); }
-  .miao-chat.open { transform:translateY(0); opacity:1; pointer-events:auto; }
+  .mew-chat.open { transform:translateY(0); opacity:1; pointer-events:auto; }
 
   /* 极简头部：无背景分隔线，紧凑留白 */
-  .miao-chat-head { background:transparent; padding:18px 20px 12px; display:flex; align-items:center; gap:10px; border-bottom:none; }
-  .miao-chat-head .c-ava { width:24px; height:24px; border-radius:0; background:transparent; display:grid; place-items:center; flex:0 0 auto; padding:0; overflow:hidden; }
-  .miao-chat-head .c-ava img { width:20px; height:20px; display:block; opacity:.7; }
-  .miao-chat-head .c-info { flex:1; }
-  .miao-chat-head .c-name { font-size:13px; font-weight:600; color:var(--text); letter-spacing:.01em; }
-  .miao-chat-head .c-status { font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:4px; margin-top:1px; font-weight:400; }
-  .miao-chat-head .c-status .dot { width:5px; height:5px; border-radius:50%; background:#86efac; }
-  .miao-chat-head .c-cfg { display:none; }
-  .miao-chat-head .c-close { width:24px; height:24px; border-radius:4px; background:transparent; border:none; color:var(--text-tertiary); cursor:pointer;
+  .mew-chat-head { background:transparent; padding:18px 20px 12px; display:flex; align-items:center; gap:10px; border-bottom:none; }
+  .mew-chat-head .c-ava { width:24px; height:24px; border-radius:0; background:transparent; display:grid; place-items:center; flex:0 0 auto; padding:0; overflow:hidden; }
+  .mew-chat-head .c-ava img { width:20px; height:20px; display:block; opacity:.7; }
+  .mew-chat-head .c-info { flex:1; }
+  .mew-chat-head .c-name { font-size:13px; font-weight:600; color:var(--text); letter-spacing:.01em; }
+  .mew-chat-head .c-status { font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:4px; margin-top:1px; font-weight:400; }
+  .mew-chat-head .c-status .dot { width:5px; height:5px; border-radius:50%; background:#86efac; }
+  .mew-chat-head .c-cfg { display:none; }
+  .mew-chat-head .c-close { width:24px; height:24px; border-radius:4px; background:transparent; border:none; color:var(--text-tertiary); cursor:pointer;
     display:grid; place-items:center; transition:all .12s; font-size:13px; font-family:var(--font); opacity:.6; }
-  .miao-chat-head .c-close:hover { opacity:1; background:var(--surface-nested); color:var(--text); }
+  .mew-chat-head .c-close:hover { opacity:1; background:var(--surface-nested); color:var(--text); }
 
   /* 消息区域：纯白背景，舒适行高，大留白 */
-  .miao-chat-body { flex:1; overflow-y:auto; padding:8px 20px 12px; display:flex; flex-direction:column; gap:14px; background:transparent; }
-  .miao-chat-body::-webkit-scrollbar { width:3px; }
-  .miao-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-  .miao-chat-body::-webkit-scrollbar-track { background:transparent; }
+  .mew-chat-body { flex:1; overflow-y:auto; padding:8px 20px 12px; display:flex; flex-direction:column; gap:14px; background:transparent; }
+  .mew-chat-body::-webkit-scrollbar { width:3px; }
+  .mew-chat-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  .mew-chat-body::-webkit-scrollbar-track { background:transparent; }
 
   /* 消息：无头像无气泡，纯文字靠对齐区分 */
   .c-msg { display:flex; max-width:100%; }
@@ -960,14 +960,14 @@
   .c-quick .cq:hover { color:var(--accent); text-decoration-color:var(--accent); background:transparent; }
 
   /* 输入区域：只有底部一条细线，无边框 */
-  .miao-chat-input { padding:12px 20px 16px; background:transparent; border-top:1px solid var(--border); display:flex; gap:10px; align-items:center; }
-  .miao-chat-input input { flex:1; border:none; border-radius:0; padding:6px 0; font-size:13.5px; font-family:var(--font); outline:none; background:transparent; color:var(--text); }
-  .miao-chat-input input::placeholder { color:var(--text-tertiary); }
-  .miao-chat-input input:focus { border:none; box-shadow:none; background:transparent; }
-  .miao-chat-input button { width:auto; height:auto; border-radius:0; background:transparent; color:var(--text-tertiary); border:none; cursor:pointer;
+  .mew-chat-input { padding:12px 20px 16px; background:transparent; border-top:1px solid var(--border); display:flex; gap:10px; align-items:center; }
+  .mew-chat-input input { flex:1; border:none; border-radius:0; padding:6px 0; font-size:13.5px; font-family:var(--font); outline:none; background:transparent; color:var(--text); }
+  .mew-chat-input input::placeholder { color:var(--text-tertiary); }
+  .mew-chat-input input:focus { border:none; box-shadow:none; background:transparent; }
+  .mew-chat-input button { width:auto; height:auto; border-radius:0; background:transparent; color:var(--text-tertiary); border:none; cursor:pointer;
     display:grid; place-items:center; transition:color .12s; flex:0 0 auto; padding:4px; font-size:16px; }
-  .miao-chat-input button:hover { color:var(--accent); background:transparent; }
-  .miao-chat-input button:disabled { opacity:.3; cursor:not-allowed; }
+  .mew-chat-input button:hover { color:var(--accent); background:transparent; }
+  .mew-chat-input button:disabled { opacity:.3; cursor:not-allowed; }
 
   /* 输入动画：极简三个点 */
   .c-typing { display:none; gap:3px; padding:4px 0; }
@@ -4488,8 +4488,8 @@
         <span class="agent-skill">意图识别</span><span class="agent-skill">任务拆分</span><span class="agent-skill">Agent调度</span><span class="agent-skill">结果整合</span><span class="agent-skill">记忆管理</span><span class="agent-skill">工具路由</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('chief')">对话</button>
-        <button onclick="MiaoAI.assignTask('chief')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('chief')">对话</button>
+        <button onclick="MewAI.assignTask('chief')">派任务</button>
       </div>
     </div>
   
@@ -4507,8 +4507,8 @@
         <span class="agent-skill">任务拆解</span><span class="agent-skill">优先级排序</span><span class="agent-skill">SMART原则</span><span class="agent-skill">计划生成</span><span class="agent-skill">进度追踪</span><span class="agent-skill">周报生成</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('editor')">对话</button>
-        <button onclick="MiaoAI.assignTask('editor')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('editor')">对话</button>
+        <button onclick="MewAI.assignTask('editor')">派任务</button>
       </div>
     </div>
   
@@ -4526,8 +4526,8 @@
         <span class="agent-skill">习惯分析</span><span class="agent-skill">运动建议</span><span class="agent-skill">数据可视化</span><span class="agent-skill">模式识别</span><span class="agent-skill">激励设计</span><span class="agent-skill">健康洞察</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('reporter')">对话</button>
-        <button onclick="MiaoAI.assignTask('reporter')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('reporter')">对话</button>
+        <button onclick="MewAI.assignTask('reporter')">派任务</button>
       </div>
     </div>
   
@@ -4545,8 +4545,8 @@
         <span class="agent-skill">收支分析</span><span class="agent-skill">预算管理</span><span class="agent-skill">消费洞察</span><span class="agent-skill">趋势预测</span><span class="agent-skill">储蓄建议</span><span class="agent-skill">财务评分</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('finance')">对话</button>
-        <button onclick="MiaoAI.assignTask('finance')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('finance')">对话</button>
+        <button onclick="MewAI.assignTask('finance')">派任务</button>
       </div>
     </div>
   
@@ -4564,8 +4564,8 @@
         <span class="agent-skill">阅读规划</span><span class="agent-skill">内容摘要</span><span class="agent-skill">知识关联</span><span class="agent-skill">书籍推荐</span><span class="agent-skill">笔记整理</span><span class="agent-skill">知识图谱</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('reviewer')">对话</button>
-        <button onclick="MiaoAI.assignTask('reviewer')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('reviewer')">对话</button>
+        <button onclick="MewAI.assignTask('reviewer')">派任务</button>
       </div>
     </div>
   
@@ -4583,22 +4583,22 @@
         <span class="agent-skill">错题分析</span><span class="agent-skill">薄弱点定位</span><span class="agent-skill">练习推荐</span><span class="agent-skill">路径规划</span><span class="agent-skill">模考评分</span><span class="agent-skill">素材生成</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('coach')">对话</button>
-        <button onclick="MiaoAI.assignTask('coach')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('coach')">对话</button>
+        <button onclick="MewAI.assignTask('coach')">派任务</button>
       </div>
     </div>
   </div>
 </div></div></main>
 </div>
 
-<!-- MiaoAI 喵喵智能助手 -->
-<button class="miao-fab" id="miaoFab" title="喵喵智能助手">
+<!-- MewAI 喵喵智能助手 -->
+<button class="mew-fab" id="mewFab" title="喵喵智能助手">
   <img src="assets/cat.svg?v=2" alt="喵喵助手" width="30" height="30">
 </button>
 
-<!-- MiaoAI 聊天面板 -->
-<div class="miao-chat" id="miaoChat">
-  <div class="miao-chat-head">
+<!-- MewAI 聊天面板 -->
+<div class="mew-chat" id="mewChat">
+  <div class="mew-chat-head">
     <div class="c-ava" style="background:transparent;display:grid;place-items:center;padding:0;">
       <img src="assets/cat.svg?v=2" alt="" width="24" height="24" style="display:block;">
     </div>
@@ -4606,9 +4606,9 @@
       <div class="c-name">喵喵助手</div>
       <div class="c-status"><span class="dot"></span>在线</div>
     </div>
-    <button class="c-close" id="miaoClose" style="font-size:14px;font-family:var(--font);background:transparent;border:none;color:var(--text-secondary);cursor:pointer;width:28px;height:28px;border-radius:var(--radius-control);">✕</button>
+    <button class="c-close" id="mewClose" style="font-size:14px;font-family:var(--font);background:transparent;border:none;color:var(--text-secondary);cursor:pointer;width:28px;height:28px;border-radius:var(--radius-control);">✕</button>
   </div>
-  <div class="miao-chat-body" id="miaoMsgs">
+  <div class="mew-chat-body" id="mewMsgs">
     <div class="c-msg bot">
       <div>
         <div class="m-bubble">你好！我可以帮你：<br>
@@ -4621,15 +4621,15 @@
       </div>
     </div>
   </div>
-  <div class="c-typing" id="miaoTyping"><i></i><i></i><i></i></div>
+  <div class="c-typing" id="mewTyping"><i></i><i></i><i></i></div>
   <div class="c-quick">
     <button class="cq" data-q="帮我拆解秋招准备计划">秋招计划</button>
     <button class="cq" data-q="我今天的待办完成率如何">今日分析</button>
     <button class="cq" data-q="给我一些AI Agent产品设计建议">产品建议</button>
   </div>
-  <div class="miao-chat-input">
-    <input type="text" id="miaoInput" placeholder="输入你的问题或目标...">
-    <button id="miaoSend" style="font-size:14px;">→</button>
+  <div class="mew-chat-input">
+    <input type="text" id="mewInput" placeholder="输入你的问题或目标...">
+    <button id="mewSend" style="font-size:14px;">→</button>
   </div>
 </div>
 
@@ -4953,7 +4953,7 @@ function renderHome(){
     <div class="bento">
       ${clockCard}
       ${focusTileHTML()}
-      ${MiaoAI.plannerTileHTML()}
+      ${MewAI.plannerTileHTML()}
       ${quickTileHTML()}
       ${overviewTileHTML()}
     </div>
@@ -4965,13 +4965,13 @@ function renderHome(){
     <div class="bento">${pomoTileHTML()}${trendTileHTML()}${ieltsTileHTML()}</div>
 
     ${grp("收支与成长","MONEY&nbsp;&nbsp;&&nbsp;&nbsp;GROWTH")}
-    <div class="bento">${spendTileHTML()}${booksTileHTML()}${goalsTileHTML()}${MiaoAI.ragTileHTML()}</div>
+    <div class="bento">${spendTileHTML()}${booksTileHTML()}${goalsTileHTML()}${MewAI.ragTileHTML()}</div>
 
-    ${grp("AI Agent能力展示","MIAO AI FEATURES")}
+    ${grp("AI Agent能力展示","MEW AI FEATURES")}
     <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:18px;margin-bottom:16px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
         <div>
-          <div style="font-size:15px;font-weight:600;">MiaoAI 多模型集成能力展示</div>
+          <div style="font-size:15px;font-weight:600;">MewAI 多模型集成能力展示</div>
           <div style="font-size:11.5px;color:var(--text-secondary);margin-top:2px;">为字节AI Agent PM面试准备 — 展示工具调用、RAG、多Agent、工作流</div>
         </div>
         <div style="flex:1"></div>
@@ -5025,9 +5025,9 @@ function wireHome(){
   // IELTS tile sub-row clicks
   $("#screen").querySelectorAll(".ielts-sub-row, .ielts-action").forEach(el=>el.onclick=()=>{ go(el.dataset.open); });
   // AI Planner events
-  MiaoAI.wirePlannerEvents();
+  MewAI.wirePlannerEvents();
   // RAG数据洞察事件
-  MiaoAI.wireRAGEvents();
+  MewAI.wireRAGEvents();
 }
 
 /* ---------- INSIGHT ---------- */
@@ -5615,8 +5615,8 @@ function renderAgents(){
         ${a.skills.map(s=>`<span class="agent-skill">${s}</span>`).join("")}
       </div>
       <div class="agent-actions">
-        <button onclick="MiaoAI.chatWithAgent('${a.key}')">对话</button>
-        <button onclick="MiaoAI.assignTask('${a.key}')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('${a.key}')">对话</button>
+        <button onclick="MewAI.assignTask('${a.key}')">派任务</button>
       </div>
     </div>
   `).join("");
@@ -6363,14 +6363,14 @@ $("#avatarInput").onchange = e => {
 };
 
 /* ============================================================
-   MiaoAI 喵喵助手 - 智能任务规划（支持多模型：演示/DeepSeek/豆包/Ollama）
+   MewAI 喵喵助手 - 智能任务规划（支持多模型：演示/DeepSeek/豆包/Ollama）
    ============================================================ */
-const MiaoAI = {
+const MewAI = {
   config: {
-    provider: localStorage.getItem('cat-news-miao-provider') || localStorage.getItem('cat-news-ai-provider') || 'mock', // mock/deepseek/doubao/ollama
-    apiKey: localStorage.getItem('cat-news-miao-api-key') || localStorage.getItem('cat-news-ai-api-key') || '',
-    proxyUrl: localStorage.getItem('cat-news-miao-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787',
-    model: localStorage.getItem('cat-news-miao-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro',
+    provider: localStorage.getItem('cat-news-mew-provider') || localStorage.getItem('cat-news-ai-provider') || 'mock',
+    apiKey: localStorage.getItem('cat-news-mew-api-key') || localStorage.getItem('cat-news-ai-api-key') || '',
+    proxyUrl: localStorage.getItem('cat-news-mew-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787',
+    model: localStorage.getItem('cat-news-mew-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro',
     botId: localStorage.getItem('cat-news-coze-bot-id') || '', // 保留兼容旧版本Coze配置
     useMock: true  // 兼容旧字段，自动根据provider判断
   },
@@ -6384,9 +6384,9 @@ const MiaoAI = {
     };
     if(oldModels[this.config.model]){
       this.config.model = oldModels[this.config.model];
-      localStorage.setItem('cat-news-miao-model', this.config.model);
+      localStorage.setItem('cat-news-mew-model', this.config.model);
       localStorage.setItem('cat-news-ai-model', this.config.model);
-      console.log('MiaoAI: 已自动迁移旧模型名到新版本');
+      console.log('MewAI: 已自动迁移旧模型名到新版本');
     }
     // 确保当前provider对应的模型存在
     const p = this.providers[this.config.provider];
@@ -6421,7 +6421,7 @@ const MiaoAI = {
     return `<div class="tile b3 ai-planner" id="aiPlannerTile">
       <div class="tile-h">
         <div class="tt"><span class="en">AI PLANNER</span><span class="zh">AI智能规划</span></div>
-        <button class="r" id="miaoSettingsBtn" style="border:none;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-weight:500;font-family:var(--font)">设置</button>
+        <button class="r" id="mewSettingsBtn" style="border:none;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-weight:500;font-family:var(--font)">设置</button>
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">输入目标，AI帮你拆解成待办、打卡、阅读计划</div>
       <div class="ai-input-wrap">
@@ -6496,12 +6496,12 @@ const MiaoAI = {
   mockPlan(goal){
     const plans = {
       "秋招": [
-        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写MiaoAI个人工作台集成项目"},
+        {type:"todo", title:"修改简历，突出AI Agent项目", priority:"P0", note:"重点写MewAI个人工作台集成项目"},
         {type:"todo", title:"刷产品Case题库", priority:"P1", note:"每天2道，重点是AI产品类Case"},
         {type:"todo", title:"整理AI Agent产品知识体系", priority:"P0", note:"RAG/Agent工作流/工具调用/多Agent"},
         {type:"checkin", title:"背诵产品八股文", target:30, note:"每天30分钟"},
         {type:"read", title:"《启示录：打造用户喜爱的产品》", target:200, unit:"页", note:"重点读产品规划章节"},
-        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：MiaoAI工作台可以讲"},
+        {type:"todo", title:"准备3个AI Agent相关项目故事", priority:"P1", note:"STAR法则：MewAI工作台可以讲"},
       ],
       "雅思": [
         {type:"todo", title:"完成剑18 Test 1 阅读", priority:"P0", note:"计时20分钟，做完分析错题"},
@@ -6908,8 +6908,8 @@ ${dataSummary}
 
   // 聊天发送消息
   async chatSend(text){
-    const msgsEl = document.getElementById('miaoMsgs');
-    const typing = document.getElementById('miaoTyping');
+    const msgsEl = document.getElementById('mewMsgs');
+    const typing = document.getElementById('mewTyping');
     if(!text.trim()) return;
 
     // 初始化聊天历史（简单版，只保存最近10轮）
@@ -6933,7 +6933,7 @@ ${dataSummary}
       await new Promise(r => setTimeout(r, 1200));
       reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！接入真实大模型后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️配置AI模型，DeepSeek V3每月成本只要2块钱～";
       if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
-        reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「MiaoAI×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：配置好DeepSeek，真实跑通Function Call任务拆解！<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
+        reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「MewAI×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：配置好DeepSeek，真实跑通Function Call任务拆解！<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
       } else if(text.includes('待办') || text.includes('完成率')){
         const todos = data.todo || [];
         const done = todos.filter(x=>x.done).length;
@@ -7065,12 +7065,12 @@ ${dataSummary}
       this.config.model = overlay.querySelector('#cfg-model').value.trim() || this.providers[this.config.provider]?.model || '';
       this.config.useMock = this.config.provider === 'mock'; // 兼容旧逻辑
       
-      // 保存到localStorage（用新的miao前缀，同时保留旧key兼容）
-      localStorage.setItem('cat-news-miao-provider', this.config.provider);
-      localStorage.setItem('cat-news-miao-api-key', this.config.apiKey);
-      localStorage.setItem('cat-news-miao-proxy', this.config.proxyUrl);
-      localStorage.setItem('cat-news-miao-model', this.config.model);
-      // 保留旧字段兼容
+      // 保存到localStorage（用新的mew前缀，同时保留旧key兼容）
+      localStorage.setItem('cat-news-mew-provider', this.config.provider);
+      localStorage.setItem('cat-news-mew-api-key', this.config.apiKey);
+      localStorage.setItem('cat-news-mew-proxy', this.config.proxyUrl);
+      localStorage.setItem('cat-news-mew-model', this.config.model);
+      // 保留旧ai前缀兼容
       localStorage.setItem('cat-news-ai-provider', this.config.provider);
       localStorage.setItem('cat-news-ai-api-key', this.config.apiKey);
       localStorage.setItem('cat-news-ai-proxy', this.config.proxyUrl);
@@ -7108,12 +7108,12 @@ ${dataSummary}
     this.migrateOldModel();
 
     // 悬浮按钮
-    const fab = document.getElementById('miaoFab');
-    const chat = document.getElementById('miaoChat');
-    const closeBtn = document.getElementById('miaoClose');
-    const cfgBtn = document.getElementById('miaoCfg');
-    const sendBtn = document.getElementById('miaoSend');
-    const input = document.getElementById('miaoInput');
+    const fab = document.getElementById('mewFab');
+    const chat = document.getElementById('mewChat');
+    const closeBtn = document.getElementById('mewClose');
+    const cfgBtn = document.getElementById('mewCfg');
+    const sendBtn = document.getElementById('mewSend');
+    const input = document.getElementById('mewInput');
     const aiCfgBtn = document.getElementById('btn-ai-cfg');
 
     if(fab) fab.onclick = () => chat.classList.toggle('open');
@@ -7144,7 +7144,7 @@ ${dataSummary}
     // AI规划按钮
     const planBtn = document.getElementById('aiPlanBtn');
     const goalInput = document.getElementById('aiGoalInput');
-    const settingsBtn = document.getElementById('miaoSettingsBtn');
+    const settingsBtn = document.getElementById('mewSettingsBtn');
 
     if(planBtn && goalInput){
       const doPlan = () => {
@@ -7220,12 +7220,12 @@ ${dataSummary}
     };
     showToast(`已打开和「${names[agentKey]||'Agent'}」的对话（演示）`);
     // 打开悬浮聊天面板
-    const chat = document.getElementById('miaoChat');
-    const fab = document.getElementById('miaoFab');
+    const chat = document.getElementById('mewChat');
+    const fab = document.getElementById('mewFab');
     if(chat && fab){
       chat.classList.add('open');
       fab.style.display = 'none';
-      const msgs = document.getElementById('miaoMsgs');
+      const msgs = document.getElementById('mewMsgs');
       if(msgs){
         msgs.innerHTML += `<div class="c-msg c-b"><div class="c-bub">喵～我是${names[agentKey]}，有什么可以帮你的吗？🐱</div></div>`;
         msgs.scrollTop = msgs.scrollHeight;
@@ -8794,8 +8794,8 @@ CloudSync.init();
 /* 初始化 Notion 同步 */
 NotionSync.init();
 
-/* 初始化 MiaoAI */
-MiaoAI.init();
+/* 初始化 MewAI */
+MewAI.init();
 
 /* 包装 store.save 以支持自动同步 */
 const _origSave = store.save.bind(store);

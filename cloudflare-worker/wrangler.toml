@@ -1,6 +1,6 @@
-name = "miaoai-proxy"
+name = "mewai-proxy"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
-# MiaoAI API Proxy
-# 部署后地址类似: https://miaoai-proxy.your-subdomain.workers.dev
+# mewAI API Proxy
+# 部署后地址类似: https://mewai-proxy.your-subdomain.workers.dev

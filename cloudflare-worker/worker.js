@@ -26,7 +26,7 @@ export default {
     if (url.pathname === "/" || url.pathname === "/health") {
       return jsonResponse({
         status: "ok",
-        service: "MiaoAI API Proxy",
+        service: "MewAI API Proxy",
         supported_targets: Object.keys(TARGETS),
         usage: "例如：POST /deepseek/chat/completions"
       });
