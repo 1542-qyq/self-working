@@ -7856,7 +7856,7 @@ function autoMapField(propName, propType, moduleKey){
     { kw: ['difficulty','难度'], val: 'difficultyField', modules: ['ielts'] },
     { kw: ['frequency','频次','频率'], val: 'frequencyField', modules: ['ielts'] },
     { kw: ['weakness','薄弱','问题','不足','改进'], val: 'weaknessField', modules: ['ielts'] },
-    { kw: ['tomorrow','明日','下一步','计划','plan'], val: 'tomorrowPlanField', modules: ['ielts'] },
+    { kw: ['tomorrow','明日','下一步','plan'], val: 'tomorrowPlanField', modules: ['ielts'] },
     { kw: ['question','题型'], val: 'questionTypeField', modules: ['ielts'] },
     { kw: ['source','来源'], val: 'sourceField', modules: ['ielts'] },
 
@@ -7880,12 +7880,14 @@ function autoMapField(propName, propType, moduleKey){
     { kw: ['self','自我','assessment','评估'], val: 'selfAssessmentField', modules: ['ielts_speaking'] },
     { kw: ['topic','话题'], val: 'topicCategoryField', modules: ['ielts_speaking'] },
 
-    // IELTS 备考记录
+    // IELTS 备考记录（优先级最高，放前面）
+    { kw: ['今日计划','今日任务'], val: 'statusField', modules: ['ielts_record'] },
     { kw: ['subject','学科','科目','学科分类'], val: 'subjectField', modules: ['ielts_record'] },
     { kw: ['收获','主要收获','总结','review'], val: 'content', modules: ['ielts_record'] },
-    { kw: ['今日计划','今日','状态','status','完成状态','进度'], val: 'statusField', modules: ['ielts_record'] },
+    { kw: ['状态','status','完成状态','进度'], val: 'statusField', modules: ['ielts_record'] },
     { kw: ['score','分数','总分','预估'], val: 'estimatedScoreField', modules: ['ielts_record'] },
     { kw: ['accuracy','正确率','正确'], val: 'accuracyField', modules: ['ielts_record'] },
+    { kw: ['计划'], val: 'tomorrowPlanField', modules: ['ielts_record'] },
 
     // 通用映射（所有模块，优先级低）
     { kw: ['title','标题','name','名称'], val: 'title', modules: null },
