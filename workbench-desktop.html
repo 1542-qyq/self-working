@@ -2180,7 +2180,7 @@ function renderAgents(){
       className: "ac-chief",
       avatar: "assets/chief.jpg?v=1",
       isImage: true,
-      name: "喵喵主编",
+      name: "PerchCore",
       role: "Orchestrator · 调度中枢",
       desc: "理解用户意图，智能分配任务给专业编辑Agent，协调多Agent并行工作，整合最终结果。负责任务规划、记忆管理、工具调用路由。",
       skills: ["意图识别", "任务拆分", "Agent调度", "结果整合", "记忆管理", "工具路由"]
@@ -2262,7 +2262,7 @@ function renderAgents(){
     <div class="agents-header">
       <div class="agents-title-icon">🤖</div>
       <div>
-        <h2>喵喵编辑部 · AI Agent指挥中心</h2>
+        <h2>MewHub · AI Agent指挥中心</h2>
         <p>多Agent协作架构 · 6个专业角色Agent · 主编智能调度 · 对应JD：任务规划/工具调用/记忆/多Agent</p>
       </div>
       <div style="flex:1"></div>
@@ -3260,7 +3260,7 @@ const MewAI = {
 
   // 获取System Prompt（任务规划版）
   getPlannerSystemPrompt(){
-    return `你是喵喵编辑部的智能任务规划师，专门帮用户把大目标拆解成可执行的小任务。
+    return `你是MewHub的智能任务规划师，专门帮用户把大目标拆解成可执行的小任务。
 
 【你的能力】
 你必须调用工具来创建任务，不要只输出文字！你有以下工具：
@@ -3475,7 +3475,7 @@ const MewAI = {
     const messages = [
       { 
         role: "system", 
-        content: `你是喵喵编辑部的智能助手，熟悉用户的个人工作台数据。
+        content: `你是MewHub的智能助手，熟悉用户的个人工作台数据。
 
 当前工作台数据摘要：
 ${dataSummary}
@@ -3853,7 +3853,7 @@ ${dataSummary}
   // 和单个Agent对话（演示）
   chatWithAgent(agentKey){
     const names = {
-      chief: "喵喵主编",
+      chief: "PerchCore",
       editor: "选题编辑",
       reporter: "生活记者",
       finance: "财经编辑",
@@ -3925,7 +3925,7 @@ ${dataSummary}
       {
         num: "🐱",
         cls: "n-chief",
-        title: "喵喵主编整合：生成最终周报+计划",
+        title: "PerchCore整合：生成最终周报+计划",
         desc: "✅ 周报已生成！✅ 秋招任务已一键导入待办！✅ 雅思薄弱点专项练习已安排！✅ 给你加了一个奶茶预算提醒～ 继续加油喵！🐱",
         color: ""
       }
