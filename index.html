@@ -829,6 +829,45 @@
   .ielts-rec .rname.done { text-decoration:line-through; color:var(--text-tertiary); }
   .ielts-rec .gauge { width:28px; height:28px; display:block; }
 
+  /* job 求职投递 - Minimal Dashboard */
+  .job-stats { display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin:16px 0 4px; }
+  .job-stat { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-tile); padding:12px 8px; text-align:center; cursor:pointer; transition:all .12s; }
+  .job-stat:hover { border-color:var(--border-input); }
+  .job-stat.active { border-color:var(--accent); background:var(--accent-muted); }
+  .job-stat .num { font-size:24px; font-weight:800; font-family:var(--font-mono); font-variant-numeric:tabular-nums; color:var(--text); }
+  .job-stat .lbl { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+  .job-filters { display:flex; flex-wrap:wrap; gap:7px; align-items:center; margin:14px 0 4px; }
+  .job-filters .fg { font-size:12px; color:var(--text-secondary); margin-right:2px; }
+  .job-chip { padding:6px 13px; border-radius:999px; border:1px solid var(--border); background:var(--surface-card); font-size:12px; font-weight:500; color:var(--text-secondary); cursor:pointer; transition:all .12s; font-family:var(--font); }
+  .job-chip:hover { border-color:var(--border-input); }
+  .job-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .job-rec .job-main { position:relative; }
+  .job-rec .job-head { display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+  .job-rec .job-tier { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; font-size:12px; flex:0 0 auto; }
+  .job-rec .job-tt { flex:1; min-width:0; }
+  .job-rec .job-company { font-size:15px; font-weight:700; color:var(--text); }
+  .job-rec .job-position { font-size:12px; color:var(--text-secondary); margin-top:1px; }
+  .job-rec .job-right { text-align:right; flex:0 0 auto; }
+  .job-rec .job-salary { font-size:13px; font-weight:600; color:var(--success); }
+  .job-rec .job-loc { font-size:11px; color:var(--text-tertiary); margin-top:1px; }
+  .job-rec .job-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
+  .job-rec .job-tag { font-size:10.5px; padding:2px 8px; border-radius:6px; background:var(--surface-nested); color:var(--text-secondary); }
+  .job-rec .job-scores { margin-top:10px; display:flex; flex-direction:column; gap:5px; }
+  .job-rec .job-score-row { display:flex; align-items:center; gap:8px; }
+  .job-rec .js-l { font-size:11px; color:var(--text-tertiary); width:30px; flex:0 0 auto; }
+  .job-rec .job-bar { flex:1; height:6px; background:var(--surface-nested); border-radius:3px; overflow:hidden; }
+  .job-rec .job-bar i { display:block; height:100%; border-radius:3px; }
+  .job-rec .js-v { font-size:12px; font-weight:600; color:var(--text); width:36px; text-align:right; font-family:var(--font-mono); flex:0 0 auto; }
+  .job-rec .job-desc { font-size:12px; color:var(--text-secondary); line-height:1.55; margin-top:10px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; cursor:pointer; }
+  .job-rec .job-actions { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:12px; }
+  .job-rec .job-status { padding:5px 10px; border-radius:999px; border:1px solid var(--border-input); background:var(--surface-card); font-size:12px; color:var(--text); cursor:pointer; outline:none; font-family:var(--font); }
+  .job-rec .job-date { padding:5px 8px; border-radius:8px; border:1px solid var(--border-input); background:var(--surface-card); font-size:12px; color:var(--text-secondary); outline:none; font-family:var(--font); }
+  .job-rec .job-link { padding:5px 10px; border-radius:999px; border:1px solid var(--border); background:var(--surface-nested); font-size:12px; color:var(--text-secondary); text-decoration:none; transition:all .12s; }
+  .job-rec .job-link:hover { border-color:var(--accent); color:var(--accent); }
+  .job-rec .job-link.jd { background:var(--accent-muted); }
+  .job-rec .job-note { width:100%; margin-top:10px; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-card); font-size:12px; color:var(--text); outline:none; font-family:var(--font); }
+  .job-rec .job-note:focus { border-color:var(--accent); }
+
   /* word checkin card - Minimal */
   .word-card { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); padding:16px; }
   .word-card .wc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
@@ -4709,6 +4748,9 @@ const store = {
 let data = store.load();
 let view = "home";
 let searchQ = "";
+let jobFilter = "all";  // job 模块：状态筛选
+let jobTier = "all";    // job 模块：优先级筛选
+let jobSort = "rank";   // job 模块：排序 rank/ai
 let pomo = { running:false, remain:25*60, total:25*60 };   // 番茄钟状态（内存态，跨渲染保留）
 let clockTimer = null;                                       // 全局秒级心跳（时钟 + 番茄钟）
 function persist(){ store.save(); render(); }
@@ -5660,11 +5702,22 @@ function renderAgents(){
 }
 
 /* ---------- MODULE VIEW ---------- */
+function jobItems(all, q){
+  let it = all;
+  if(q) it = it.filter(x=>(x.title||"").toLowerCase().includes(q)||(x.position||"").toLowerCase().includes(q)||(x.desc||"").toLowerCase().includes(q)||(x.note||"").toLowerCase().includes(q));
+  if(jobTier !== "all") it = it.filter(x=>(x.tier||"c") === jobTier);
+  if(jobFilter !== "all") it = it.filter(x=>(x.status||"pending") === jobFilter);
+  it = it.slice();
+  if(jobSort === "ai") it.sort((a,b)=>(b.aiScore||0)-(a.aiScore||0));
+  return it;
+}
+
 function renderModule(key){
   const m=modOf(key); const all=data[key]||[]; let it=all;
   const t=today();
   const q=searchQ.trim().toLowerCase();
-  if(q) it=all.filter(x=>(x.title||"").toLowerCase().includes(q)||(x.note||x.content||"").toLowerCase().includes(q));
+  if(m.type==="job") it=jobItems(all, q);
+  else if(q) it=all.filter(x=>(x.title||"").toLowerCase().includes(q)||(x.note||x.content||"").toLowerCase().includes(q));
 
   let head="";
   if(m.type==="finance"){
@@ -5706,6 +5759,18 @@ function renderModule(key){
       <div class="mini"><div class="l">今日计划</div><div class="v">${todayPlan}</div></div>
       <div class="mini"><div class="l">平均正确率</div><div class="v" style="color:var(--accent)">${avgAcc}%</div></div>
       <div class="mini"><div class="l">总条目</div><div class="v">${all.length}</div></div></div>`;
+  } else if(m.type==="job"){
+    const counts={all:all.length,pending:0,applied:0,written:0,interview:0,offer:0,rejected:0};
+    all.forEach(x=>{ const s=x.status||"pending"; if(counts[s]!=null) counts[s]++; });
+    const statDefs=[["all","全部"],["pending","待投递"],["applied","已投递"],["written","笔试中"],["interview","面试中"],["offer","Offer"],["rejected","已结束"]];
+    head=`<div class="job-stats">${statDefs.map(([k,l])=>`<div class="job-stat ${jobFilter===k?'active':''}" data-jf="${k}"><div class="num">${counts[k]}</div><div class="lbl">${l}</div></div>`).join("")}</div>`;
+  }
+
+  let filters="";
+  if(m.type==="job"){
+    const tiers=[["all","全部"],["s","S级"],["a","A级"],["b","B级"],["c","C级"],["x","⚠"]];
+    const sorts=[["rank","手动排名"],["ai","AI评分"]];
+    filters=`<div class="job-filters"><span class="fg">优先级</span>${tiers.map(([k,l])=>`<button class="job-chip ${jobTier===k?'active':''}" data-jt="${k}">${l}</button>`).join("")}<span class="fg" style="margin-left:8px">排序</span>${sorts.map(([k,l])=>`<button class="job-chip ${jobSort===k?'active':''}" data-js="${k}">${l}</button>`).join("")}</div>`;
   }
 
   const body = it.length ? it.map(x=>recHTML(m,x)).join("")
@@ -5716,6 +5781,7 @@ function renderModule(key){
       <div class="search-box">${icon("search",15,2.2)}<input id="search" placeholder="搜索…" value="${attr(searchQ)}"/></div>
       <div class="spacer"></div><button class="btn" id="btn-new">${icon("plus",16,2.2)}新建</button></div>
     ${head}
+    ${filters}
     <div class="mod-layout">
       <div class="mod-main">
         <div class="sec-title">全部记录 <span id="rec-count" style="margin-left:auto;font-weight:500;color:var(--text-secondary);font-size:12px">${it.length} 条</span></div>
@@ -5730,6 +5796,11 @@ function renderModule(key){
   s.addEventListener("compositionend",()=>{ composing=false; refresh(); });
   s.addEventListener("input",()=>{ if(!composing) refresh(); });
   $("#btn-new").onclick=()=>openEditor(key,null);
+  if(m.type==="job"){
+    $("#screen").querySelectorAll("[data-jf]").forEach(el=>el.onclick=()=>{ jobFilter=el.dataset.jf; renderModule(key); });
+    $("#screen").querySelectorAll("[data-jt]").forEach(el=>el.onclick=()=>{ jobTier=el.dataset.jt; renderModule(key); });
+    $("#screen").querySelectorAll("[data-js]").forEach(el=>el.onclick=()=>{ jobSort=el.dataset.js; renderModule(key); });
+  }
   wireModule(key);
 }
 
@@ -5737,7 +5808,7 @@ function renderModule(key){
 function renderModuleResults(key){
   const m=modOf(key); const all=data[key]||[];
   const q=searchQ.trim().toLowerCase();
-  const it=q?all.filter(x=>(x.title||"").toLowerCase().includes(q)||(x.note||x.content||"").toLowerCase().includes(q)):all;
+  const it=m.type==="job" ? jobItems(all, q) : (q?all.filter(x=>(x.title||"").toLowerCase().includes(q)||(x.note||x.content||"").toLowerCase().includes(q)):all);
   const body = it.length ? it.map(x=>recHTML(m,x)).join("")
     : `<div class="empty"><span class="e">${icon(m.icon,28)}</span><div>${q?'没有匹配的记录':'还没有记录，点右上角「新建」添加第一条吧'}</div></div>`;
   const grid=$(".rec-grid"); if(grid) grid.innerHTML=body;
@@ -5876,6 +5947,28 @@ function sideStats(m, all){
         ${row("今日计划",`${todayPlan} 项`)}</div>`;
   }
 
+  // job
+  if(m.type==="job"){
+    const statusOrder=[["pending","待投递"],["applied","已投递"],["written","笔试中"],["interview","面试中"],["offer","Offer"],["rejected","已结束"]];
+    const byStatus={}; statusOrder.forEach(([k])=>byStatus[k]=0);
+    all.forEach(x=>{ const s=x.status||"pending"; byStatus[s]=(byStatus[s]||0)+1; });
+    const maxS=Math.max(1,...Object.values(byStatus));
+    const statusBars=statusOrder.map(([k,l])=>`<div class="cbrow"><span class="cbn">${l}</span><span class="cbt"><i style="width:${Math.round(byStatus[k]/maxS*100)}%;background:${m.color}"></i></span><span class="cbv">${byStatus[k]}</span></div>`).join("");
+    const tierOrder=[["s","S级"],["a","A级"],["b","B级"],["c","C级"],["x","⚠"]];
+    const byTier={}; tierOrder.forEach(([k])=>byTier[k]=0);
+    all.forEach(x=>{ const t=x.tier||"c"; byTier[t]=(byTier[t]||0)+1; });
+    const tierRows=tierOrder.map(([k,l])=>`<div class="stat-row"><span class="k">${l}</span><span class="val">${byTier[k]} 个</span></div>`).join("");
+    const withScore=all.filter(x=>x.score!=null && x.score>0);
+    const avgScore=withScore.length?Math.round(withScore.reduce((s,x)=>s+x.score,0)/withScore.length):0;
+    const withAi=all.filter(x=>x.aiScore!=null && x.aiScore>0);
+    const avgAi=withAi.length?(withAi.reduce((s,x)=>s+x.aiScore,0)/withAi.length).toFixed(1):0;
+    return `<div class="side-card"><div class="sh">${icon("chart",15)} 投递状态</div><div class="catbar">${statusBars}</div></div>
+      <div class="side-card"><div class="sh">${icon("briefcase",15)} 优先级分布</div>
+        ${tierRows}
+        ${row("平均手动评分",`${avgScore} 分`)}
+        ${row("平均AI评分",`${avgAi} 分`)}</div>`;
+  }
+
   // note default
   const todayN=all.filter(x=>x.date===t).length;
   const byMood={}; all.forEach(x=>{ const md=x.mood||"未分类"; byMood[md]=(byMood[md]||0)+1; });
@@ -6011,6 +6104,47 @@ function recHTML(m,x){
         ${x.correctionLink?`<a class="ielts-link" href="${esc(x.correctionLink)}" target="_blank">📎 批改报告</a>`:''}
       </div></div></div>`;
   }
+  // job type card
+  if(m.type === "job"){
+    const tierMap={s:"S",a:"A",b:"B",c:"C",x:"⚠"};
+    const tierColors={s:"#c25d4f",a:"#e6a043",b:"#3b6fa0",c:"#8a94a0",x:"#805ad5"};
+    const tier=x.tier||"c";
+    const tierLabel=tierMap[tier]||"C";
+    const tierColor=tierColors[tier]||"#8a94a0";
+    const st=x.status||"pending";
+    const statusOpts=[["pending","待投递"],["applied","已投递"],["written","笔试中"],["interview","面试中"],["offer","已Offer"],["rejected","已结束"]];
+    const tags=(x.tagsText||"").split("·").filter(Boolean).map(t=>`<span class="job-tag">${esc(t)}</span>`).join("");
+    const scorePct=x.score!=null?Math.min(x.score/70*100,100):0;
+    const aiPct=x.aiScore!=null?Math.min(x.aiScore/5*100,100):0;
+    return `<div class="rec job-rec">${acts}
+      <div class="job-main">
+        <div class="job-head" data-edit="${x.id}">
+          <span class="job-tier" style="background:${tierColor}">${tierLabel}</span>
+          <div class="job-tt">
+            <div class="job-company">${esc(x.title)}</div>
+            ${x.position?`<div class="job-position">${esc(x.position)}</div>`:''}
+          </div>
+          <div class="job-right">
+            ${x.salary?`<div class="job-salary">${esc(x.salary)}</div>`:''}
+            ${x.location?`<div class="job-loc">${esc(x.location)}</div>`:''}
+          </div>
+        </div>
+        ${tags?`<div class="job-tags">${tags}</div>`:''}
+        <div class="job-scores">
+          ${x.score!=null?`<div class="job-score-row"><span class="js-l">手动</span><div class="job-bar"><i style="width:${scorePct}%;background:var(--accent)"></i></div><span class="js-v">${x.score}</span></div>`:''}
+          ${x.aiScore!=null?`<div class="job-score-row"><span class="js-l">AI</span><div class="job-bar"><i style="width:${aiPct}%;background:${tierColor}"></i></div><span class="js-v">${x.aiScore.toFixed(1)}</span></div>`:''}
+        </div>
+        ${x.desc?`<div class="job-desc" data-edit="${x.id}">${esc(x.desc)}</div>`:''}
+        <div class="job-actions">
+          <select class="job-status js-status" data-id="${x.id}">${statusOpts.map(([k,l])=>`<option value="${k}" ${st===k?'selected':''}>${l}</option>`).join("")}</select>
+          <input type="date" class="job-date js-date" data-id="${x.id}" value="${x.date||''}" title="投递/面试日期">
+          ${x.resume?`<a class="job-link" href="${esc(x.resume)}" target="_blank" rel="noopener">📄简历</a>`:''}
+          ${x.jd?`<a class="job-link jd" href="${esc(x.jd)}" target="_blank" rel="noopener">🖼️JD</a>`:''}
+        </div>
+        <input type="text" class="job-note js-note" data-id="${x.id}" placeholder="📝 备注（面试时间、进度等）" value="${esc(x.note||'')}">
+      </div>
+    </div>`;
+  }
   // note
   return `<div class="rec ${layoutCls}">${acts}<div class="top" style="padding-right:60px">${thumb}<div class="body" data-edit="${x.id}">
     <span class="rname">${esc(x.title||'无标题')}</span>
@@ -6064,6 +6198,21 @@ function wireModule(key){ const m=modOf(key);
     x.log=x.log||{}; const t=today(); delete x.log[t];
     persist(); renderModule(key);
   });
+  // job inline editing
+  if(m.type==="job"){
+    $("#screen").querySelectorAll(".js-status").forEach(el=>el.onchange=e=>{
+      e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id);
+      if(x){ x.status=el.value; store.save(); renderModule(key); }
+    });
+    $("#screen").querySelectorAll(".js-date").forEach(el=>el.onchange=e=>{
+      e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id);
+      if(x){ x.date=el.value; store.save(); }
+    });
+    $("#screen").querySelectorAll(".js-note").forEach(el=>el.onchange=e=>{
+      e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id);
+      if(x){ x.note=el.value; store.save(); }
+    });
+  }
 }
 
 /* ---------- EDITOR MODAL (per type) ---------- */
@@ -6214,6 +6363,27 @@ function openEditor(key,item){
           <div class="field"><label>下一步计划</label><textarea id="f-tomorrowPlan" placeholder="下阶段学习计划">${esc(d.tomorrowPlan||'')}</textarea></div>`;
       }
       f=ieltsFields;
+    } else if(m.type==="job"){
+      const tierOpts=[["s","S级"],["a","A级"],["b","B级"],["c","C级"],["x","⚠"]];
+      const statusOpts=[["pending","待投递"],["applied","已投递"],["written","笔试中"],["interview","面试中"],["offer","Offer"],["rejected","已结束"]];
+      f=`<div class="field"><label>公司</label><input id="f-title" value="${attr(d.title)}" placeholder="公司名称"/></div>
+        <div class="field"><label>岗位</label><input id="f-position" value="${attr(d.position||'')}" placeholder="岗位名称"/></div>
+        <div class="frow">
+          <div class="field"><label>薪资</label><input id="f-salary" value="${attr(d.salary||'')}" placeholder="如 200-250/天"/></div>
+          <div class="field"><label>地点</label><input id="f-location" value="${attr(d.location||'')}" placeholder="如 深圳"/></div>
+        </div>
+        <div class="field"><label>优先级</label><div class="seg" id="f-tier">${tierOpts.map(([k,l])=>`<div class="opt ${k===d.tier?'on':''}" data-v="${k}">${l}</div>`).join("")}</div></div>
+        <div class="field"><label>标签</label><input id="f-tagsText" value="${attr(d.tagsText||'')}" placeholder="多个标签用 · 分隔"/></div>
+        <div class="frow">
+          <div class="field"><label>手动评分</label><input id="f-score" type="number" min="0" max="70" value="${d.score??''}" placeholder="0-70"/></div>
+          <div class="field"><label>AI评分</label><input id="f-aiScore" type="number" min="0" max="5" step="0.1" value="${d.aiScore??''}" placeholder="0-5"/></div>
+        </div>
+        <div class="field"><label>简历链接</label><input id="f-resume" value="${attr(d.resume||'')}" placeholder="https://... 或相对路径"/></div>
+        <div class="field"><label>JD链接</label><input id="f-jd" value="${attr(d.jd||'')}" placeholder="https://... 或相对路径"/></div>
+        <div class="field"><label>匹配分析</label><textarea id="f-desc" placeholder="岗位匹配点 / 顾虑">${esc(d.desc||'')}</textarea></div>
+        <div class="field"><label>投递状态</label><div class="seg" id="f-status">${statusOpts.map(([k,l])=>`<div class="opt ${k===(d.status||'pending')?'on':''}" data-v="${k}">${l}</div>`).join("")}</div></div>
+        <div class="field"><label>投递/面试日期</label><input id="f-date" type="date" value="${d.date||''}"/></div>
+        <div class="field"><label>备注</label><textarea id="f-note" placeholder="面试时间、进度等">${esc(d.note||'')}</textarea></div>`;
     } else {
       f=`<div class="field"><label>标题</label><input id="f-title" value="${attr(d.title)}" placeholder="给这条起个名"/></div>
         ${(m.moods&&m.moods.length)?`<div class="field"><label>标签 / 心情</label><div class="seg" id="f-mood">${m.moods.map(md=>`<div class="opt ${md===d.mood?'on':''}" data-v="${attr(md)}" style="flex:0 0 auto;min-width:auto">${md}</div>`).join("")}</div></div>`:''}
@@ -6298,6 +6468,21 @@ function openEditor(key,item){
         d.tomorrowPlan=(val("#f-tomorrowPlan")||"").trim();
       }
     }
+    else if(m.type==="job"){
+      d.position=(val("#f-position")||"").trim();
+      d.salary=(val("#f-salary")||"").trim();
+      d.location=(val("#f-location")||"").trim();
+      d.tier=seg("#f-tier")||d.tier||"c";
+      d.tagsText=(val("#f-tagsText")||"").trim();
+      d.score=val("#f-score")!==''?Number(val("#f-score")):null;
+      d.aiScore=val("#f-aiScore")!==''?Number(val("#f-aiScore")):null;
+      d.resume=(val("#f-resume")||"").trim();
+      d.jd=(val("#f-jd")||"").trim();
+      d.desc=(val("#f-desc")||"").trim();
+      d.status=seg("#f-status")||d.status||"pending";
+      d.date=val("#f-date")||"";
+      d.note=(val("#f-note")||"").trim();
+    }
     // save custom fields
     (m.fields||[]).forEach(f=>{
       if(f.type==="select") d[f.key]=seg("#f-cf-"+f.key)||d[f.key]||"";
@@ -6324,6 +6509,7 @@ function newItem(m){ const base={id:Date.now()}; let item;
     else if(m.key==="ielts_speaking"){ item.part="Part 1"; item.selfAssessment="一般"; }
     else if(m.key==="ielts_record"){ item.subject="听力"; item.accuracy=null; item.estimatedScore=null; }
   }
+  else if(m.type==="job") item={...base,title:"",position:"",salary:"",location:"",tier:"c",tagsText:"",score:null,aiScore:null,resume:"",jd:"",desc:"",status:"pending",date:"",note:""};
   else item={...base,title:"",content:"",mood:(m.moods&&m.moods[0])||"",date:isoToday()};
   // initialize custom fields
   (m.fields||[]).forEach(f=>{ if(!(f.key in item)) item[f.key]= f.type==="select"?(f.options&&f.options[0]||""):""; });
@@ -6343,7 +6529,7 @@ function confirmDelete(key,id){ const item=(data[key]||[]).find(i=>i.id==id); if
 }
 
 /* ---------- router / sidebar ---------- */
-function go(v){ view=v; searchQ=""; renderNavActive(); render(); window.scrollTo({top:0}); }
+function go(v){ view=v; searchQ=""; jobFilter="all"; jobTier="all"; jobSort="rank"; renderNavActive(); render(); window.scrollTo({top:0}); }
 function render(){
   if(view==="home") renderHome();
   else if(view==="insight") renderInsight();
@@ -6353,14 +6539,17 @@ function render(){
 
 function buildNav(){
   $("#brandName").textContent=CONFIG.owner; $("#brandSlogan").textContent=CONFIG.slogan;
-  const normalModules = CONFIG.modules.filter(m => m.type !== 'ielts');
+  const normalModules = CONFIG.modules.filter(m => m.type !== 'ielts' && m.type !== 'job');
   const ieltsModules = CONFIG.modules.filter(m => m.type === 'ielts');
+  const jobModules = CONFIG.modules.filter(m => m.type === 'job');
   const html=[`<div class="navi" data-go="home">${icon("home",19)}首页</div>`,
     `<div class="navi" data-go="agents">${icon("sparkles",19)}AI Agent中心</div>`,
     `<div class="nav-sep">猫生日常</div>`]
     .concat(normalModules.map(m=>`<div class="navi" data-go="${m.key}">${icon(m.icon,19)}${m.name}</div>`))
     .concat([`<div class="nav-sep">IELTS 备考</div>`])
     .concat(ieltsModules.map(m=>`<div class="navi" data-go="${m.key}">${icon(m.icon,19)}${m.name.replace(/^[^\s]+\s/,'')}</div>`))
+    .concat([`<div class="nav-sep">求职投递</div>`])
+    .concat(jobModules.map(m=>`<div class="navi" data-go="${m.key}">${icon(m.icon,19)}${m.name}</div>`))
     .concat([`<div class="nav-sep">统计</div>`, `<div class="navi" data-go="insight">${icon("chart",19)}洞察复盘</div>`])
     .concat([`<div class="nav-sep">其他</div>`,
       `<div class="navi" id="navi-settings" title="云同步 / 数据管理">${icon("gear",19)} 设置</div>`]);
