@@ -4659,12 +4659,12 @@
     </div>
     <div class="c-agent-switch">
       <select id="mewAgentSelect" title="切换Agent">
-        <option value="chief">👑 PerchCore</option>
-        <option value="editor">📋 选题编辑</option>
-        <option value="reporter">📊 生活记者</option>
-        <option value="finance">💰 财经编辑</option>
-        <option value="reviewer">📚 书评人</option>
-        <option value="ielts">🎓 雅思教练</option>
+        <option value="chief">PerchCore</option>
+        <option value="editor">选题编辑</option>
+        <option value="reporter">生活记者</option>
+        <option value="finance">财经编辑</option>
+        <option value="reviewer">书评人</option>
+        <option value="ielts">雅思教练</option>
       </select>
     </div>
     <button class="c-close" id="mewClose" style="font-size:14px;font-family:var(--font);background:transparent;border:none;color:var(--text-secondary);cursor:pointer;width:28px;height:28px;border-radius:var(--radius-control);">✕</button>
@@ -6628,7 +6628,6 @@ const MewAI = {
       key: 'chief',
       name: 'PerchCore',
       title: '主编·调度中枢',
-      avatar: '👑',
       color: '#d4a76a',
       tags: ['意图识别', '任务拆分', 'Agent调度', '结果整合', '记忆管理', '工具路由'],
       systemPrompt: (ctx) => `你是 MewHub 的主编 PerchCore，一位经验丰富的个人效能指挥官。
@@ -6668,7 +6667,6 @@ ${ctx}
       key: 'editor',
       name: '选题编辑',
       title: 'Todo/Task Specialist',
-      avatar: '📋',
       color: '#7a9ba8',
       tags: ['任务拆解', '优先级排序', 'SMART原则', '计划生成', '进度追踪', '周报生成'],
       systemPrompt: (ctx) => `你是 MewHub 的选题编辑，一位高效的任务管理专家。
@@ -6704,7 +6702,6 @@ ${ctx}
       key: 'reporter',
       name: '生活记者',
       title: 'Habit/Activity Analyst',
-      avatar: '📊',
       color: '#9b7fb8',
       tags: ['习惯分析', '运动建议', '数据可视化', '模式识别', '激励设计', '健康洞察'],
       systemPrompt: (ctx) => `你是 MewHub 的生活记者，一位习惯与活动分析师。
@@ -6741,7 +6738,6 @@ ${ctx}
       key: 'finance',
       name: '财经编辑',
       title: 'Finance Analyst',
-      avatar: '💰',
       color: '#c4873b',
       tags: ['收支分析', '预算管理', '消费洞察', '趋势预测', '储蓄建议', '财务评分'],
       systemPrompt: (ctx) => `你是 MewHub 的财经编辑，一位财务分析师。
@@ -6780,7 +6776,6 @@ ${ctx}
       key: 'reviewer',
       name: '书评人',
       title: 'Reading/Content Curator',
-      avatar: '📚',
       color: '#4a7c8f',
       tags: ['阅读规划', '内容摘要', '知识关联', '书籍推荐', '笔记整理', '知识图谱'],
       systemPrompt: (ctx) => `你是 MewHub 的书评人，一位阅读与内容策展专家。
@@ -6812,7 +6807,6 @@ ${ctx}
         key: 'ielts',
         name: '雅思教练',
         title: 'IELTS Tutor',
-        avatar: '🎓',
         color: '#c45a5a',
         tags: ['错题分析', '薄弱点定位', '练习推荐', '路径规划', '模考评分', '素材生成'],
         systemPrompt: (ctx) => `你是 MewHub 的雅思教练，一位经验丰富的 IELTS 备考专家。
@@ -7833,7 +7827,7 @@ ${ctx}
 
       msgsEl.innerHTML += `<div class="c-msg bot agent-step">
         <div><div class="m-bubble" style="border-left:3px solid ${agent.color}">
-          ${agent.avatar} <b>${agent.name}</b> 正在分析...
+          <b>${agent.name}</b> 正在分析...
         </div></div>
       </div>`;
       msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -7860,7 +7854,7 @@ ${ctx}
         const lastStepEl = msgsEl.querySelector('.agent-step:last-child');
         if(lastStepEl){
           lastStepEl.innerHTML = `<div><div class="m-bubble" style="border-left:3px solid ${agent.color}">
-            ${agent.avatar} <b>${agent.name}</b> 分析结果：<br>${response.replace(/\n/g, '<br>')}
+            <b>${agent.name}</b> 分析结果：<br>${response.replace(/\n/g, '<br>')}
           </div><div class="m-time">刚刚</div></div>`;
         }
 
@@ -7961,15 +7955,11 @@ ${ctx}
     const nameEl = document.getElementById('mewAgentName');
     const statusTextEl = document.getElementById('mewStatusText');
     const statusDotEl = document.getElementById('mewStatusDot');
-    const avatarEl = document.getElementById('mewAvatar');
     const selectEl = document.getElementById('mewAgentSelect');
 
-    if(nameEl) nameEl.textContent = `${agent.avatar} ${agent.name}`;
+    if(nameEl) nameEl.textContent = agent.name;
     if(statusTextEl) statusTextEl.textContent = agent.title || '在线';
     if(statusDotEl) statusDotEl.style.background = agent.color || '#86efac';
-    if(avatarEl){
-      avatarEl.innerHTML = `<div style="font-size:20px;display:grid;place-items:center;width:24px;height:24px">${agent.avatar}</div>`;
-    }
     if(selectEl && selectEl.value !== this.currentAgent){
       selectEl.value = this.currentAgent;
     }
