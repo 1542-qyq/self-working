@@ -2705,7 +2705,10 @@ function recHTML(m,x){
   // ielts type card
   if(m.type === "ielts"){
     const isDone = x.status === '✅ 已完成';
-    const statusBadge = `<span class="badge" style="background:${m.tint};color:${m.color}">${esc(x.status||'☐ 未练习')}</span>`;
+    const _st = x.status||'☐ 未练习';
+    const statusBadge = _st === '☐ 未练习'
+      ? `<span class="badge" style="background:var(--surface-nested);color:var(--text-tertiary)">${esc(_st)}</span>`
+      : `<span class="badge" style="background:${m.tint};color:${m.color}">${esc(_st)}</span>`;
     const accRing = x.accuracy != null ? ringSVG(x.accuracy, m.color, 28) : '';
     // Fallback: try top-level field first, then _rawProps (for legacy data)
     const rp = x._rawProps || {};
