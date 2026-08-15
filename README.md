@@ -59,7 +59,6 @@ self-working/
 ├── proxy.js                      # 本地代理
 ├── cloudflare-worker/            # Cloudflare Worker 代理（远程 Notion 同步）
 ├── supabase/notion-sync/         # Supabase 同步脚本
-├── job-board/                    # 简历投递看板（原独立版，数据已迁移进工作台）
 ├── docs/superpowers/specs/       # 设计文档
 └── .github/workflows/deploy.yml  # GitHub Pages 自动部署
 ```
@@ -85,7 +84,7 @@ self-working/
 
 ## 🔒 隐私提醒
 
-仓库为公开部署（GitHub Pages 免费版不支持私有），**请勿将包含个人信息的简历、证件等文件提交到仓库**。`job-board/` 里的岗位数据已迁入工作台，简历/JD 链接建议使用本地路径或脱敏文件。
+- 仓库为公开部署（GitHub Pages 免费版不支持私有），**请勿将包含个人信息的简历、证件等文件提交到仓库**。代码中的示例数据均为脱敏内容，个人真实数据请存放在浏览器本地或自己的 Notion 数据库中。
 
 ## 🛠 技术栈
 
