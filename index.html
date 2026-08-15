@@ -932,6 +932,17 @@
   .mew-chat-head .c-status { font-size:11px; color:var(--text-tertiary); display:flex; align-items:center; gap:4px; margin-top:1px; font-weight:400; }
   .mew-chat-head .c-status .dot { width:5px; height:5px; border-radius:50%; background:#86efac; }
   .mew-chat-head .c-cfg { display:none; }
+  .mew-chat-head .c-agent-switch { flex:0 0 auto; position:relative; }
+  .mew-chat-head .c-agent-switch select {
+    appearance:none; -webkit-appearance:none;
+    background:var(--surface-nested); border:1px solid var(--border);
+    border-radius:6px; padding:4px 22px 4px 8px; font-size:12px;
+    color:var(--text); font-family:var(--font); cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 6px center;
+  }
+  .mew-chat-head .c-agent-switch select:hover { border-color:var(--text-tertiary); }
+  .mew-chat-head .c-agent-switch select:focus { outline:none; border-color:var(--accent); }
   .mew-chat-head .c-close { width:24px; height:24px; border-radius:4px; background:transparent; border:none; color:var(--text-tertiary); cursor:pointer;
     display:grid; place-items:center; transition:all .12s; font-size:13px; font-family:var(--font); opacity:.6; }
   .mew-chat-head .c-close:hover { opacity:1; background:var(--surface-nested); color:var(--text); }
@@ -4490,6 +4501,7 @@
       <div class="agent-actions">
         <button onclick="MewAI.chatWithAgent('chief')">对话</button>
         <button onclick="MewAI.assignTask('chief')">派任务</button>
+        <button onclick="MewAI.orchestrateAgents('帮我规划本周重点任务')" style="background:var(--accent);color:#fff;border-color:var(--accent)">⚡ 一键规划</button>
       </div>
     </div>
   
@@ -4583,8 +4595,8 @@
         <span class="agent-skill">错题分析</span><span class="agent-skill">薄弱点定位</span><span class="agent-skill">练习推荐</span><span class="agent-skill">路径规划</span><span class="agent-skill">模考评分</span><span class="agent-skill">素材生成</span>
       </div>
       <div class="agent-actions">
-        <button onclick="MewAI.chatWithAgent('coach')">对话</button>
-        <button onclick="MewAI.assignTask('coach')">派任务</button>
+        <button onclick="MewAI.chatWithAgent('ielts')">对话</button>
+        <button onclick="MewAI.assignTask('ielts')">派任务</button>
       </div>
     </div>
   </div>
@@ -4599,12 +4611,22 @@
 <!-- MewAI 聊天面板 -->
 <div class="mew-chat" id="mewChat">
   <div class="mew-chat-head">
-    <div class="c-ava" style="background:transparent;display:grid;place-items:center;padding:0;">
+    <div class="c-ava" style="background:transparent;display:grid;place-items:center;padding:0;" id="mewAvatar">
       <img src="assets/cat.svg?v=2" alt="" width="24" height="24" style="display:block;">
     </div>
     <div class="c-info">
-      <div class="c-name">Mew 助手</div>
-      <div class="c-status"><span class="dot"></span>在线</div>
+      <div class="c-name" id="mewAgentName">Mew 助手</div>
+      <div class="c-status"><span class="dot" id="mewStatusDot"></span><span id="mewStatusText">在线</span></div>
+    </div>
+    <div class="c-agent-switch">
+      <select id="mewAgentSelect" title="切换Agent">
+        <option value="chief">👑 PerchCore</option>
+        <option value="editor">📋 选题编辑</option>
+        <option value="reporter">📊 生活记者</option>
+        <option value="finance">💰 财经编辑</option>
+        <option value="reviewer">📚 书评人</option>
+        <option value="ielts">🎓 雅思教练</option>
+      </select>
     </div>
     <button class="c-close" id="mewClose" style="font-size:14px;font-family:var(--font);background:transparent;border:none;color:var(--text-secondary);cursor:pointer;width:28px;height:28px;border-radius:var(--radius-control);">✕</button>
   </div>
@@ -5589,7 +5611,7 @@ function renderAgents(){
       skills: ["阅读规划", "内容摘要", "知识关联", "书籍推荐", "笔记整理", "知识图谱"]
     },
     {
-      key: "coach",
+      key: "ielts",
       className: "ac-coach",
       avatar: "assets/coach.jpg?v=1",
       isImage: true,
@@ -5617,6 +5639,7 @@ function renderAgents(){
       <div class="agent-actions">
         <button onclick="MewAI.chatWithAgent('${a.key}')">对话</button>
         <button onclick="MewAI.assignTask('${a.key}')">派任务</button>
+        ${a.key === 'chief' ? `<button onclick="MewAI.orchestrateAgents('帮我规划本周重点任务')" style="background:var(--accent);color:#fff;border-color:var(--accent)">⚡ 一键规划</button>` : ''}
       </div>
     </div>
   `).join("");
@@ -6407,6 +6430,260 @@ const MewAI = {
     ollama: { name: "Ollama本地", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
   },
 
+  // Multi-Agent 注册表：每个 Agent 有独立 System Prompt + 专属数据上下文
+  agents: {
+    chief: {
+      key: 'chief',
+      name: 'PerchCore',
+      title: '主编·调度中枢',
+      avatar: '👑',
+      color: '#d4a76a',
+      tags: ['意图识别', '任务拆分', 'Agent调度', '结果整合', '记忆管理', '工具路由'],
+      systemPrompt: (ctx) => `你是 MewHub 的主编 PerchCore，一位经验丰富的个人效能指挥官。
+
+【你的专长】
+- 理解用户意图，智能分配任务给专业Agent
+- 协调多Agent并行工作，整合最终结果
+- 负责任务规划、记忆管理、工具调用路由
+- 将用户目标拆解为可执行的行动方案
+
+【你的用户数据】
+${ctx}
+
+【行为准则】
+- 作为主编，你需要统筹全局，先分析用户需求，再决定调用哪些Agent
+- 回答时先给出整体方案，再说明各Agent的分工
+- 语气专业、有条理，像一位靠谱的总编辑
+- 用数据和事实说话
+- 必要时使用"喵～"作为可爱的开场白`,
+      getContextData: () => {
+        const todos = data.todo || [];
+        const checkins = data.checkin || [];
+        const reads = data.read || [];
+        const moneys = data.money || [];
+        const ielts = (data.ielts_read || []).concat(data.ielts_listening || [], data.ielts_writing || [], data.ielts_speaking || []);
+        const todayStr = today();
+        const todayCheckins = checkins.filter(c => c.log && c.log[todayStr]).length;
+        return `- 全局待办：${todos.length}个，已完成${todos.filter(t=>t.done).length}个
+- 打卡习惯：${checkins.length}个，今日打卡${todayCheckins}个
+- 阅读：${reads.length}本书在跟进
+- 记账：${moneys.length}条记录
+- IELTS题库：${ielts.length}道题记录`;
+      },
+      quickQuestions: ['今日总体情况分析', '帮我规划本周重点', '我最需要改进的三个方面']
+    },
+    editor: {
+      key: 'editor',
+      name: '选题编辑',
+      title: 'Todo/Task Specialist',
+      avatar: '📋',
+      color: '#7a9ba8',
+      tags: ['任务拆解', '优先级排序', 'SMART原则', '计划生成', '进度追踪', '周报生成'],
+      systemPrompt: (ctx) => `你是 MewHub 的选题编辑，一位高效的任务管理专家。
+
+【你的专长】
+- 负责待办任务拆解、优先级排序（P0/P1/P2）
+- SMART原则校验、周计划/月计划生成
+- 进度追踪与提醒
+
+【你的用户数据】
+${ctx}
+
+【行为准则】
+- 拆解任务要具体、可执行，遵循SMART原则
+- 优先处理P0紧急重要任务
+- 语气务实、高效，不啰嗦
+- 必要时用"喵～"作为开场白`,
+      getContextData: () => {
+        const todos = data.todo || [];
+        const checkins = data.checkin || [];
+        const byPriority = { P0:0, P1:0, P2:0 };
+        todos.forEach(t => { if(byPriority[t.priority] !== undefined) byPriority[t.priority]++; });
+        const todayStr = today();
+        const todayCheckins = checkins.filter(c => c.log && c.log[todayStr]).length;
+        return `- 待办总数：${todos.length}个（P0:${byPriority.P0}, P1:${byPriority.P1}, P2:${byPriority.P2}）
+- 已完成：${todos.filter(t=>t.done).length}个
+- 打卡习惯：${checkins.length}个，今日完成${todayCheckins}个
+- 最近待办标题：${todos.slice(-5).map(t => t.title).join('、') || '暂无'}`;
+      },
+      quickQuestions: ['帮我拆解秋招准备', '本周任务优先级排序', '生成周计划']
+    },
+    reporter: {
+      key: 'reporter',
+      name: '生活记者',
+      title: 'Habit/Activity Analyst',
+      avatar: '📊',
+      color: '#9b7fb8',
+      tags: ['习惯分析', '运动建议', '数据可视化', '模式识别', '激励设计', '健康洞察'],
+      systemPrompt: (ctx) => `你是 MewHub 的生活记者，一位习惯与活动分析师。
+
+【你的专长】
+- 分析打卡数据、运动记录、睡眠习惯
+- 给出习惯养成建议，识别中断模式
+- 设计激励机制，生成生活洞察报告
+
+【你的用户数据】
+${ctx}
+
+【行为准则】
+- 用数据说话，引用具体打卡天数和完成率
+- 发现规律和模式（如：连续打卡X天后容易中断）
+- 给出正向激励和具体建议
+- 语气温暖、有洞察力`,
+      getContextData: () => {
+        const checkins = data.checkin || [];
+        const sports = data.sport || [];
+        const todayStr = today();
+        const todayCheckins = checkins.filter(c => c.log && c.log[todayStr]).length;
+        const totalLogs = checkins.reduce((sum, c) => sum + (c.log ? Object.keys(c.log).length : 0), 0);
+        const totalSportMin = sports.reduce((sum, s) => sum + (s.duration || 0), 0);
+        return `- 打卡习惯：${checkins.length}个
+- 今日已打卡：${todayCheckins}个
+- 累计打卡天数：${totalLogs}天
+- 运动记录：${sports.length}条，累计${totalSportMin}分钟
+- 习惯列表：${checkins.slice(0,5).map(c => c.title).join('、') || '暂无'}`;
+      },
+      quickQuestions: ['我的打卡习惯如何', '运动数据分析', '如何养成早起习惯']
+    },
+    finance: {
+      key: 'finance',
+      name: '财经编辑',
+      title: 'Finance Analyst',
+      avatar: '💰',
+      color: '#c4873b',
+      tags: ['收支分析', '预算管理', '消费洞察', '趋势预测', '储蓄建议', '财务评分'],
+      systemPrompt: (ctx) => `你是 MewHub 的财经编辑，一位财务分析师。
+
+【你的专长】
+- 分析收支结构、识别非必要支出
+- 预算预警、消费趋势预测
+- 储蓄建议、财务健康度评分
+
+【你的用户数据】
+${ctx}
+
+【行为准则】
+- 数字精确，分类清晰
+- 识别浪费型消费，给出优化建议
+- 语气专业但不焦虑，提供可行的财务计划
+- 用"喵～"轻松开场`,
+      getContextData: () => {
+        const moneys = data.money || [];
+        const income = moneys.filter(m => m.type === 'income').reduce((s,m)=>s+(m.amount||0),0);
+        const expense = moneys.filter(m => m.type === 'expense').reduce((s,m)=>s+(m.amount||0),0);
+        const byCat = {};
+        moneys.filter(m => m.type === 'expense').forEach(m => {
+          byCat[m.category || '其他'] = (byCat[m.category || '其他'] || 0) + (m.amount || 0);
+        });
+        const catStr = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v]) => `${k}:¥${v.toFixed(0)}`).join('、');
+        return `- 总收入：¥${income.toFixed(2)}
+- 总支出：¥${expense.toFixed(2)}
+- 结余：¥${(income-expense).toFixed(2)}
+- 消费分类Top5：${catStr || '暂无数据'}
+- 消费记录数：${moneys.length}条`;
+      },
+      quickQuestions: ['本月消费分析', '如何存钱', '预算建议']
+    },
+    reviewer: {
+      key: 'reviewer',
+      name: '书评人',
+      title: 'Reading/Content Curator',
+      avatar: '📚',
+      color: '#4a7c8f',
+      tags: ['阅读规划', '内容摘要', '知识关联', '书籍推荐', '笔记整理', '知识图谱'],
+      systemPrompt: (ctx) => `你是 MewHub 的书评人，一位阅读与内容策展专家。
+
+【你的专长】
+- 管理阅读计划、生成书籍摘要
+- 做知识点关联、推荐相关书籍
+- 阅读速度分析、读书笔记整理与知识图谱构建
+
+【你的用户数据】
+${ctx}
+
+【行为准则】
+- 推荐要有针对性，基于用户已读书目
+- 摘要简洁有力，突出核心观点
+- 语气知性、优雅，像一位读书人
+- 用"喵～"轻松开场`,
+      getContextData: () => {
+        const reads = data.read || [];
+        const reading = reads.filter(r => !r.done);
+        const done = reads.filter(r => r.done);
+        return `- 阅读中：${reading.length}本
+- 已读完：${done.length}本
+- 阅读列表：${reads.slice(0,5).map(r => r.title).join('、') || '暂无'}`;
+      },
+      quickQuestions: ['推荐下本书', '读书笔记整理', '阅读计划']
+    },
+      ielts: {
+        key: 'ielts',
+        name: '雅思教练',
+        title: 'IELTS Tutor',
+        avatar: '🎓',
+        color: '#c45a5a',
+        tags: ['错题分析', '薄弱点定位', '练习推荐', '路径规划', '模考评分', '素材生成'],
+        systemPrompt: (ctx) => `你是 MewHub 的雅思教练，一位经验丰富的 IELTS 备考专家。
+
+【你的专长】
+- 分析听说读写四项薄弱点
+- 根据错题记录给出针对性练习建议
+- 制定分阶段备考计划
+- 模考评分与改进建议
+- 口语写作素材生成
+
+【你的用户数据】
+${ctx}
+
+【行为准则】
+- 用数据说话，引用具体正确率和错题数
+- 优先关注最弱项，给出可执行的练习计划
+- 语气专业但鼓励人，像教练一样
+- 用"喵～"作为开场白`,
+        getContextData: () => {
+          const listening = data.ielts_listening || [];
+          const reading = data.ielts_read || [];
+          const writing = data.ielts_writing || [];
+          const speaking = data.ielts_speaking || [];
+          const all = listening.concat(reading, writing, speaking);
+          const accuracyList = all.map(i => i.accuracy).filter(v => typeof v === 'number' && v > 0);
+          const avgAcc = accuracyList.length ? Math.round(accuracyList.reduce((a,b)=>a+b,0)/accuracyList.length) : 0;
+          const sections = {};
+          listening.forEach(i => { if(i.section) sections[i.section] = (sections[i.section] || 0) + 1; });
+          const topSection = Object.entries(sections).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v]) => `${k}(${v}次)`).join('、');
+          return `- 听力：${listening.length}条记录
+- 阅读：${reading.length}条记录
+- 写作：${writing.length}条记录
+- 口语：${speaking.length}条记录
+- 平均正确率：${avgAcc}%
+- 听力常考Section：${topSection || '暂无'}`;
+        },
+        quickQuestions: ['听力薄弱点分析', '写作Task2建议', '口语Part2练习']
+      }
+  },
+
+  // 当前激活的 Agent（用于 Mew 助手切换）
+  currentAgent: 'chief',
+
+  // ============ Multi-API 路由（预留扩展点）============
+  // 为每个 Agent 指定独立的 API 配置覆盖（未来扩展用）
+  // 格式：{ agentKey: { provider, apiKey, proxyUrl, model } }
+  agentApiOverrides: {},
+
+  // 获取指定 Agent 的 API 配置（预留多 API 扩展）
+  getApiConfigForAgent(agentKey){
+    const override = this.agentApiOverrides[agentKey];
+    if(override){
+      return {
+        provider: override.provider || this.config.provider,
+        apiKey: override.apiKey || this.config.apiKey,
+        proxyUrl: override.proxyUrl || this.config.proxyUrl,
+        model: override.model || this.config.model
+      };
+    }
+    return { ...this.config };
+  },
+
   // AI规划瓷砖HTML
   plannerTileHTML(){
     const suggestions = [
@@ -6828,29 +7105,29 @@ const MewAI = {
 
   // 通用聊天（不带工具调用，用于AI助手对话）
   async callLLMChat(userMessage, history = []){
-    // 获取工作台当前数据摘要，提供上下文
-    const dataSummary = this.getDataSummary();
+    const agent = this.agents[this.currentAgent] || this.agents.chief;
+    const ctx = agent.getContextData ? agent.getContextData() : this.getDataSummary();
+    const systemPrompt = agent.systemPrompt(ctx);
     
     const messages = [
-      { 
-        role: "system", 
-        content: `你是MewHub的智能助手，熟悉用户的个人工作台数据。
-
-当前工作台数据摘要：
-${dataSummary}
-
-回答要求：
-- 语气友好活泼，像猫咪一样可爱，偶尔用"喵～"
-- 简洁明了，不要太啰嗦
-- 基于用户的真实数据给出建议
-- 如果需要创建任务，可以提示用户去首页用AI规划功能`
-      },
+      { role: "system", content: systemPrompt },
       ...history,
       { role: "user", content: userMessage }
     ];
 
-    const message = await this.callLLM(messages, { temperature: 0.8 });
-    return message.content || "喵～我没听清，再说一遍？";
+    const config = this.getApiConfigForAgent(this.currentAgent);
+    const useRealLLM = config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
+
+    if(!useRealLLM){
+      return null;
+    }
+
+    try {
+      const result = await this.callLLMWithConfig(messages, config, { temperature: 0.8 });
+      return result.content || "喵～我没听清，再说一遍？";
+    } catch(e){
+      throw e;
+    }
   },
 
   // 获取工作台数据摘要
@@ -6910,12 +7187,11 @@ ${dataSummary}
   async chatSend(text){
     const msgsEl = document.getElementById('mewMsgs');
     const typing = document.getElementById('mewTyping');
+    const agent = this.agents[this.currentAgent] || this.agents.chief;
     if(!text.trim()) return;
 
-    // 初始化聊天历史（简单版，只保存最近10轮）
     if(!this._chatHistory) this._chatHistory = [];
 
-    // 添加用户消息
     const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
     msgsEl.innerHTML += `<div class="c-msg user">
       <div><div class="m-bubble">${esc(text)}</div><div class="m-time">${time}</div></div>
@@ -6925,49 +7201,90 @@ ${dataSummary}
     typing.classList.add('show');
 
     let reply = '';
-    const useRealLLM = this.config.provider !== 'mock' && 
-                      (this.config.apiKey || this.config.provider === 'ollama');
+    const config = this.getApiConfigForAgent(this.currentAgent);
+    const useRealLLM = config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
 
     if(!useRealLLM){
-      // 演示模式
-      await new Promise(r => setTimeout(r, 1200));
-      reply = "喵～我是演示版助手，试试在首页「AI智能规划」里输入目标，我能帮你一键拆解成任务哦！接入真实大模型后，我可以：<br>• 调用工具创建/查询待办<br>• 分析你的工作台数据给出建议<br>• 通过RAG检索你的个人知识库<br><br>点击右上角⚙️配置AI模型，DeepSeek V3每月成本只要2块钱～";
-      if(text.includes('秋招') || text.includes('面试') || text.includes('字节')){
-        reply = "好问题！关于字节AI Agent PM面试准备，建议你：<br><br>1️⃣ <b>项目准备</b>：把你这个「MewAI×个人工作台」项目讲透——为什么做？用了Agent什么能力？工具调用/工作流/RAG分别怎么体现的？<br><br>2️⃣ <b>产品思维</b>：想想AI Agent产品和传统产品有什么不同？怎么评估Agent效果？怎么设计好的Prompt？<br><br>3️⃣ <b>动手实践</b>：配置好DeepSeek，真实跑通Function Call任务拆解！<br><br>👉 去首页AI规划里输入「准备字节AI Agent PM面试」，我帮你生成具体的待办清单！";
-      } else if(text.includes('待办') || text.includes('完成率')){
-        const todos = data.todo || [];
-        const done = todos.filter(x=>x.done).length;
-        const total = todos.length;
-        const pct = total ? Math.round(done/total*100) : 0;
-        reply = `📊 今日待办分析：<br><br>• 总待办：${total}项<br>• 已完成：${done}项<br>• 完成率：${pct}%<br><br>${pct < 50 ? '加油！今天还有不少任务没完成呢 💪' : pct < 80 ? '进度不错！继续保持～' : '太棒了！今天效率很高 🎉'}`;
-      } else if(text.includes('AI Agent') || text.includes('产品设计')){
-        reply = "💡 AI Agent产品设计的几个关键点：<br><br>1. <b>任务拆解能力</b>：用户说一句话，Agent能不能拆成可执行的子任务？<br>2. <b>工具调用准确性</b>：Function Call的正确率直接影响体验<br>3. <b>记忆机制</b>：短期记忆（上下文）+ 长期记忆（知识库/RAG）<br>4. <b>人机协作</b>：关键操作要用户确认，不能完全黑盒<br>5. <b>反馈闭环</b>：用户怎么纠错？数据怎么反哺模型？<br><br>你可以用这个工作台当试验场，把这些理念都落地试试！";
-      }
-      // 演示模式也加入历史
+      await new Promise(r => setTimeout(r, 1000));
+      reply = this._getAgentDemoReply(agent, text);
       this._chatHistory.push({ role: 'user', content: text });
       this._chatHistory.push({ role: 'assistant', content: reply.replace(/<br>/g, '\n') });
     } else {
-      // 真实LLM调用
       try {
         this._chatHistory.push({ role: 'user', content: text });
-        // 只保留最近10轮，避免token太长
         if(this._chatHistory.length > 20) this._chatHistory = this._chatHistory.slice(-20);
         
         reply = await this.callLLMChat(text, this._chatHistory.slice(0, -1));
-        reply = reply.replace(/\n/g, '<br>');
-        this._chatHistory.push({ role: 'assistant', content: reply.replace(/<br>/g, '\n') });
+        if(!reply){
+          reply = this._getAgentDemoReply(agent, text);
+        } else {
+          reply = reply.replace(/\n/g, '<br>');
+          this._chatHistory.push({ role: 'assistant', content: reply.replace(/<br>/g, '\n') });
+        }
       } catch(e){
         console.error('聊天API调用失败:', e);
-        reply = `抱歉，AI连接出了点小问题：${e.message}<br>请检查：<br>1. 本地代理是否启动（node proxy.js）<br>2. API Key是否正确<br>3. 网络是否正常`;
+        reply = `喵～ <b>${agent.name}</b>暂时无法回应（API错误）：${e.message}<br>请检查代理和API Key配置。`;
       }
     }
 
     typing.classList.remove('show');
 
     msgsEl.innerHTML += `<div class="c-msg bot">
-      <div><div class="m-bubble">${reply}</div><div class="m-time">${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div></div>
+      <div><div class="m-bubble" style="border-left:3px solid ${agent.color}">${reply}</div><div class="m-time">${new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div></div>
     </div>`;
     msgsEl.scrollTop = msgsEl.scrollHeight;
+  },
+
+  // Agent 演示模式回复（基于 Agent 角色生成针对性回复）
+  _getAgentDemoReply(agent, text){
+    const ctx = agent.getContextData ? agent.getContextData() : '';
+    const aKey = agent.key;
+
+    if(aKey === 'chief'){
+      if(text.includes('待办') || text.includes('完成率') || text.includes('今日')){
+        const todos = data.todo || [];
+        const done = todos.filter(x=>x.done).length;
+        const pct = todos.length ? Math.round(done/todos.length*100) : 0;
+        return `喵～我是PerchCore。<br><br>📊 今日数据概览：<br>• 待办完成率：${pct}%（${done}/${todos.length}）<br>• ${ctx}<br><br>${pct < 50 ? '需要加把劲了！建议先处理P0优先级任务 💪' : '表现不错，继续保持！🎯'}`;
+      }
+      if(text.includes('规划') || text.includes('计划') || text.includes('目标')){
+        return `喵～我是PerchCore。<br><br>你的目标我来拆解！我会协调 <b>选题编辑</b>（拆解任务）+ <b>生活记者</b>（安排节奏）+ <b>财经编辑</b>（评估预算） 来帮你完成。<br><br>请在首页「AI智能规划」瓷砖输入具体目标，我来真实调度各Agent！`;
+      }
+      return `喵～我是PerchCore，你的AI主编。<br><br>${ctx}<br><br>我可以帮你：<br>• 🎯 拆解目标成可执行任务<br>• 📊 分析你的数据给出建议<br>• 👥 调度其他Agent协作<br><br>试试点击首页的「AI智能规划」瓷砖吧！`;
+    }
+
+    if(aKey === 'editor'){
+      const todos = data.todo || [];
+      const byP = { P0:0, P1:0, P2:0 };
+      todos.forEach(t => { if(byP[t.priority] !== undefined) byP[t.priority]++; });
+      return `喵～我是选题编辑。<br><br>📋 当前任务队列：<br>• P0 紧急重要：${byP.P0}个<br>• P1 重要不紧急：${byP.P1}个<br>• P2 一般：${byP.P2}个<br><br>${text.includes('拆解') || text.includes('秋招') ? '建议拆解为：1)修改简历(P0) 2)刷Case题(P0) 3)准备项目介绍(P1) 4)模拟面试(P1)' : '建议先从P0任务开始，每次专注1-2项，避免多线作战。'}`;
+    }
+
+    if(aKey === 'reporter'){
+      const checkins = data.checkin || [];
+      return `喵～我是生活记者。<br><br>📊 习惯分析：<br>${ctx}<br><br>建议：<br>• 连续打卡7天形成初步习惯<br>• 中断不要自责，当天恢复即可<br>• 结合运动数据调整节奏`;
+    }
+
+    if(aKey === 'finance'){
+      const moneys = data.money || [];
+      const income = moneys.filter(m => m.type === 'income').reduce((s,m)=>s+(m.amount||0),0);
+      const expense = moneys.filter(m => m.type === 'expense').reduce((s,m)=>s+(m.amount||0),0);
+      return `喵～我是财经编辑。<br><br>💰 财务快照：<br>• 收入：¥${income.toFixed(2)}<br>• 支出：¥${expense.toFixed(2)}<br>• 结余：¥${(income-expense).toFixed(2)}<br><br>${expense > income ? '⚠️ 支出超过收入，建议削减非必要消费！' : '✅ 财务状况良好，考虑储蓄投资。'}`;
+    }
+
+    if(aKey === 'reviewer'){
+      return `喵～我是书评人。<br><br>📚 阅读动态：<br>${ctx}<br><br>建议：<br>• 正在读的书每天至少30分钟<br>• 读完后写3条核心观点总结<br>• 推荐下一本：根据你的兴趣，建议读《深度工作》提升专注力`;
+    }
+
+    if(aKey === 'ielts'){
+      const listening = data.ielts_listening || [];
+      const all = (data.ielts_read || []).concat(listening, data.ielts_writing || [], data.ielts_speaking || []);
+      const acc = all.map(i => i.accuracy).filter(v => typeof v === 'number' && v > 0);
+      const avgAcc = acc.length ? Math.round(acc.reduce((a,b)=>a+b,0)/acc.length) : 0;
+      return `喵～我是雅思教练。<br><br>🎓 备考数据：<br>${ctx}<br><br>${avgAcc < 60 ? '⚠️ 正确率偏低，建议加强基础练习：' : avgAcc < 75 ? '📈 进步中！建议针对性突破薄弱项：' : '🏆 表现优秀！可以挑战更高难度：'}<br>• 听力：重点练习Section 3&4<br>• 写作：Task 2观点类题目<br>• 口语：Part 2话题展开`;
+    }
+
+    return `喵～我是${agent.name}。<br><br>当前是演示模式，接入真实AI后我会基于你的数据给出专业建议。<br><br>${ctx}`;
   },
 
   // 打开配置面板（支持多模型）
@@ -7115,11 +7432,20 @@ ${dataSummary}
     const sendBtn = document.getElementById('mewSend');
     const input = document.getElementById('mewInput');
     const aiCfgBtn = document.getElementById('btn-ai-cfg');
+    const agentSelect = document.getElementById('mewAgentSelect');
 
-    if(fab) fab.onclick = () => chat.classList.toggle('open');
+    if(fab) fab.onclick = () => { chat.classList.toggle('open'); this._updateChatHeader(); };
     if(closeBtn) closeBtn.onclick = () => chat.classList.remove('open');
     if(cfgBtn) cfgBtn.onclick = () => this.openConfig();
     if(aiCfgBtn) aiCfgBtn.onclick = () => this.openConfig();
+
+    // Agent选择器切换
+    if(agentSelect){
+      agentSelect.onchange = () => {
+        const newAgent = agentSelect.value;
+        this.chatWithAgent(newAgent);
+      };
+    }
     
     // 更新侧边栏状态
     this.updateSidebarStatus();
@@ -7137,6 +7463,9 @@ ${dataSummary}
     document.querySelectorAll('.cq').forEach(btn => {
       btn.onclick = () => { if(input){ input.value = btn.dataset.q; sendMsg(); } };
     });
+
+    // 初始化聊天头部
+    this._updateChatHeader();
   },
 
   // 绑定首页AI规划瓷砖事件
@@ -7208,42 +7537,250 @@ ${dataSummary}
     if(qInput) qInput.onkeydown = e => { if(e.key === 'Enter') askQuestion(); };
   },
 
-  // 和单个Agent对话（演示）
-  chatWithAgent(agentKey){
-    const names = {
-      chief: "PerchCore",
-      editor: "选题编辑",
-      reporter: "生活记者",
-      finance: "财经编辑",
-      reviewer: "书评人",
-      coach: "雅思教练"
-    };
-    showToast(`已打开和「${names[agentKey]||'Agent'}」的对话（演示）`);
-    // 打开悬浮聊天面板
+  // ============ Multi-Agent 对话与编排 ============
+
+  // 和单个Agent对话（真实AI调用）
+  async chatWithAgent(agentKey){
+    const agent = this.agents[agentKey];
+    if(!agent){ showToast('Agent不存在', 'warn'); return; }
+
+    this.currentAgent = agentKey;
+
     const chat = document.getElementById('mewChat');
     const fab = document.getElementById('mewFab');
     if(chat && fab){
       chat.classList.add('open');
       fab.style.display = 'none';
-      const msgs = document.getElementById('mewMsgs');
-      if(msgs){
-        msgs.innerHTML += `<div class="c-msg c-b"><div class="c-bub">喵～我是${names[agentKey]}，有什么可以帮你的吗？🐱</div></div>`;
-        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    this._chatHistory = [];
+    this._updateChatHeader();
+
+    const msgsEl = document.getElementById('mewMsgs');
+    const welcomeMsg = agent.systemPrompt(agent.getContextData ? agent.getContextData() : '')
+      .split('【行为准则】')[0]
+      .split('\n').slice(-3).join(' ');
+
+    msgsEl.innerHTML = `<div class="c-msg bot">
+      <div><div class="m-bubble">喵～你好！我是 <b>${agent.name}</b>${agent.title ? `（${agent.title}）` : ''}。<br>${agent.quickQuestions ? '试试下面的快捷问题，或者直接输入你的问题吧！' : ''}</div>
+      <div class="m-time">刚刚</div></div>
+    </div>`;
+
+    if(agent.quickQuestions){
+      const quickEl = document.querySelector('.c-quick');
+      if(quickEl){
+        quickEl.innerHTML = agent.quickQuestions.map(q =>
+          `<button class="cq" data-q="${q}">${q}</button>`
+        ).join('');
+        quickEl.querySelectorAll('.cq').forEach(btn => {
+          btn.onclick = () => {
+            const input = document.getElementById('mewInput');
+            if(input){ input.value = btn.dataset.q; this.chatSend(btn.dataset.q); }
+          };
+        });
       }
     }
   },
 
-  // 给Agent派任务（演示）
-  assignTask(agentKey){
-    const tasks = {
-      chief: "让主编帮你协调周复盘+下周计划",
-      editor: "让选题编辑帮你拆解待办任务",
-      reporter: "让生活记者分析你的运动打卡数据",
-      finance: "让财经编辑做本月消费分析",
-      reviewer: "让书评人帮你制定阅读计划",
-      coach: "让雅思教练分析你的错题薄弱点"
+  // 给Agent派任务（PerchCore编排调度）
+  async assignTask(agentKey){
+    const agent = this.agents[agentKey];
+    if(!agent){ showToast('Agent不存在', 'warn'); return; }
+
+    const chat = document.getElementById('mewChat');
+    const fab = document.getElementById('mewFab');
+    if(chat && fab){
+      chat.classList.add('open');
+      fab.style.display = 'none';
+    }
+
+    this.currentAgent = 'chief';
+    this._chatHistory = [];
+    this._updateChatHeader();
+
+    const msgsEl = document.getElementById('mewMsgs');
+    msgsEl.innerHTML = `<div class="c-msg bot">
+      <div><div class="m-bubble">喵～你好！我是 <b>PerchCore</b>，正在为你调度任务。<br>请告诉我你的目标，我来协调合适的Agent帮你完成！</div>
+      <div class="m-time">刚刚</div></div>
+    </div>`;
+
+    const quickEl = document.querySelector('.c-quick');
+    if(quickEl){
+      quickEl.innerHTML = [
+        '帮我规划秋招准备',
+        '本周学习计划',
+        '月度消费复盘',
+        '雅思听力突破计划'
+      ].map(q => `<button class="cq" data-q="${q}">${q}</button>`).join('');
+      quickEl.querySelectorAll('.cq').forEach(btn => {
+        btn.onclick = () => {
+          const input = document.getElementById('mewInput');
+          if(input){ input.value = btn.dataset.q; this.chatSend(btn.dataset.q); }
+        };
+      });
+    }
+  },
+
+  // PerchCore 多 Agent 编排（串行调度 + 结果汇总）
+  async orchestrateAgents(userGoal){
+    const results = [];
+    const dispatchPlan = [
+      { agentKey: 'editor', prompt: `请为以下目标拆解成具体的待办任务（P0/P1/P2优先级）：${userGoal}` },
+      { agentKey: 'reporter', prompt: `基于用户的习惯和运动数据，请为以下目标安排合理的时间节奏：${userGoal}` },
+      { agentKey: 'finance', prompt: `请评估以下目标可能涉及的预算和成本：${userGoal}` },
+    ];
+
+    const msgsEl = document.getElementById('mewMsgs');
+    const typing = document.getElementById('mewTyping');
+
+    for(const step of dispatchPlan){
+      const agent = this.agents[step.agentKey];
+      if(!agent) continue;
+
+      if(typing) typing.classList.add('show');
+
+      msgsEl.innerHTML += `<div class="c-msg bot agent-step">
+        <div><div class="m-bubble" style="border-left:3px solid ${agent.color}">
+          ${agent.avatar} <b>${agent.name}</b> 正在分析...
+        </div></div>
+      </div>`;
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+
+      try {
+        const ctx = agent.getContextData ? agent.getContextData() : '';
+        const systemPrompt = agent.systemPrompt(ctx);
+        const config = this.getApiConfigForAgent(step.agentKey);
+
+        const useRealLLM = config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
+
+        let response;
+        if(useRealLLM){
+          const messages = [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: step.prompt }
+          ];
+          response = await this.callLLMWithConfig(messages, config, { temperature: 0.7 });
+        } else {
+          await new Promise(r => setTimeout(r, 800));
+          response = `${agent.name}分析完成：基于你的数据，建议优先处理「${userGoal}」相关的核心任务，具体建议包括合理规划时间分配和设定阶段性里程碑。`;
+        }
+
+        const lastStepEl = msgsEl.querySelector('.agent-step:last-child');
+        if(lastStepEl){
+          lastStepEl.innerHTML = `<div><div class="m-bubble" style="border-left:3px solid ${agent.color}">
+            ${agent.avatar} <b>${agent.name}</b> 分析结果：<br>${response.replace(/\n/g, '<br>')}
+          </div><div class="m-time">刚刚</div></div>`;
+        }
+
+        results.push({ agent: step.agentKey, response });
+      } catch(e){
+        results.push({ agent: step.agentKey, error: e.message });
+      }
+    }
+
+    if(typing) typing.classList.remove('show');
+
+    const summaryMsg = results.map(r => {
+      const a = this.agents[r.agent];
+      if(r.error) return `${a?.avatar || ''} ${a?.name || r.agent}：❌ 出错`;
+      return `${a?.avatar || ''} <b>${a?.name || r.agent}</b>：✅ 已分析`;
+    }).join('<br>');
+
+    msgsEl.innerHTML += `<div class="c-msg bot">
+      <div><div class="m-bubble" style="background:var(--bubble-user-bg);border-left:3px solid #d4a76a">
+        👑 <b>PerchCore 汇总</b><br>${summaryMsg}<br><br>
+        以上是各Agent的分析结果。综合来看，建议你：<br>
+        1. 先从P0优先级任务开始行动<br>
+        2. 合理安排每天的时间节奏<br>
+        3. 定期复盘调整方向<br><br>
+        如需我帮你创建具体的待办和打卡项，请告诉我！
+      </div><div class="m-time">刚刚</div></div>
+    </div>`;
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+
+    return results;
+  },
+
+  // 使用指定配置调用LLM（预留多API支持）
+  async callLLMWithConfig(messages, config, options = {}){
+    const provider = config.provider || this.config.provider;
+    const proxyUrl = config.proxyUrl || this.config.proxyUrl;
+    const apiKey = config.apiKey || this.config.apiKey;
+    const model = config.model || this.config.model;
+
+    const providerCfg = this.providers[provider];
+    if(!providerCfg) throw new Error(`未知的AI提供商: ${provider}`);
+
+    const endpoint = proxyUrl + (providerCfg.path || '/chat/completions');
+    const isOllama = provider === 'ollama';
+
+    let payload;
+    if(isOllama){
+      payload = {
+        model: model || providerCfg.model,
+        messages: messages,
+        stream: false
+      };
+    } else {
+      payload = {
+        model: model || providerCfg.model,
+        messages: messages,
+        temperature: options.temperature ?? 0.8,
+        stream: false
+      };
+      if(options.tools) payload.tools = options.tools;
+    }
+
+    const headers = isOllama ? { 'Content-Type': 'application/json' }
+      : { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` };
+
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(payload)
+    });
+
+    if(!resp.ok){
+      const errText = await resp.text();
+      throw new Error(`API请求失败 (${resp.status}): ${errText.slice(0, 200)}`);
+    }
+
+    const data = await resp.json();
+
+    if(isOllama){
+      return { content: data.message?.content || '', tool_calls: [] };
+    }
+
+    const choice = data.choices?.[0];
+    if(!choice) throw new Error('AI返回为空');
+
+    const msg = choice.message || {};
+    return {
+      content: msg.content || '',
+      tool_calls: msg.tool_calls || choice.message?.tool_calls || []
     };
-    showToast(tasks[agentKey] || '任务已派发（演示）', 'warn');
+  },
+
+  // 更新聊天面板头部（显示当前Agent）
+  _updateChatHeader(){
+    const agent = this.agents[this.currentAgent];
+    if(!agent) return;
+
+    const nameEl = document.getElementById('mewAgentName');
+    const statusTextEl = document.getElementById('mewStatusText');
+    const statusDotEl = document.getElementById('mewStatusDot');
+    const avatarEl = document.getElementById('mewAvatar');
+    const selectEl = document.getElementById('mewAgentSelect');
+
+    if(nameEl) nameEl.textContent = `${agent.avatar} ${agent.name}`;
+    if(statusTextEl) statusTextEl.textContent = agent.title || '在线';
+    if(statusDotEl) statusDotEl.style.background = agent.color || '#86efac';
+    if(avatarEl){
+      avatarEl.innerHTML = `<div style="font-size:20px;display:grid;place-items:center;width:24px;height:24px">${agent.avatar}</div>`;
+    }
+    if(selectEl && selectEl.value !== this.currentAgent){
+      selectEl.value = this.currentAgent;
+    }
   },
 
   // 运行多Agent工作流演示
