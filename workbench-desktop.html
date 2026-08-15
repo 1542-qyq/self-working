@@ -1069,6 +1069,87 @@
   .ws-desc { font-size:11.5px; color:var(--text-secondary); margin-top:2px; }
   .ws-agents { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
   .ws-agent-tag { font-size:10.5px; padding:3px 8px; border-radius:6px; }
+
+  /* ============ INSIGHT V2 - 时间序列分析仪表盘 ============ */
+  .insight-range { display:flex; align-items:center; gap:6px; }
+  .insight-range button { padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text-secondary); font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; }
+  .insight-range button:hover { color:var(--text); border-color:var(--text-tertiary); }
+  .insight-range button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .insight-range input[type=date] { padding:5px 8px; border:1px solid var(--border); border-radius:6px; font-size:12px; font-family:var(--font); }
+
+  .insight-kpi { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .insight-kpi .kpi-card { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); padding:20px; position:relative; overflow:hidden; }
+  .insight-kpi .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--kpi-color,var(--accent)); }
+  .insight-kpi .kpi-label { font-size:12px; color:var(--text-secondary); font-weight:500; margin-bottom:8px; letter-spacing:.02em; }
+  .insight-kpi .kpi-value { font-size:32px; font-weight:700; line-height:1; letter-spacing:-.02em; }
+  .insight-kpi .kpi-sub { font-size:11px; color:var(--text-tertiary); margin-top:6px; }
+  .insight-kpi .kpi-delta { font-size:11px; font-weight:600; margin-top:6px; }
+  .insight-kpi .kpi-delta.up { color:#16a34a; }
+  .insight-kpi .kpi-delta.down { color:var(--danger); }
+
+  .insight-chart { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); padding:24px; margin-bottom:24px; }
+  .insight-chart-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .insight-chart-head h3 { font-size:15px; font-weight:600; }
+  .insight-legend { display:flex; gap:16px; flex-wrap:wrap; }
+  .insight-legend .lg-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary); cursor:pointer; user-select:none; }
+  .insight-legend .lg-item:hover { color:var(--text); }
+  .insight-legend .lg-item.disabled { opacity:.35; text-decoration:line-through; }
+  .insight-legend .lg-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  .insight-chart svg { width:100%; height:auto; display:block; }
+  .insight-chart .chart-grid line { stroke:var(--border); stroke-width:1; }
+  .insight-chart .chart-axis text { fill:var(--text-tertiary); font-size:11px; }
+
+  .insight-heatmap { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); padding:24px; margin-bottom:24px; }
+  .insight-heatmap-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .insight-heatmap-head h3 { font-size:15px; font-weight:600; }
+  .insight-heatmap-head .heatmap-legend { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text-tertiary); }
+  .insight-heatmap-head .heatmap-legend .hm-cell { width:10px; height:10px; border-radius:2px; }
+  .insight-heatmap-body { display:flex; gap:3px; overflow-x:auto; padding-bottom:8px; }
+  .insight-heatmap-body .hm-col { display:flex; flex-direction:column; gap:3px; }
+  .insight-heatmap-body .hm-cell { width:10px; height:10px; border-radius:2px; cursor:pointer; transition:transform .1s; }
+  .insight-heatmap-body .hm-cell:hover { transform:scale(1.3); }
+  .insight-heatmap-body .hm-cell.empty { background:var(--border); }
+  .insight-heatmap-body .hm-cell.l1 { background:#c6e48b; }
+  .insight-heatmap-body .hm-cell.l2 { background:#7bc96f; }
+  .insight-heatmap-body .hm-cell.l3 { background:#239a3b; }
+  .insight-heatmap-body .hm-cell.l4 { background:#196127; }
+
+  .insight-compare { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:24px; }
+  .insight-compare .cmp-card { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); padding:20px; }
+  .insight-compare .cmp-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .insight-compare .cmp-head h4 { font-size:13px; font-weight:600; }
+  .insight-compare .cmp-rows { display:flex; flex-direction:column; gap:10px; }
+  .insight-compare .cmp-row { display:flex; align-items:center; gap:10px; }
+  .insight-compare .cmp-label { font-size:12px; color:var(--text-secondary); width:60px; flex-shrink:0; }
+  .insight-compare .cmp-bars { flex:1; display:flex; flex-direction:column; gap:2px; }
+  .insight-compare .cmp-bar-row { display:flex; align-items:center; gap:6px; }
+  .insight-compare .cmp-bar { height:6px; border-radius:3px; transition:width .5s ease; }
+  .insight-compare .cmp-bar.prev { background:var(--border); }
+  .insight-compare .cmp-bar.curr { background:var(--accent); }
+  .insight-compare .cmp-val { font-size:11px; font-weight:600; width:40px; text-align:right; }
+  .insight-compare .cmp-delta { font-size:11px; font-weight:600; width:45px; text-align:right; }
+  .insight-compare .cmp-delta.up { color:#16a34a; }
+  .insight-compare .cmp-delta.down { color:var(--danger); }
+
+  .insight-findings { background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-card); padding:24px; }
+  .insight-findings-head { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+  .insight-findings-head h3 { font-size:15px; font-weight:600; }
+  .insight-findings-head span { font-size:11px; color:var(--text-tertiary); }
+  .insight-findings-list { display:flex; flex-direction:column; gap:10px; }
+  .insight-findings-list .finding { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:8px; background:var(--surface-nested); }
+  .insight-findings-list .finding .f-icon { width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-size:12px; flex-shrink:0; }
+  .insight-findings-list .finding .f-icon.warn { background:rgba(234,179,8,.15); color:#ca8a04; }
+  .insight-findings-list .finding .f-icon.good { background:rgba(22,163,74,.12); color:#16a34a; }
+  .insight-findings-list .finding .f-icon.info { background:var(--accent-muted); color:var(--accent); }
+  .insight-findings-list .finding .f-text { font-size:13px; line-height:1.5; color:var(--text); }
+  .insight-findings-list .finding .f-text em { color:var(--text-secondary); font-style:normal; font-size:12px; }
+  .insight-findings-list .finding.empty { background:transparent; justify-content:center; color:var(--text-tertiary); font-size:13px; }
+
+  @media (max-width: 900px) {
+    .insight-kpi { grid-template-columns:repeat(2,1fr); }
+    .insight-compare { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -1587,22 +1668,508 @@ function wireHome(){
 }
 
 /* ---------- INSIGHT ---------- */
+let _insightRange = 'month';
+
+function insightDateRange(range){
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0,10);
+  let start, end, days, labels;
+  if(range === 'week'){
+    const dow = (now.getDay()+6)%7;
+    const mon = new Date(now); mon.setDate(now.getDate()-dow);
+    end = todayStr; start = mon.toISOString().slice(0,10);
+    days = []; for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d.toISOString().slice(0,10)); }
+    labels = ['一','二','三','四','五','六','日'];
+  } else if(range === 'month'){
+    const first = new Date(now.getFullYear(), now.getMonth(), 1);
+    start = first.toISOString().slice(0,10); end = todayStr;
+    days = []; labels = [];
+    for(let d=new Date(first); d<=now; d.setDate(d.getDate()+1)){ days.push(d.toISOString().slice(0,10)); labels.push((d.getMonth()+1)+'/'+d.getDate()); }
+  } else if(range === 'quarter'){
+    const q = Math.floor(now.getMonth()/3);
+    const first = new Date(now.getFullYear(), q*3, 1);
+    start = first.toISOString().slice(0,10); end = todayStr;
+    days = []; labels = [];
+    for(let d=new Date(first); d<=now; d.setDate(d.getDate()+1)){ days.push(d.toISOString().slice(0,10)); labels.push((d.getMonth()+1)+'/'+d.getDate()); }
+  } else if(range === 'year'){
+    const first = new Date(now.getFullYear(), 0, 1);
+    start = first.toISOString().slice(0,10); end = todayStr;
+    days = []; labels = [];
+    for(let d=new Date(first); d<=now; d.setDate(d.getDate()+1)){ days.push(d.toISOString().slice(0,10)); labels.push((d.getMonth()+1)+'/'+d.getDate()); }
+  }
+  return { start, end, days, labels, range };
+}
+
+function insightDailyStats(start, end){
+  const stats = {};
+  const checkinData = data.checkin || [];
+  const todoData = data.todo || [];
+  const noteData = data.note || [];
+  const moneyData = data.money || [];
+  const readData = data.read || [];
+  const sportData = data.sport || [];
+  const hotData = data.hot || [];
+  const ieltsKeys = CONFIG.modules.filter(m=>m.type==='ielts').map(m=>m.key);
+
+  const d0 = new Date(start); const d1 = new Date(end);
+  for(let d=new Date(d0); d<=d1; d.setDate(d.getDate()+1)){
+    const key = d.toISOString().slice(0,10);
+    stats[key] = { checkin:0, todoDone:0, todoTotal:0, note:0, expense:0, income:0, readProgress:0, sportProgress:0, ieltsDone:0, ieltsTotal:0 };
+  }
+
+  checkinData.forEach(x=>{
+    if(!x.log) return;
+    Object.keys(x.log).forEach(date=>{
+      if(stats[date]) stats[date].checkin++;
+    });
+  });
+
+  todoData.forEach(x=>{
+    if(x.date && stats[x.date]){
+      stats[x.date].todoTotal++;
+      if(x.done) stats[x.date].todoDone++;
+    }
+  });
+
+  noteData.forEach(x=>{ if(x.date && stats[x.date]) stats[x.date].note++; });
+  hotData.forEach(x=>{ if(x.date && stats[x.date]) stats[x.date].note++; });
+
+  moneyData.forEach(x=>{
+    if(x.date && stats[x.date]){
+      if(x.type === 'expense') stats[x.date].expense += +x.amount||0;
+      else if(x.type === 'income') stats[x.date].income += +x.amount||0;
+    }
+  });
+
+  readData.forEach(x=>{
+    if(x.current && x.target){
+      const pct = Math.min(100, Math.round((x.current/x.target)*100));
+      const t = x.date || today();
+      if(stats[t]) stats[t].readProgress = Math.max(stats[t].readProgress, pct);
+    }
+  });
+
+  sportData.forEach(x=>{
+    if(x.current && x.target){
+      const pct = Math.min(100, Math.round((x.current/x.target)*100));
+      const t = x.date || today();
+      if(stats[t]) stats[t].sportProgress = Math.max(stats[t].sportProgress, pct);
+    }
+  });
+
+  ieltsKeys.forEach(k=>{
+    (data[k]||[]).forEach(x=>{
+      if(x.status === '✅ 已完成' || x.status === '📋 今日任务'){
+        const t = x.date || today();
+        if(stats[t]){
+          stats[t].ieltsTotal++;
+          if(x.status === '✅ 已完成') stats[t].ieltsDone++;
+        }
+      }
+    });
+  });
+
+  return stats;
+}
+
+function insightStreak(){
+  const checkinData = data.checkin || [];
+  const hab = checkinData.filter(x=>x.type!=='word');
+  if(!hab.length) return 0;
+  let best = 0;
+  hab.forEach(x=>{ best = Math.max(best, streak(x.log)); });
+  return best;
+}
+
+function insightCompare(period, range){
+  const now = new Date();
+  let currStart, currEnd, prevStart, prevEnd;
+  if(period === 'week'){
+    const dow = (now.getDay()+6)%7;
+    const mon = new Date(now); mon.setDate(now.getDate()-dow);
+    const prevMon = new Date(mon); prevMon.setDate(mon.getDate()-7);
+    currStart = mon.toISOString().slice(0,10);
+    currEnd = now.toISOString().slice(0,10);
+    prevStart = prevMon.toISOString().slice(0,10);
+    prevEnd = new Date(mon.getTime()-1).toISOString().slice(0,10);
+  } else if(period === 'month'){
+    const first = new Date(now.getFullYear(), now.getMonth(), 1);
+    const prevFirst = new Date(now.getFullYear(), now.getMonth()-1, 1);
+    const prevLast = new Date(now.getFullYear(), now.getMonth(), 0);
+    currStart = first.toISOString().slice(0,10);
+    currEnd = now.toISOString().slice(0,10);
+    prevStart = prevFirst.toISOString().slice(0,10);
+    prevEnd = prevLast.toISOString().slice(0,10);
+  }
+  const currStats = insightDailyStats(currStart, currEnd);
+  const prevStats = insightDailyStats(prevStart, prevEnd);
+  const aggregate = stats => {
+    let checkin=0, todoDone=0, note=0, expense=0;
+    Object.values(stats).forEach(s=>{
+      checkin += s.checkin;
+      todoDone += s.todoDone;
+      note += s.note;
+      expense += s.expense;
+    });
+    return { checkin, todoDone, note, expense };
+  };
+  return { current: aggregate(currStats), previous: aggregate(prevStats), currStart, currEnd, prevStart, prevEnd };
+}
+
+function insightFindings(current, prev){
+  const findings = [];
+  const pctChange = (curr, prev) => {
+    if(!prev && !curr) return 0;
+    if(!prev) return 100;
+    return Math.round((curr-prev)/prev*100);
+  };
+  if(current.checkin > 0 && prev.checkin > 0){
+    const d = pctChange(current.checkin, prev.checkin);
+    if(d > 20) findings.push({ icon:'flame', color:'var(--module-1)', text:`打卡次数环比上升 ${d}%，保持良好节奏！` });
+    else if(d < -20) findings.push({ icon:'alert', color:'var(--danger)', text:`打卡次数环比下降 ${Math.abs(d)}%，需加强自律` });
+  }
+  if(current.todoDone > 0){
+    const d = pctChange(current.todoDone, prev.todoDone);
+    if(d > 10) findings.push({ icon:'check', color:'var(--accent)', text:`任务完成量提升 ${d}%，执行力在线` });
+    else if(d < -10 && prev.todoDone > 0) findings.push({ icon:'target', color:'var(--warning)', text:`任务完成量下降 ${Math.abs(d)}%，建议拆分任务` });
+  }
+  if(current.note > prev.note){
+    findings.push({ icon:'pen', color:'var(--module-5)', text:`记录条数增加，思考更活跃了` });
+  }
+  if(current.expense > prev.expense && prev.expense > 0){
+    findings.push({ icon:'wallet', color:'var(--module-4)', text:`支出环比增加 ¥${Math.round(current.expense-prev.expense)}，注意控制预算` });
+  }
+  if(findings.length === 0){
+    findings.push({ icon:'sparkles', color:'var(--accent)', text:`数据平稳，继续保持当前节奏即可` });
+  }
+  return findings;
+}
+
+function insightMultiLineChart(seriesMap, labels, options){
+  const opts = options || {};
+  const width = opts.width || 700;
+  const height = opts.height || 220;
+  const padL = 42, padR = 16, padT = 20, padB = 32;
+  const cw = width - padL - padR;
+  const ch = height - padT - padB;
+  const allVals = [];
+  Object.values(seriesMap).forEach(arr => arr.forEach(v => { if(v>0) allVals.push(v); }));
+  const maxV = Math.max(1, ...allVals);
+  const minV = 0;
+  const xStep = labels.length > 1 ? cw / (labels.length-1) : 0;
+
+  let paths = '';
+  let dots = '';
+  let legendHTML = '';
+  let idx = 0;
+
+  Object.entries(seriesMap).forEach(([name, arr]) => {
+    if(opts.hideSeries && opts.hideSeries.has(name)){ idx++; return; }
+    const color = opts.colors ? opts.colors[idx % opts.colors.length] : 'var(--accent)';
+    let d = '';
+    arr.forEach((v, i) => {
+      const x = padL + i * xStep;
+      const y = padT + ch - ((v - minV) / (maxV - minV || 1)) * ch;
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="${color}" opacity="${v>0?1:0}"/>`;
+    });
+    paths += `<path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>`;
+    legendHTML += `<span class="ins-legend-item" data-series="${attr(name)}" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:12px;color:var(--text-secondary)">
+      <span style="width:10px;height:3px;background:${color};border-radius:2px;display:inline-block"></span>${esc(name)}</span>`;
+    idx++;
+  });
+
+  let yTicks = '';
+  for(let i=0;i<=4;i++){
+    const v = Math.round(maxV * (4-i)/4);
+    const y = padT + ch * i/4;
+    yTicks += `<line x1="${padL}" y1="${y}" x2="${padL+cw}" y2="${y}" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+    yTicks += `<text x="${padL-6}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--text-tertiary)">${v}</text>`;
+  }
+
+  let xLabels = '';
+  const step = Math.max(1, Math.floor(labels.length / 12));
+  labels.forEach((l, i) => {
+    if(i % step === 0 || i === labels.length-1){
+      const x = padL + i * xStep;
+      xLabels += `<text x="${x}" y="${height-8}" text-anchor="middle" font-size="10" fill="var(--text-tertiary)">${esc(l)}</text>`;
+    }
+  });
+
+  return `<div class="ins-chart-wrap" style="position:relative">
+    <svg width="100%" viewBox="0 0 ${width} ${height}" style="display:block">
+      ${yTicks}${paths}${dots}${xLabels}
+    </svg>
+    <div class="ins-legend" style="margin-top:8px;padding-left:42px">${legendHTML}</div>
+  </div>`;
+}
+
+function insightHeatmap(data){
+  const width = 700;
+  const cellSize = 12;
+  const gap = 3;
+  const padL = 32, padT = 18;
+  const weeks = 13;
+  const days = 7;
+  const today = new Date();
+  const heatWidth = weeks * (cellSize + gap);
+  const height = padT + days * (cellSize + gap) + 24;
+
+  const grid = [];
+  for(let w=0; w<weeks; w++){
+    for(let d=0; d<days; d++){
+      const offset = (weeks-1-w)*7 + (6-d);
+      const date = new Date(today);
+      date.setDate(today.getDate() - offset);
+      const dateStr = date.toISOString().slice(0,10);
+      let intensity = 0;
+      if(data[dateStr]){
+        const s = data[dateStr];
+        intensity = Math.min(4, s.checkin + s.todoDone + Math.floor(s.note/2) + Math.floor(s.ieltsDone/2));
+      }
+      const x = padL + w * (cellSize + gap);
+      const y = padT + d * (cellSize + gap);
+      grid.push({ x, y, intensity, dateStr });
+    }
+  }
+
+  const colorMap = ['#f3f4f6', '#bbf7d0', '#86efac', '#4ade80', '#22c55e'];
+  let cells = '';
+  grid.forEach(c => {
+    const fill = c.intensity > 0 ? colorMap[c.intensity] : '#f3f4f6';
+    const title = `${c.dateStr} · 活动度 ${c.intensity}`;
+    cells += `<rect x="${c.x}" y="${c.y}" width="${cellSize}" height="${cellSize}" rx="2" fill="${fill}" stroke="none"><title>${esc(title)}</title></rect>`;
+  });
+
+  let monthLabels = '';
+  let lastMonth = -1;
+  for(let w=0; w<weeks; w++){
+    const midDate = new Date(today);
+    midDate.setDate(today.getDate() - (weeks-1-w)*7 - 3);
+    const m = midDate.getMonth();
+    if(m !== lastMonth){
+      const x = padL + w * (cellSize + gap);
+      monthLabels += `<text x="${x}" y="${padT+days*(cellSize+gap)+14}" font-size="10" fill="var(--text-tertiary)">${m+1}月</text>`;
+      lastMonth = m;
+    }
+  }
+
+  const dowLabels = ['一','三','五'];
+  let dowHTML = '';
+  dowLabels.forEach((label, i) => {
+    const y = padT + (i*2+1) * (cellSize + gap);
+    dowHTML += `<text x="4" y="${y+9}" font-size="10" fill="var(--text-tertiary)">${label}</text>`;
+  });
+
+  const legendHTML = `<div style="display:flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;color:var(--text-tertiary);padding-left:32px">
+    <span>少</span>${colorMap.map(c=>`<span style="width:11px;height:11px;background:${c};border-radius:2px;display:inline-block"></span>`).join('')}<span>多</span>
+  </div>`;
+
+  return `<div class="ins-heatmap-wrap">
+    <svg width="100%" viewBox="0 0 ${width} ${height}" style="display:block">
+      ${dowHTML}${cells}${monthLabels}
+    </svg>
+    ${legendHTML}
+  </div>`;
+}
+
+function insightCompareBars(curr, prev, label){
+  const max = Math.max(curr, prev, 1);
+  const currPct = Math.round(curr/max*100);
+  const prevPct = Math.round(prev/max*100);
+  const diff = curr - prev;
+  const diffPct = prev > 0 ? Math.round(diff/prev*100) : (curr > 0 ? 100 : 0);
+  const diffColor = diff > 0 ? 'var(--accent)' : diff < 0 ? 'var(--danger)' : 'var(--text-tertiary)';
+  const diffIcon = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+  return `<div class="ins-compare-row" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+      <span style="color:var(--text-secondary)">${esc(label)}</span>
+      <span style="color:${diffColor};font-weight:600">${diffIcon} ${Math.abs(diffPct)}%</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px">
+      <span style="font-size:11px;color:var(--text-tertiary);width:50px">本期</span>
+      <div style="flex:1;height:14px;background:var(--surface-card);border:1px solid var(--border);border-radius:7px;overflow:hidden">
+        <div style="width:${currPct}%;height:100%;background:var(--accent);border-radius:7px"></div>
+      </div>
+      <span style="font-size:12px;font-weight:600;min-width:30px;text-align:right">${curr}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:11px;color:var(--text-tertiary);width:50px">上期</span>
+      <div style="flex:1;height:14px;background:var(--surface-card);border:1px solid var(--border);border-radius:7px;overflow:hidden">
+        <div style="width:${prevPct}%;height:100%;background:var(--text-tertiary);border-radius:7px"></div>
+      </div>
+      <span style="font-size:12px;color:var(--text-secondary);min-width:30px;text-align:right">${prev}</span>
+    </div>
+  </div>`;
+}
+
 function renderInsight(){
-  const cards=CONFIG.modules.map(m=>{ const it=data[m.key]||[]; let main="", pct=0;
-    if(m.type==="todo"){ main=`${it.filter(x=>x.done).length}/${it.length} 已完成`; pct=it.length?Math.round(it.filter(x=>x.done).length/it.length*100):0; }
-    else if(m.type==="checkin"){ const t=today(); const hab=it.filter(x=>x.type!=="word"); main=`今日 ${hab.filter(x=>x.log&&x.log[t]).length}/${hab.length} 打卡`; pct=hab.length?Math.round(hab.filter(x=>x.log&&x.log[t]).length/hab.length*100):0; }
-    else if(m.type==="progress"){ pct=avgProgress(it).value; main=`平均进度 ${pct}%`; }
-    else if(m.type==="finance"){ const e=it.filter(x=>x.type==="expense").reduce((a,x)=>a+ +x.amount,0); const inc=it.filter(x=>x.type==="income").reduce((a,x)=>a+ +x.amount,0); main=`收 ¥${inc} · 支 ¥${e}`; }
-    else if(m.type==="ielts"){ const done=it.filter(x=>x.status==='✅ 已完成').length; pct=it.length?Math.round(done/it.length*100):0; main=`${done}/${it.length} 完成`; }
-    else main=`${it.length} 条记录`;
-    return `<div class="pin" data-open="${m.key}" style="cursor:pointer">
-      <span class="pin-ic" style="color:${m.color};background:${m.tint};border-color:transparent">${icon(m.icon,19)}</span>
-      <div class="pin-b"><div class="pin-t">${m.name}</div><div class="pin-m">${main}</div>
-      ${['progress','todo','checkin','ielts'].includes(m.type)?`<div class="hero-bar" style="margin-top:9px"><i style="width:${pct}%;background:${m.color}"></i></div>`:''}</div>
-      <span class="arw" style="color:var(--text-tertiary)">${icon("chevron",16,2)}</span></div>`; }).join("");
-  $("#screen").innerHTML=`<div class="header"><div><h2>洞察</h2><p>各模块进展一览 · 记录—执行—统计—反馈</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
-    <div class="sec-title">模块概况</div><div class="pin-list" style="grid-template-columns:repeat(3,1fr)">${cards}</div>`;
-  $("#screen").querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>go(el.dataset.open));
+  const range = _insightRange || 'month';
+  const rangeInfo = insightDateRange(range);
+  const dailyStats = insightDailyStats(rangeInfo.start, rangeInfo.end);
+
+  let totalCheckin=0, totalTodo=0, totalTodoDone=0, totalNote=0, totalExpense=0, totalIncome=0;
+  Object.values(dailyStats).forEach(s=>{
+    totalCheckin += s.checkin;
+    totalTodo += s.todoTotal;
+    totalTodoDone += s.todoDone;
+    totalNote += s.note;
+    totalExpense += s.expense;
+    totalIncome += s.income;
+  });
+
+  const activeDays = Object.values(dailyStats).filter(s=>s.checkin>0||s.todoDone>0||s.note>0).length;
+  const avgDaily = activeDays > 0 ? Math.round((totalCheckin+totalTodoDone+totalNote)/activeDays) : 0;
+  const completionRate = totalTodo > 0 ? Math.round(totalTodoDone/totalTodo*100) : 0;
+  const streakDays = insightStreak();
+  const totalScore = Math.min(100, Math.round(
+    completionRate*0.3 +
+    Math.min(100, totalCheckin/Math.max(1,rangeInfo.days.length)*100)*0.3 +
+    Math.min(100, totalNote/Math.max(1,rangeInfo.days.length)*100)*0.2 +
+    Math.min(100, streakDays*5)*0.2
+  ));
+
+  const weekCompare = insightCompare('week', range);
+  const monthCompare = insightCompare('month', range);
+  const weekFindings = insightFindings(weekCompare.current, weekCompare.previous);
+
+  const colors = ['var(--module-1)','var(--accent)','var(--module-3)','var(--module-5)','var(--danger)','var(--module-2)'];
+  const seriesMap = {};
+  const checkinArr = rangeInfo.days.map(d => dailyStats[d]?.checkin || 0);
+  const todoArr = rangeInfo.days.map(d => dailyStats[d]?.todoDone || 0);
+  const noteArr = rangeInfo.days.map(d => dailyStats[d]?.note || 0);
+  const expenseArr = rangeInfo.days.map(d => Math.round((dailyStats[d]?.expense || 0)));
+  seriesMap['打卡'] = checkinArr;
+  seriesMap['完成'] = todoArr;
+  seriesMap['笔记'] = noteArr;
+  seriesMap['支出'] = expenseArr;
+
+  const hiddenSet = window._insightHiddenSeries || new Set();
+  const lineChart = insightMultiLineChart(seriesMap, rangeInfo.labels, { colors: colors, height: 240, hideSeries: hiddenSet });
+  const heatmapData = {};
+  rangeInfo.days.forEach(d => { heatmapData[d] = dailyStats[d]; });
+  const heatmap = insightHeatmap(heatmapData);
+
+  const rangeOptions = [
+    { key:'week', label:'本周' },
+    { key:'month', label:'本月' },
+    { key:'quarter', label:'本季' },
+    { key:'year', label:'本年' },
+  ];
+  let rangeHTML = rangeOptions.map(o =>
+    `<button class="ins-range-btn ${range===o.key?'active':''}" data-range="${o.key}" style="${range===o.key?'background:var(--accent);color:#fff;border-color:var(--accent)':'background:var(--surface-card);color:var(--text-secondary);border-color:var(--border)'}border:1px solid;border-radius:999px;padding:6px 14px;font-size:12px;cursor:pointer;font-weight:500">${o.label}</button>`
+  ).join('');
+
+  const kpiCards = `
+    <div class="ins-kpi-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="ins-kpi-card" style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="color:var(--accent)">${icon('sparkles',16)}</span>
+          <span style="font-size:12px;color:var(--text-secondary);font-weight:500">总体得分</span>
+        </div>
+        <div style="font-size:28px;font-weight:700;color:var(--accent)">${totalScore}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">基于多维度加权计算</div>
+      </div>
+      <div class="ins-kpi-card" style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="color:var(--module-1)">${icon('check',16)}</span>
+          <span style="font-size:12px;color:var(--text-secondary);font-weight:500">完成率</span>
+        </div>
+        <div style="font-size:28px;font-weight:700;color:var(--module-1)">${completionRate}%</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">${totalTodoDone}/${totalTodo} 任务完成</div>
+      </div>
+      <div class="ins-kpi-card" style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="color:var(--danger)">${icon('flame',16)}</span>
+          <span style="font-size:12px;color:var(--text-secondary);font-weight:500">连续天数</span>
+        </div>
+        <div style="font-size:28px;font-weight:700;color:var(--danger)">${streakDays}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">持续打卡中，不要中断！</div>
+      </div>
+      <div class="ins-kpi-card" style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="color:var(--module-3)">${icon('activity',16)}</span>
+          <span style="font-size:12px;color:var(--text-secondary);font-weight:500">日均产出</span>
+        </div>
+        <div style="font-size:28px;font-weight:700;color:var(--module-3)">${avgDaily}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">活跃 ${activeDays} 天 · 日均 ${avgDaily} 项</div>
+      </div>
+    </div>`;
+
+  const findingsHTML = weekFindings.map(f =>
+    `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface-card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px">
+      <span style="color:${f.color};flex-shrink:0">${icon(f.icon, 16)}</span>
+      <span style="font-size:13px;line-height:1.5">${esc(f.text)}</span>
+    </div>`
+  ).join('');
+
+  const compareSection = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span style="color:var(--accent)">${icon('chart',15)}</span>周对比
+        </div>
+        ${insightCompareBars(weekCompare.current.checkin, weekCompare.previous.checkin, '打卡次数')}
+        ${insightCompareBars(weekCompare.current.todoDone, weekCompare.previous.todoDone, '任务完成')}
+        ${insightCompareBars(weekCompare.current.note, weekCompare.previous.note, '笔记记录')}
+      </div>
+      <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span style="color:var(--module-2)">${icon('list',15)}</span>月对比
+        </div>
+        ${insightCompareBars(monthCompare.current.checkin, monthCompare.previous.checkin, '打卡次数')}
+        ${insightCompareBars(monthCompare.current.todoDone, monthCompare.previous.todoDone, '任务完成')}
+        ${insightCompareBars(monthCompare.current.expense, monthCompare.previous.expense, '支出金额')}
+      </div>
+    </div>`;
+
+  $("#screen").innerHTML = `
+    <div class="header"><div><h2>洞察</h2><p>时间序列分析仪表盘 · 数据驱动的成长视角</p></div><div class="spacer"></div><span class="date-chip">${icon('calendar',14)} ${dateStr()}</span></div>
+
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">${rangeHTML}</div>
+
+    ${kpiCards}
+
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        <span style="color:var(--accent)">${icon('chart',15)}</span>多模块趋势
+      </div>
+      ${lineChart}
+    </div>
+
+    ${compareSection}
+
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        <span style="color:var(--module-1)">${icon('grid',15)}</span>打卡热力图（近90天）
+      </div>
+      ${heatmap}
+    </div>
+
+    <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        <span style="color:var(--accent)">${icon('sparkles',15)}</span>关键发现
+      </div>
+      ${findingsHTML}
+    </div>
+  `;
+
+  $("#screen").querySelectorAll(".ins-range-btn").forEach(btn => {
+    btn.onclick = () => {
+      _insightRange = btn.dataset.range;
+      renderInsight();
+    };
+  });
+
+  $("#screen").querySelectorAll(".ins-legend-item").forEach(item => {
+    item.onclick = () => {
+      const name = item.dataset.series;
+      if(!window._insightHiddenSeries) window._insightHiddenSeries = new Set();
+      if(window._insightHiddenSeries.has(name)) window._insightHiddenSeries.delete(name);
+      else window._insightHiddenSeries.add(name);
+      renderInsight();
+    };
+  });
 }
 
 /* ---------- 方案4：多Agent指挥中心 ---------- */
