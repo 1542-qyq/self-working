@@ -4588,6 +4588,15 @@ const NotionSync = {
         <div>本地填 /notion；线上填 Cloudflare Worker 地址</div>
       </div>
 
+      <div class="field">
+        <label>拉取模式</label>
+        <select id="nc-pull-mode">
+          <option value="merge" ${this.config?.pullMode !== 'replace' ? 'selected' : ''}>合并（保留本地，添加 Notion 中不存在的）</option>
+          <option value="replace" ${this.config?.pullMode === 'replace' ? 'selected' : ''}>替换（用 Notion 数据覆盖本地）</option>
+        </select>
+        <div>从 Notion 拉取数据时的处理方式</div>
+      </div>
+
       <div class="nc-section-title">模块映射</div>
       <div class="notion-config">
         ${modules}
@@ -4772,6 +4781,7 @@ const NotionSync = {
     overlay.querySelector('#nc-save').onclick = () => {
       const apiKey = overlay.querySelector('#nc-api-key').value.trim();
       const proxyUrl = overlay.querySelector('#nc-proxy-url').value.trim();
+      const pullMode = overlay.querySelector('#nc-pull-mode')?.value || 'merge';
 
       if(!apiKey){ showToast('请填写 Notion API Key', 'warn'); return; }
 
@@ -4793,7 +4803,7 @@ const NotionSync = {
         }
       });
 
-      this.config = { apiKey, proxyUrl: proxyUrl || '', mappings };
+      this.config = { apiKey, proxyUrl: proxyUrl || '', pullMode, mappings };
       localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
       this.updateUI();
       close();
