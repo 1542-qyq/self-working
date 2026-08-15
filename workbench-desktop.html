@@ -873,7 +873,7 @@
   .word-stats .ws-item .ws-val { font-size:18px; font-weight:600; color:var(--module-1); }
 
   /* ============================================================
-     MewAI 喵喵助手样式
+     MewAI Mew 助手样式
      ============================================================ */
   /* AI规划瓷砖 */
   .ai-planner { background:linear-gradient(135deg,#f5efe0 0%,#e8e0d0 50%,#d8e5d0 100%); position:relative; overflow:hidden; }
@@ -1159,7 +1159,7 @@
     <div class="brand">
       <div class="ava" id="ava" title="点击更换头像"><img src="assets/avatar.jpg" alt="头像" id="avaImg"/><span class="cam" id="avaCam"></span></div>
       <input type="file" id="avatarInput" accept="image/*" hidden/>
-      <div><h1 id="brandName">檐栖</h1><p id="brandSlogan">Cat Daily News</p></div>
+      <div><h1 id="brandName">檐栖</h1><p id="brandSlogan">MewHub</p></div>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="cloud-bar" id="cloudBar">
@@ -1217,7 +1217,7 @@
         <div class="nb-status" id="aiStatus">未配置</div>
       </div>
     </div>
-    <div class="foot" id="foot">猫咪生活报 · 每日更新</div>
+    <div class="foot" id="foot">MewHub · 每日更新</div>
   </aside>
   <!-- main -->
   <main class="main"><div id="screen"></div></main>
@@ -1225,7 +1225,7 @@
 
 <!-- MewAI 喵喵智能助手 -->
 <button class="mew-fab" id="mewFab" title="喵喵智能助手">
-  <img src="assets/cat.svg?v=2" alt="喵喵助手" width="32" height="32">
+  <img src="assets/cat.svg?v=2" alt="Mew 助手" width="32" height="32">
 </button>
 
 <!-- MewAI 聊天面板 -->
@@ -1235,7 +1235,7 @@
       <img src="assets/cat.svg?v=2" alt="" width="24" height="24" style="display:block;">
     </div>
     <div class="c-info">
-      <div class="c-name">喵喵助手</div>
+      <div class="c-name">Mew 助手</div>
       <div class="c-status"><span class="dot"></span>在线</div>
     </div>
     <button class="c-close" id="mewClose" style="font-size:14px;font-family:var(--font);background:transparent;border:none;color:var(--text-secondary);cursor:pointer;width:28px;height:28px;border-radius:var(--radius-control);">✕</button>
@@ -3001,7 +3001,7 @@ $("#avatarInput").onchange = e => {
 };
 
 /* ============================================================
-   MewAI 喵喵助手 - 智能任务规划（支持多模型：演示/DeepSeek/豆包/Ollama）
+   MewAI Mew 助手 - 智能任务规划（支持多模型：演示/DeepSeek/豆包/Ollama）
    ============================================================ */
 const MewAI = {
   config: {
