@@ -4483,14 +4483,22 @@ function isProxyMode(){
 }
 
 /* 智能自动映射 Notion 字段到工作台字段 */
+function invertMapping(fields){
+  const inv = {};
+  for(const [notionProp, wbField] of Object.entries(fields || {})){
+    inv[wbField] = notionProp;
+  }
+  return inv;
+}
+
 function autoMapField(propName, propType, moduleKey){
   const rules = [
     // IELTS 模块特定规则（优先级高，先匹配）
-    { kw: ['accuracy','正确率','正确'], val: 'accuracyField', modules: ['ielts'] },
+    { kw: ['accuracy','正确率','正确','accuracy rate'], val: 'accuracyField', modules: ['ielts'] },
     { kw: ['difficulty','难度'], val: 'difficultyField', modules: ['ielts'] },
     { kw: ['frequency','频次','频率'], val: 'frequencyField', modules: ['ielts'] },
-    { kw: ['weakness','薄弱','问题','不足'], val: 'weaknessField', modules: ['ielts'] },
-    { kw: ['tomorrow','明日','计划','plan'], val: 'tomorrowPlanField', modules: ['ielts'] },
+    { kw: ['weakness','薄弱','问题','不足','改进'], val: 'weaknessField', modules: ['ielts'] },
+    { kw: ['tomorrow','明日','下一步','计划','plan'], val: 'tomorrowPlanField', modules: ['ielts'] },
     { kw: ['question','题型'], val: 'questionTypeField', modules: ['ielts'] },
     { kw: ['source','来源'], val: 'sourceField', modules: ['ielts'] },
 
@@ -4504,7 +4512,7 @@ function autoMapField(propName, propType, moduleKey){
 
     // IELTS 写作
     { kw: ['task','任务'], val: 'taskField', modules: ['ielts_writing'] },
-    { kw: ['score','分数','estimated','预估'], val: 'estimatedScoreField', modules: ['ielts_writing','ielts_record'] },
+    { kw: ['score','分数','estimated','预估','总分'], val: 'estimatedScoreField', modules: ['ielts_writing','ielts_record'] },
     { kw: ['cn','中文','题目中'], val: 'titleCnField', modules: ['ielts_writing','ielts_listening'] },
     { kw: ['correction','批改','report'], val: 'correctionLinkField', modules: ['ielts_writing'] },
 
@@ -4515,14 +4523,18 @@ function autoMapField(propName, propType, moduleKey){
     { kw: ['topic','话题'], val: 'topicCategoryField', modules: ['ielts_speaking'] },
 
     // IELTS 备考记录
-    { kw: ['subject','学科','科目'], val: 'subjectField', modules: ['ielts_record'] },
+    { kw: ['subject','学科','科目','学科分类'], val: 'subjectField', modules: ['ielts_record'] },
+    { kw: ['收获','主要收获','总结','review'], val: 'content', modules: ['ielts_record'] },
+    { kw: ['今日计划','今日','状态','status','完成状态','进度'], val: 'statusField', modules: ['ielts_record'] },
+    { kw: ['score','分数','总分','预估'], val: 'estimatedScoreField', modules: ['ielts_record'] },
+    { kw: ['accuracy','正确率','正确'], val: 'accuracyField', modules: ['ielts_record'] },
 
     // 通用映射（所有模块，优先级低）
     { kw: ['title','标题','name','名称'], val: 'title', modules: null },
-    { kw: ['content','内容','note','备注','笔记','description','描述'], val: 'content', modules: null },
+    { kw: ['content','内容','note','备注','笔记','description','描述','收获'], val: 'content', modules: null },
     { kw: ['date','日期','created','创建','deadline','截止'], val: 'date', modules: null },
     { kw: ['tag','标签','category','分类'], val: 'tags', modules: null },
-    { kw: ['status','状态','完成'], val: 'statusField', modules: null },
+    { kw: ['status','状态','完成','今日计划','进度'], val: 'statusField', modules: null },
     { kw: ['done','完成','completed'], val: 'done', modules: null },
     { kw: ['priority','优先级'], val: 'priorityField', modules: null },
     { kw: ['type','类型'], val: 'typeField', modules: null },
@@ -4554,17 +4566,20 @@ function autoMapField(propName, propType, moduleKey){
   // 基于 Notion 属性类型的兜底映射
   const typeMap = {
     'title': 'title',
-    'rich_text': propName.includes('note') || propName.includes('备注') ? 'content' : null,
+    'rich_text': (propName.includes('note') || propName.includes('备注') || propName.includes('收获') || propName.includes('总结') || propName.includes('改进') || propName.includes('计划')) ? 'content' : null,
     'date': 'date',
-    'checkbox': propName.includes('status') || propName.includes('完成') ? 'done' : null,
-    'number': propName.includes('score') || propName.includes('分数') ? 'estimatedScoreField' :
-              propName.includes('accuracy') || propName.includes('正确') ? 'accuracyField' :
-              propName.includes('count') || propName.includes('次数') || propName.includes('word') || propName.includes('单词') ? 'timesField' :
-              propName.includes('frequency') || propName.includes('频次') || propName.includes('频率') ? 'frequencyField' : null,
-    'select': propName.includes('section') || propName.includes('部分') ? 'sectionField' :
+    'checkbox': (propName.includes('status') || propName.includes('完成') || propName.includes('状态')) ? 'done' : null,
+    'number': (propName.includes('score') || propName.includes('分数') || propName.includes('总分') || propName.includes('预估')) ? 'estimatedScoreField' :
+              (propName.includes('accuracy') || propName.includes('正确') || propName.includes('正确率')) ? 'accuracyField' :
+              (propName.includes('count') || propName.includes('次数') || propName.includes('word') || propName.includes('单词')) ? 'timesField' :
+              (propName.includes('frequency') || propName.includes('频次') || propName.includes('频率')) ? 'frequencyField' : null,
+    'select': (propName.includes('section') || propName.includes('部分')) ? 'sectionField' :
               propName.includes('task') ? 'taskField' :
               propName.includes('part') ? 'partField' :
-              propName.includes('frequency') || propName.includes('频次') || propName.includes('频率') ? 'frequencyField' : null,
+              (propName.includes('frequency') || propName.includes('频次') || propName.includes('频率')) ? 'frequencyField' :
+              (propName.includes('subject') || propName.includes('学科') || propName.includes('科目')) ? 'subjectField' :
+              (propName.includes('status') || propName.includes('状态') || propName.includes('今日计划')) ? 'statusField' : null,
+    'status': 'statusField',
     'multi_select': 'tags',
   };
   return typeMap[propType] || null;
@@ -4626,8 +4641,27 @@ function mapToWorkbenchItem(page, moduleKey, mappings){
       result.status = v ? '✅ 已完成' : '☐ 未练习';
       result.done = v;
     } else if(typeof v === 'string'){
-      result.status = v;
-      result.done = ['done','completed','已完成','✅ 已完成'].includes(v.toLowerCase());
+      const vLower = v.toLowerCase().trim();
+      const doneValues = ['done','completed','已完成','✅ 已完成','完成','已完成'];
+      const inProgressValues = ['in progress','进行中','正在进行','进行'];
+      const notStartedValues = ['not started','未练习','未开始','todo','待办','未完成'];
+      const todayTaskValues = ['today','今日任务','今日','to-do'];
+      if(doneValues.some(x => vLower.includes(x.toLowerCase()))){
+        result.status = '✅ 已完成';
+        result.done = true;
+      } else if(inProgressValues.some(x => vLower.includes(x.toLowerCase()))){
+        result.status = '⏳ 进行中';
+        result.done = false;
+      } else if(todayTaskValues.some(x => vLower.includes(x.toLowerCase()))){
+        result.status = '📋 今日任务';
+        result.done = false;
+      } else if(notStartedValues.some(x => vLower.includes(x.toLowerCase()))){
+        result.status = '☐ 未练习';
+        result.done = false;
+      } else {
+        result.status = v;
+        result.done = doneValues.some(x => vLower.includes(x.toLowerCase()));
+      }
     }
   }
 
@@ -5053,7 +5087,8 @@ const NotionSync = {
       }
 
       const pages = await this.queryDatabase(mapping.databaseId);
-      const items = pages.map(p => mapToWorkbenchItem(p, this.activeModule, mapping.fields));
+      const invFields = invertMapping(mapping.fields);
+      const items = pages.map(p => mapToWorkbenchItem(p, this.activeModule, invFields));
 
       items.forEach(item => {
         if(!item.id) item.id = Date.now() + Math.floor(Math.random() * 1000);
@@ -5091,7 +5126,8 @@ const NotionSync = {
       const results = [];
 
       for(const item of moduleData){
-        const properties = mapToNotionProperties(item, this.activeModule, mapping.fields, schema);
+        const invFields = invertMapping(mapping.fields);
+        const properties = mapToNotionProperties(item, this.activeModule, invFields, schema);
         try {
           if(item._notionId){
             await this.updatePage(item._notionId, properties);
