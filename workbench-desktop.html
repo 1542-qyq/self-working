@@ -5212,6 +5212,19 @@ function invertMapping(fields){
 
 function autoMapField(propName, propType, moduleKey){
   const rules = [
+    // 求职投递模块特定规则（优先级最高，先匹配）
+    { kw: ['ai','AI'], val: 'aiScoreField', modules: ['job'] },
+    { kw: ['手动'], val: 'scoreField', modules: ['job'] },
+    { kw: ['评分'], val: 'scoreField', modules: ['job'] },
+    { kw: ['jd','JD'], val: 'jdField', modules: ['job'] },
+    { kw: ['简历'], val: 'resumeField', modules: ['job'] },
+    { kw: ['链接','url'], val: 'jdField', modules: ['job'] },
+    { kw: ['岗位','职位','position'], val: 'positionField', modules: ['job'] },
+    { kw: ['薪资','工资','salary','薪酬'], val: 'salaryField', modules: ['job'] },
+    { kw: ['地点','城市','location','city'], val: 'locationField', modules: ['job'] },
+    { kw: ['优先级','评级','tier'], val: 'tierField', modules: ['job'] },
+    { kw: ['标签','tag'], val: 'tagsTextField', modules: ['job'] },
+    { kw: ['匹配分析','分析','匹配','desc'], val: 'descField', modules: ['job'] },
     // IELTS 模块特定规则（优先级高，先匹配）
     { kw: ['accuracy','正确率','正确','accuracy rate'], val: 'accuracyField', modules: ['ielts'] },
     { kw: ['difficulty','难度'], val: 'difficultyField', modules: ['ielts'] },
@@ -6134,6 +6147,18 @@ const NotionSync = {
                   <option value="topicCategoryField">话题分类</option>
                   <option value="subjectField">学科</option>
                 </optgroup>
+                <optgroup label="求职投递字段 (job)">
+                  <option value="positionField">岗位</option>
+                  <option value="salaryField">薪资</option>
+                  <option value="locationField">地点</option>
+                  <option value="tierField">优先级/评级</option>
+                  <option value="jdField">JD 链接</option>
+                  <option value="resumeField">简历链接</option>
+                  <option value="tagsTextField">标签(文本)</option>
+                  <option value="scoreField">手动评分</option>
+                  <option value="aiScoreField">AI评分</option>
+                  <option value="descField">匹配分析</option>
+                </optgroup>
               </select>
             </div>`
           ).join('');
@@ -6198,6 +6223,7 @@ const NotionSync = {
         const modKey = row.querySelector('input').dataset.mod;
         const dbId = row.querySelector('input').value.trim();
         if(dbId){
+          const prev = this.config?.mappings?.[modKey] || {};
           mappings[modKey] = { databaseId: dbId };
           const fieldMaps = {};
           overlay.querySelectorAll('#nc-schema .nc-field-select').forEach(sel => {
@@ -6205,7 +6231,8 @@ const NotionSync = {
               fieldMaps[sel.dataset.prop] = sel.value;
             }
           });
-          Object.assign(mappings[modKey], { fields: fieldMaps });
+          // 未选择任何字段时保留已有映射，避免覆盖预设
+          mappings[modKey].fields = Object.keys(fieldMaps).length > 0 ? fieldMaps : (prev.fields || {});
         }
       });
 
