@@ -9183,7 +9183,11 @@ const NotionSync = {
       const res = await fetch(notionUrl(`/databases/${databaseId}`), {
         headers: notionHeaders(this.config.apiKey),
       });
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      if(!res.ok){
+        let detail = '';
+        try { const j = await res.json(); detail = j.message || ''; } catch(_){}
+        throw new Error(`HTTP ${res.status}${detail ? '：' + detail : ''}`);
+      }
       const data = await res.json();
       return data.properties || {};
     } catch(e) { return null; }
@@ -9464,7 +9468,11 @@ const NotionSync = {
           const res = await fetch(notionUrl(`/databases/${dbId}`), {
             headers: notionHeaders(key),
           });
-          if(!res.ok) throw new Error(`HTTP ${res.status}`);
+          if(!res.ok){
+            let detail = '';
+            try { const j = await res.json(); detail = j.message || ''; } catch(_){}
+            throw new Error(`HTTP ${res.status}${detail ? '：' + detail : ''}`);
+          }
           const data = await res.json();
           const props = data.properties || {};
 
