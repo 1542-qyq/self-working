@@ -560,7 +560,7 @@
   .sidebar .sync-bar .sync-btn:hover { background:var(--drawer-active); color:var(--drawer-text); }
 
   /* ---------- Cloud Sync ---------- */
-  .cloud-bar { padding: 10px 14px; border-top:1px solid var(--drawer-hover); }
+  .cloud-bar { padding: 10px 14px; }
   .cloud-bar .cb-status { display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--drawer-text-mute); margin-bottom:8px; }
   .cloud-bar .cb-dot { width:7px; height:7px; border-radius:50%; background:var(--drawer-text-mute); }
   .cloud-bar .cb-dot.online { background:#4ade80; box-shadow:0 0 6px #4ade80; }
@@ -602,6 +602,20 @@
   .config-row .notion-bar { flex:1; border-top:none; border-right:1px solid var(--drawer-hover); padding:10px 10px; }
   .config-row .notion-bar:last-child { border-right:none; }
   .config-row .notion-bar .nb-title { font-size:11px; }
+
+  /* ---------- 侧边栏 同步与配置 折叠 ---------- */
+  .side-fold { border-top:1px solid var(--drawer-hover); }
+  .sf-toggle { display:flex; align-items:center; gap:7px; width:100%; padding:9px 14px;
+    background:none; border:none; color:var(--drawer-text-mute); font-size:11.5px; font-weight:600;
+    cursor:pointer; transition:color .12s, background .12s; }
+  .sf-toggle:hover { color:var(--drawer-text); background:var(--drawer-hover); }
+  .sf-toggle .sf-status { flex:1; text-align:left; }
+  .sf-toggle .sf-arrow { width:13px; height:13px; transition:transform .2s; }
+  .side-fold.open .sf-arrow { transform:rotate(180deg); }
+  .side-collapse { max-height:0; overflow:hidden; transition:max-height .25s ease; }
+  .side-fold.open .side-collapse { max-height:360px; }
+  .side-collapse .cloud-bar { border-top:none; }
+  .side-collapse .config-row { border-top:none; }
   .cloud-config { display:flex; flex-direction:column; gap:10px; }
   .cloud-config .cfg-row { display:flex; flex-direction:column; gap:4px; }
   .cloud-config label { font-size:12px; font-weight:600; color:var(--text-secondary); }
@@ -1209,6 +1223,12 @@
       <div><h1 id="brandName">朋友</h1><p id="brandSlogan">MewHub</p></div>
     </div>
     <nav class="nav" id="nav"></nav>
+    <div class="side-fold" id="sideFold">
+      <button class="sf-toggle" id="sfToggle" title="展开 / 收起 同步与配置">
+        <span class="sf-status">同步与配置</span>
+        <svg class="sf-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="side-collapse" id="sideCollapse">
     <div class="cloud-bar" id="cloudBar">
       <div class="cb-status">
         <span class="cb-dot" id="cbDot"></span>
@@ -1262,6 +1282,8 @@
           </button>
         </div>
         <div class="nb-status" id="aiStatus">未配置</div>
+      </div>
+    </div>
       </div>
     </div>
     <div class="foot" id="foot">MewHub · 每日更新</div>
@@ -6114,6 +6136,20 @@ const NotionSync = {
     };
   },
 };
+
+/* 侧边栏 同步与配置 折叠（状态记忆） */
+(function(){
+  const fold = document.getElementById('sideFold');
+  const toggle = document.getElementById('sfToggle');
+  if(!fold || !toggle) return;
+  const KEY = 'cat-news-side-collapsed';
+  // 默认折叠；localStorage 有记录时按记录恢复
+  if(localStorage.getItem(KEY) === '0') fold.classList.add('open');
+  toggle.onclick = () => {
+    const open = fold.classList.toggle('open');
+    localStorage.setItem(KEY, open ? '0' : '1');
+  };
+})();
 
 /* 初始化云同步 */
 CloudSync.init();

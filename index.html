@@ -553,7 +553,7 @@
   .sidebar .sync-bar .sync-btn:hover { background:var(--drawer-active); color:var(--drawer-text); }
 
   /* ---------- Cloud Sync ---------- */
-  .cloud-bar { padding: 10px 14px; border-top:1px solid var(--drawer-hover); }
+  .cloud-bar { padding: 10px 14px; }
   .cloud-bar .cb-status { display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--drawer-text-mute); margin-bottom:8px; }
   .cloud-bar .cb-dot { width:7px; height:7px; border-radius:50%; background:var(--drawer-text-mute); }
   .cloud-bar .cb-dot.online { background:#4ade80; box-shadow:0 0 6px #4ade80; }
@@ -595,6 +595,20 @@
   .config-row .notion-bar { flex:1; border-top:none; border-right:1px solid var(--drawer-hover); padding:10px 10px; }
   .config-row .notion-bar:last-child { border-right:none; }
   .config-row .notion-bar .nb-title { font-size:11px; }
+
+  /* ---------- 侧边栏 同步与配置 折叠 ---------- */
+  .side-fold { border-top:1px solid var(--drawer-hover); }
+  .sf-toggle { display:flex; align-items:center; gap:7px; width:100%; padding:9px 14px;
+    background:none; border:none; color:var(--drawer-text-mute); font-size:11.5px; font-weight:600;
+    cursor:pointer; transition:color .12s, background .12s; }
+  .sf-toggle:hover { color:var(--drawer-text); background:var(--drawer-hover); }
+  .sf-toggle .sf-status { flex:1; text-align:left; }
+  .sf-toggle .sf-arrow { width:13px; height:13px; transition:transform .2s; }
+  .side-fold.open .sf-arrow { transform:rotate(180deg); }
+  .side-collapse { max-height:0; overflow:hidden; transition:max-height .25s ease; }
+  .side-fold.open .side-collapse { max-height:360px; }
+  .side-collapse .cloud-bar { border-top:none; }
+  .side-collapse .config-row { border-top:none; }
   .cloud-config { display:flex; flex-direction:column; gap:10px; }
   .cloud-config .cfg-row { display:flex; flex-direction:column; gap:4px; }
   .cloud-config label { font-size:12px; font-weight:600; color:var(--text-secondary); }
@@ -4454,6 +4468,12 @@
       <div><h1 id="brandName">朋友</h1><p id="brandSlogan">MewHub</p></div>
     </div>
     <nav class="nav" id="nav"><div class="navi" data-go="home"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6 10.5V19h12v-8.5"></path></svg>首页</div><div class="navi active" data-go="agents"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>AI Agent中心</div><div class="nav-sep">猫生日常</div><div class="navi" data-go="todo"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6h11"></path><path d="M8.5 12h11"></path><path d="M8.5 18h11"></path><circle cx="4.5" cy="6" r=".9"></circle><circle cx="4.5" cy="12" r=".9"></circle><circle cx="4.5" cy="18" r=".9"></circle></svg>头版选题</div><div class="navi" data-go="checkin"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 9 4 17c0 1 .1 2 .5 3 5.5-9 9-9.5 15.5-16z"></path><path d="M4.5 20c3-6 7-9.5 13-11.5"></path></svg>日常打卡</div><div class="navi" data-go="read"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg>阅读专栏</div><div class="navi" data-go="sport"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5 6L14 5l2.5 7H21"></path></svg>运动版面</div><div class="navi" data-go="money"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a1.5 1.5 0 0 1 1.5 1.5V8"></path><rect x="3.5" y="7.5" width="17" height="11.5" rx="2.5"></rect><circle cx="16.5" cy="13.2" r="1.3"></circle></svg>财经版</div><div class="navi" data-go="note"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg>副刊笔记</div><div class="navi" data-go="hot"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 3 5 5.5 5 9a5 5 0 0 1-10 0c0-2 1-3.6 2.6-4.6C9 10.4 10.4 6.2 12 3z"></path></svg>热点追踪</div><div class="nav-sep">IELTS 备考</div><div class="navi" data-go="ielts_read"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v14H7.5A2.5 2.5 0 0 0 5 19.5z"></path><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H19v4H7.5A2.5 2.5 0 0 1 5 19.5z"></path></svg>阅读题库</div><div class="navi" data-go="ielts_listening"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 1 1 16 0v2"></path><rect x="3" y="13" width="4" height="6" rx="1.5"></rect><rect x="17" y="13" width="4" height="6" rx="1.5"></rect></svg>听力题库</div><div class="navi" data-go="ielts_writing"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4L16 5.2l2.8 2.8L8 19z"></path><path d="M14.2 7l2.8 2.8"></path></svg>写作题库</div><div class="navi" data-go="ielts_speaking"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>口语题库</div><div class="navi" data-go="ielts_record"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M8 13h8M8 17h5"></path></svg>备考记录</div><div class="nav-sep">统计</div><div class="navi" data-go="insight"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"></path><path d="M4 20h16"></path><path d="M8 16v-4"></path><path d="M12 16v-7"></path><path d="M16 16v-2"></path></svg>洞察复盘</div><div class="nav-sep">其他</div><div class="navi" id="navi-settings" title="云同步 / 数据管理"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg> 设置</div></nav>
+    <div class="side-fold" id="sideFold">
+      <button class="sf-toggle" id="sfToggle" title="展开 / 收起 同步与配置">
+        <span class="sf-status">同步与配置</span>
+        <svg class="sf-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+      </button>
+      <div class="side-collapse" id="sideCollapse">
     <div class="cloud-bar" id="cloudBar">
       <div class="cb-status">
         <span class="cb-dot" id="cbDot"></span>
@@ -4507,6 +4527,8 @@
           </button>
         </div>
         <div class="nb-status" id="aiStatus">未配置</div>
+      </div>
+    </div>
       </div>
     </div>
     <div class="foot" id="foot">MewHub · 每日更新</div>
@@ -9506,6 +9528,20 @@ const NotionSync = {
     };
   },
 };
+
+/* 侧边栏 同步与配置 折叠（状态记忆） */
+(function(){
+  const fold = document.getElementById('sideFold');
+  const toggle = document.getElementById('sfToggle');
+  if(!fold || !toggle) return;
+  const KEY = 'cat-news-side-collapsed';
+  // 默认折叠；localStorage 有记录时按记录恢复
+  if(localStorage.getItem(KEY) === '0') fold.classList.add('open');
+  toggle.onclick = () => {
+    const open = fold.classList.toggle('open');
+    localStorage.setItem(KEY, open ? '0' : '1');
+  };
+})();
 
 /* 初始化云同步 */
 CloudSync.init();
