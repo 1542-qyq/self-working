@@ -97,7 +97,7 @@ function showToast(msg, type){
    ============================================================ */
 const CONFIG = {
   storageKey: "cat-news-workbench-v1",
-  owner: "朋友",
+  owner: "QYQ",
   slogan: "Cat Daily News",
 
   quotes: [
