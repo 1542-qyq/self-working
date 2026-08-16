@@ -5464,6 +5464,23 @@ function mapToWorkbenchItem(page, moduleKey, mappings){
   if(mapping.subjectField && props[mapping.subjectField])
     result.subject = props[mapping.subjectField];
 
+  // 求职投递模块字段
+  if(moduleKey === 'job'){
+    if(mapping.positionField && props[mapping.positionField]) result.position = props[mapping.positionField];
+    if(mapping.salaryField && props[mapping.salaryField]) result.salary = props[mapping.salaryField];
+    if(mapping.locationField && props[mapping.locationField]) result.location = props[mapping.locationField];
+    if(mapping.tierField && props[mapping.tierField]) result.tier = String(props[mapping.tierField]).toLowerCase();
+    if(mapping.tagsTextField && props[mapping.tagsTextField]) result.tagsText = props[mapping.tagsTextField];
+    if(mapping.jdField && props[mapping.jdField]) result.jd = props[mapping.jdField];
+    if(mapping.resumeField && props[mapping.resumeField]) result.resume = props[mapping.resumeField];
+    if(mapping.scoreField && props[mapping.scoreField] != null) result.score = Number(props[mapping.scoreField]);
+    if(mapping.aiScoreField && props[mapping.aiScoreField] != null) result.aiScore = Number(props[mapping.aiScoreField]);
+    if(mapping.descField && props[mapping.descField]) result.desc = props[mapping.descField];
+    // 状态：Notion 中文 → 工作台英文 key
+    const jobStatusMap = { '待投递':'pending','已投递':'applied','笔试中':'written','面试中':'interview','已Offer':'offer','Offer':'offer','已结束':'rejected' };
+    if(result.status && jobStatusMap[result.status] !== undefined) result.status = jobStatusMap[result.status];
+  }
+
   return result;
 }
 
@@ -5588,8 +5605,56 @@ function mapToNotionProperties(item, moduleKey, mappings, schema){
   if(mapping.subjectField && item.subject)
     properties[mapping.subjectField] = { select: { name: item.subject } };
 
+  // 求职投递模块字段
+  if(moduleKey === 'job'){
+    if(mapping.positionField && item.position)
+      properties[mapping.positionField] = { rich_text: [{ text: { content: item.position } }] };
+    if(mapping.salaryField && item.salary)
+      properties[mapping.salaryField] = { rich_text: [{ text: { content: item.salary } }] };
+    if(mapping.locationField && item.location){
+      const locSchema = schema?.[mapping.locationField];
+      if(locSchema?.type === 'select') properties[mapping.locationField] = { select: { name: item.location } };
+      else properties[mapping.locationField] = { rich_text: [{ text: { content: item.location } }] };
+    }
+    if(mapping.tierField && item.tier){
+      const tierSchema = schema?.[mapping.tierField];
+      if(tierSchema?.type === 'select') properties[mapping.tierField] = { select: { name: String(item.tier).toUpperCase() } };
+    }
+    if(mapping.tagsTextField && item.tagsText)
+      properties[mapping.tagsTextField] = { rich_text: [{ text: { content: item.tagsText } }] };
+    if(mapping.jdField && item.jd)
+      properties[mapping.jdField] = { url: item.jd };
+    if(mapping.resumeField && item.resume)
+      properties[mapping.resumeField] = { url: item.resume };
+    if(mapping.scoreField && item.score != null)
+      properties[mapping.scoreField] = { number: Number(item.score) };
+    if(mapping.aiScoreField && item.aiScore != null)
+      properties[mapping.aiScoreField] = { number: Number(item.aiScore) };
+    if(mapping.descField && item.desc)
+      properties[mapping.descField] = { rich_text: [{ text: { content: item.desc } }] };
+    if(mapping.statusField && item.status){
+      // 状态：工作台英文 key → Notion 中文
+      const jobStatusRev = { pending:'待投递', applied:'已投递', written:'笔试中', interview:'面试中', offer:'Offer', rejected:'已结束' };
+      const statusName = jobStatusRev[item.status] || item.status;
+      const stSchema = schema?.[mapping.statusField];
+      if(stSchema?.type === 'select') properties[mapping.statusField] = { select: { name: statusName } };
+      else if(stSchema?.type === 'status') properties[mapping.statusField] = { status: { name: statusName } };
+    }
+  }
+
   return properties;
 }
+
+/* 求职投递模块的 Notion 预设映射（Notion属性名 → 工作台字段名） */
+const JOB_NOTION_MAPPING = {
+  databaseId: '914e5ae77c09485e9224927caef9cbfc',
+  fields: {
+    '公司': 'title', '岗位': 'positionField', '薪资': 'salaryField', '地点': 'locationField',
+    '优先级': 'tierField', '投递状态': 'statusField', '投递日期': 'dateField', 'JD链接': 'jdField',
+    '简历链接': 'resumeField', '标签': 'tagsTextField', '手动评分': 'scoreField', 'AI评分': 'aiScoreField',
+    '匹配分析': 'descField', '备注': 'contentField'
+  }
+};
 
 const NotionSync = {
   config: null,
@@ -5610,6 +5675,15 @@ const NotionSync = {
         }
       } catch(e){}
     }
+    // 预置求职投递模块映射（未配置时自动填充，已配置则保留用户设置）
+    this.config = this.config || { apiKey:'', proxyUrl:'', pullMode:true, mappings:{} };
+    this.config.mappings = this.config.mappings || {};
+    if(!this.config.mappings.job){
+      this.config.mappings.job = JSON.parse(JSON.stringify(JOB_NOTION_MAPPING));
+    } else if(!this.config.mappings.job.fields || Object.keys(this.config.mappings.job.fields).length === 0){
+      this.config.mappings.job.fields = JSON.parse(JSON.stringify(JOB_NOTION_MAPPING.fields));
+    }
+    localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
     this.updateUI();
     this.bindEvents();
   },
