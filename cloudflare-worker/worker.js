@@ -3,6 +3,7 @@ const TARGETS = {
   deepseek: { host: 'api.deepseek.com', basePath: '/v1' },
   doubao: { host: 'ark.cn-beijing.volces.com', basePath: '/api/v3' },
   qwen: { host: 'dashscope.aliyuncs.com', basePath: '/compatible-mode/v1' },
+  duannao: { host: 'cephalon.cloud', basePath: '/user-center/v1/model' },
   notion: { host: 'api.notion.com', basePath: '/v1' }
 };
 

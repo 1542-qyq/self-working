@@ -11,6 +11,7 @@ const TARGETS = {
   doubao: { host: 'ark.cn-beijing.volces.com', basePath: '/api/v3' },
   qwen: { host: 'dashscope.aliyuncs.com', basePath: '/compatible-mode/v1' },
   ollama: { host: 'localhost', port: 11434, basePath: '' },
+  duannao: { host: 'cephalon.cloud', basePath: '/user-center/v1/model' },
   notion: { host: 'api.notion.com', basePath: '/v1' }
 };
 
@@ -104,6 +105,7 @@ server.listen(PORT, () => {
 ║   • DeepSeek V4: http://localhost:${PORT}/deepseek         ║
 ║   • 豆包/方舟:    http://localhost:${PORT}/doubao           ║
 ║   • 通义千问:     http://localhost:${PORT}/qwen             ║
+║   • 端脑云:       http://localhost:${PORT}/duannao          ║
 ║   • Ollama本地:  http://localhost:${PORT}/ollama           ║
 ║   • Notion:      http://localhost:${PORT}/notion           ║
 ║                                                            ║

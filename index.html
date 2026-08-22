@@ -6643,6 +6643,7 @@ const MewAI = {
     deepseek: { name: "DeepSeek V4", desc: "最新V4版本，中文能力顶级，工具调用极强，成本极低", model: "deepseek-v4-pro", path: "/deepseek/chat/completions" },
     deepseek_flash: { name: "DeepSeek V4 Flash", desc: "V4快速版，响应更快，成本更低", model: "deepseek-v4-flash", path: "/deepseek/chat/completions" },
     doubao: { name: "豆包 Pro", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/chat/completions" },
+    duannao: { name: "端脑云", desc: "一个Key调多模型（DeepSeek/GPT/Claude等），国内版OpenRouter，限时免费", model: "deepseek-v4-pro", path: "/duannao/chat/completions" },
     ollama: { name: "Ollama本地", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
   },
 
@@ -7577,6 +7578,10 @@ ${ctx}
       } else if(key === 'doubao'){
         apiKeyWrap.style.display = 'block';
         keyHintEl.innerHTML = '在火山引擎方舟控制台获取，需要先创建推理接入点';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'block';
+      } else if(key === 'duannao'){
+        apiKeyWrap.style.display = 'block';
+        keyHintEl.innerHTML = '在 <a href="https://cephalon.cloud" target="_blank">端脑云 cephalon.cloud</a> 的「API 管理」页生成密钥；一个 Key 可调多模型';
         overlay.querySelector('#cfg-proxy-help').style.display = 'block';
       }
     };
