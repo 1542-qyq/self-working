@@ -552,6 +552,56 @@ MewHub 数据变更 -> Supabase Trigger -> Cloudflare Workers -> 网站公开 AP
                                                       -> twcz1542.cn 实时渲染
 ```
 
+### 6.4 前端角色壳 vs Hermes 后端边界
+
+端脑云的模型**不单独再起一套 Agent 运行时**——Hermes 本身就是「Agent 大脑」，MewHub 前端只保留「角色壳」。两层职责边界如下：
+
+#### 6.4.1 前端角色壳（只做"门面"，不碰推理）
+
+承担职责：
+- **角色皮肤**：PM 主 Agent / 申请管家 / 面试陪练的 Tab、配色、System Prompt 文案入口
+- **会话 UI**：`hermes_sessions` 的列表/切换、消息气泡渲染、SSE 流式展示
+- **快捷按钮**：根据输入动态出现的"分析产品 / 写 PRD / 记录为案例 / 归档 Notion"
+- **本地轻逻辑**：输入框校验、消息本地缓存、断线重连提示
+
+**不做**：意图识别、记忆管理、工具调用决策、模型推理。这些一律下沉到 Hermes。
+
+边界原则：
+- 前端永远不知道"用哪个模型、怎么调工具"，它只传 `agent_type`（pm_coach / application_butler / interview_trainer）给后端
+- 前端看到的"角色差异"= 不同的 `agent_type` + 不同的默认 System Prompt + 不同的快捷按钮配置，差异全部由后端/Hermes 配置决定，前端只是渲染
+
+#### 6.4.2 Hermes 后端（"大脑"，承载一切 AI 能力）
+
+承担职责：
+- **模型推理**：端脑云 GPU 上运行的对话生成
+- **角色路由**：根据 `agent_type` 加载对应 System Prompt（即 3.2 / 3.3 / 3.4 的 Prompt）
+- **Function Calling**：执行第八章的全部工具（`create_todo` / `create_case` / `update_application_status` / `add_ielts_score` 等）
+- **持久化记忆**：会话上下文、用户画像、跨会话案例检索
+- **工具副作用落地**：调用 Cloudflare Workers 内部 API 写 Supabase / Notion
+
+边界原则：
+- Hermes 不直接暴露给浏览器（无 API Key 在前端），所有调用经 Cloudflare Workers 网关鉴权中转
+- Hermes 返回的是「带工具调用指令的统一响应」，由 Workers 翻译成中文业务结果再回前端
+
+#### 6.4.3 一句话边界
+
+> **前端 = 角色皮肤 + 会话 UI；Hermes = 模型 + 角色 Prompt + 工具执行 + 记忆。中间由 Cloudflare Workers 做鉴权、协议翻译、副作用落地。**
+
+#### 6.4.4 部署形态
+
+```
+[GitHub Pages 前端]
+   角色壳：agent_type + UI + 快捷按钮
+        │  HTTPS + 用户 JWT
+        ▼
+[Cloudflare Workers]  ← 鉴权 / 路由 / 协议翻译 / 写 Supabase·Notion
+        │  HTTPS（服务端密钥，不落前端）
+        ▼
+[端脑云 Hermes]  ← 模型推理 + Function Calling + 记忆
+```
+
+端脑云只跑 Hermes 进程（2C4G 足够承载 2 个常驻 Agent + 1 个预留），不再叠加任何自研调度层。
+
 ---
 
 ## 七、API 设计
@@ -588,6 +638,60 @@ POST /api/chat 请求体：
   }
 }
 ```
+
+#### 7.1.1 /api/chat 与 Hermes 的调用契约
+
+`POST /api/chat` 是前端与 AI 能力之间的**唯一边界**。前端到 Workers 是普通 JSON/SSE，Workers 到 Hermes 是另一套协议（服务端密钥，不落前端）。两段请求体形态不同：
+
+**① 前端 → Cloudflare Workers（公开契约）**
+
+- 路径：`POST /api/chat`
+- 鉴权：Bearer `<user_jwt>`
+- 请求体：上文的 `{ session_id, agent_type, message, context }`
+- 响应：SSE 流式，事件三种：
+  - `data: {"type":"delta","content":"..."}` —— 逐字增量文本
+  - `data: {"type":"tool_call","tool":"create_case","args":{...}}` —— 工具调用通知（前端可展示"正在记录案例…"）
+  - `data: {"type":"done","message_id":"uuid"}` —— 本轮结束
+- 前端**禁止**携带任何模型参数、工具定义、Hermes 地址
+
+**② Cloudflare Workers → 端脑云 Hermes（内部契约，服务端密钥）**
+
+Workers 收到上请求后，做三件事再转发给 Hermes：
+1. **鉴权**：校验 JWT，从 KV 取 Hermes 服务端 API Key（不回传前端）
+2. **角色映射**：用 `agent_type` 查表，注入对应 System Prompt（见 3.2 / 3.3 / 3.4）
+3. **工具注入**：按 `agent_type` 挂载对应工具集（见第八章），并把工具执行端点指向 Workers 自己的内部 API（Hermes 回调时调回 Workers，再由 Workers 写 Supabase / Notion）
+
+转发给 Hermes 的请求体（示意）：
+```json
+{
+  "agent_id": "pm_coach",
+  "session_id": "uuid",
+  "system_prompt": "<PM 主 Agent 的 Prompt，由 Workers 注入>",
+  "messages": [
+    { "role": "user", "content": "帮我分析小红书的推荐算法" }
+  ],
+  "tools": [
+    { "name": "create_case", "description": "...", "parameters": { "...": "..." } },
+    { "name": "create_todo", "description": "...", "parameters": { "...": "..." } }
+  ],
+  "tool_callback": "https://<worker>/internal/hermes/tool"
+}
+```
+
+**③ Hermes → Workers 工具回调（副作用落地）**
+
+当 Hermes 决定调工具，它向 `tool_callback` 回 POST，Workers 据此写业务数据：
+```
+Hermes 决策 create_case
+   → POST /internal/hermes/tool  { tool:"create_case", args:{...} }
+   → Workers 校验权限 → POST /api/cases（内部）→ Supabase 写入
+   → 返回工具结果给 Hermes → Hermes 继续生成 → SSE 推回前端
+```
+
+**契约要点**：
+- 前端永远不知道用哪个模型、怎么调工具，只知道 `agent_type`
+- Hermes 不直接碰 Supabase / Notion，所有副作用经 Workers 落地（统一鉴权 + 审计）
+- `agent_type` 是前后端唯一的"角色货币"，新增角色只改 Workers 映射表 + Hermes 配置，前端零改动
 
 #### 产品案例
 
