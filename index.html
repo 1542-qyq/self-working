@@ -1230,7 +1230,7 @@
     .mob-overlay.show { opacity:1; pointer-events:auto; }
 
     /* 抽屉 v2：更宽、字号更大 */
-    .sidebar { width:84vw; max-width:320px;
+    .sidebar { width:84vw; max-width:320px; z-index:40;
       transform:translateX(-105%); transition:transform .22s ease; }
     .sidebar.open { transform:translateX(0); box-shadow:var(--shadow-overlay); }
     .sidebar .brand { padding:20px 18px 16px; }
