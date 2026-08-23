@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MewHub V4 融合方案线框图 · 现有风格 + 原方案功能</title>
+<style>
+  :root {
+    --page-bg: #ffffff;
+    --surface-card: #ffffff;
+    --surface-nested: #f9fafb;
+    --border: #e5e7eb;
+    --border-input: #d1d5db;
+    --text: #111827;
+    --text-secondary: #4b5563;
+    --text-tertiary: #9ca3af;
+    --brand-50: #f8fafc;
+    --brand-100: #f1f5f9;
+    --brand-500: #64748b;
+    --brand-600: #475569;
+    --brand-700: #334155;
+    --accent: #475569;
+    --accent-muted: #f8fafc;
+    --on-accent: #ffffff;
+    --danger: #ef4444;
+    --danger-muted: #fef2f2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --radius-sm: 6px;
+    --radius-control: 8px;
+    --radius-tile: 12px;
+    --radius-card: 16px;
+    --radius-lg: 16px;
+    --radius-sheet: 20px;
+    --shadow-card: none;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono: 'JetBrains Mono', "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--page-bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 40px 20px;
+  }
+  h1 { text-align: center; margin-bottom: 8px; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+  .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 50px; font-size: 14px; font-weight: 500; }
+  .section { max-width: 1200px; margin: 0 auto 60px; }
+  .section-title {
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+    letter-spacing: -0.01em;
+  }
+  .section-desc {
+    color: var(--text-secondary); font-size: 13px; font-weight: 500;
+    margin-bottom: 24px; margin-top: -12px;
+  }
+
+  .device {
+    background: var(--page-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .device-header {
+    background: var(--surface-nested);
+    padding: 12px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    letter-spacing: 0.02em;
+  }
+  .device-tag {
+    background: var(--accent); color: #fff;
+    padding: 3px 10px; border-radius: var(--radius-control);
+    font-size: 11px; font-weight: 600;
+  }
+  .device-body { padding: 20px; }
+
+  /* Bento 网格 */
+  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; align-items: stretch; }
+  .bento > * { min-width: 0; }
+  .b3 { grid-column: span 3; }
+  .b4 { grid-column: span 4; }
+  .b5 { grid-column: span 5; }
+  .b6 { grid-column: span 6; }
+  .b7 { grid-column: span 7; }
+  .b8 { grid-column: span 8; }
+  .b12 { grid-column: span 12; }
+
+  /* 瓷砖 */
+  .tile {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s ease;
+  }
+  .tile:hover { border-color: var(--border-input); }
+  .tile-h {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .tile-h .tic {
+    color: var(--accent);
+    display: flex; width: 32px; height: 32px;
+    align-items: center; justify-content: center;
+    background: var(--accent-muted);
+    border-radius: var(--radius-control);
+    font-size: 16px;
+  }
+  .tile-h .tt { display: flex; flex-direction: column; gap: 2px; }
+  .tile-h .en {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .tile-h .zh {
+    font-size: 15px; font-weight: 600;
+    line-height: 1.2; color: var(--text);
+  }
+  .tile-h .r {
+    margin-left: auto;
+    font-size: 12px; color: var(--text-secondary);
+    font-weight: 500; font-family: var(--font-mono);
+  }
+
+  /* 分组标题 */
+  .sec-grp {
+    display: flex; align-items: center; gap: 12px;
+    margin: 30px 2px 16px;
+  }
+  .sec-grp .bar {
+    width: 4px; height: 19px;
+    border-radius: 2px; background: var(--accent);
+    flex: 0 0 auto;
+  }
+  .sec-grp .zh {
+    font-size: 16px; font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .sec-grp .en {
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--text-tertiary);
+  }
+  .sec-grp .line {
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* 模块标签 */
+  .mod-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 9px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 700;
+  }
+  .mod-tag.new {
+    background: var(--accent-muted);
+    color: var(--accent);
+    border: 1px solid var(--border);
+  }
+  .mod-tag.keep {
+    background: #ecfdf5;
+    color: var(--success);
+    border: 1px solid #a7f3d0;
+  }
+  .mod-tag.move {
+    background: #fffbeb;
+    color: var(--warning);
+    border: 1px solid #fde68a;
+  }
+
+  /* Hero banner */
+  .hero-banner {
+    position: relative; overflow: hidden;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+    min-height: 160px;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 28px 32px; margin-bottom: 20px;
+    background: var(--surface-card);
+  }
+  .hero-banner .hi {
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .hero-banner .sub {
+    color: var(--text-secondary); font-size: 14px;
+    margin-top: 6px; max-width: 460px;
+    line-height: 1.5; font-weight: 500;
+  }
+  .hero-banner .hstats {
+    display: flex; gap: 24px; margin-top: 18px;
+  }
+  .hero-banner .hstat {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .hero-banner .hstat .n {
+    font-size: 20px; font-weight: 600;
+    letter-spacing: -0.01em;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-banner .hstat .t {
+    font-size: 12px; color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .hero-banner .hstat + .hstat {
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+  }
+
+  /* PM 教练瓷砖（新增） */
+  .pm-coach-tile {
+    background: var(--surface-card);
+    border: 2px solid var(--accent);
+  }
+  .quick-actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .quick-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: var(--radius-control);
+    font-size: 12px; font-weight: 600;
+    background: var(--surface-nested);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .quick-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-muted);
+  }
+  .chat-bubble {
+    background: var(--surface-nested);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* 输入框 */
+  .chat-input {
+    display: flex; gap: 10px;
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-tile);
+    padding: 10px 14px;
+    margin-top: 12px;
+  }
+  .chat-input input {
+    flex: 1; background: transparent; border: none;
+    color: var(--text); font-size: 14px; outline: none;
+    font-family: var(--font);
+  }
+  .chat-input input::placeholder { color: var(--text-tertiary); }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: #fff; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; cursor: pointer;
+  }
+
+  /* Rings */
+  .rings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+  .ring {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    padding: 14px 4px; cursor: pointer; min-width: 0;
+    border-radius: var(--radius-card);
+    transition: background 0.15s;
+  }
+  .ring:hover { background: var(--surface-nested); }
+  .ring .dial {
+    position: relative; width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 4px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ring .dial .mid {
+    text-align: center;
+  }
+  .ring .pct {
+    font-size: 18px; font-weight: 600;
+    letter-spacing: -0.02em; color: var(--text);
+  }
+  .ring .lbl {
+    font-size: 14px; font-weight: 700; color: var(--text);
+  }
+  .ring .sub {
+    font-size: 11px; color: var(--text-secondary);
+  }
+
+  /* 统计卡片 */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-tile);
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 28px; font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    font-family: var(--font-mono);
+  }
+  .stat-label {
+    font-size: 12px; color: var(--text-secondary);
+    font-weight: 500; margin-top: 4px;
+  }
+
+  /* 时间线 */
+  .timeline {
+    position: relative; padding-left: 24px;
+  }
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 7px; top: 4px; bottom: 4px;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 16px;
+  }
+  .timeline-dot {
+    position: absolute; left: -20px; top: 4px;
+    width: 12px; height: 12px;
+    border-radius: 50%; border: 2px solid var(--border);
+    background: var(--surface-card);
+  }
+  .timeline-dot.done {
+    background: var(--success); border-color: var(--success);
+  }
+  .timeline-dot.active {
+    background: var(--warning); border-color: var(--warning);
+  }
+  .timeline-date { font-size: 11px; color: var(--text-tertiary); }
+  .timeline-text { font-size: 13px; font-weight: 600; color: var(--text); }
+  .timeline-note { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* 列表项 */
+  .list-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; background: var(--surface-nested);
+    border-radius: var(--radius-tile);
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    transition: border-color 0.12s;
+  }
+  .list-item:hover { border-color: var(--border-input); }
+  .list-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-control);
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+    color: var(--accent);
+  }
+  .list-body { flex: 1; }
+  .list-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .list-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; font-weight: 500; }
+  .list-tag {
+    font-size: 11px; padding: 3px 10px;
+    border-radius: var(--radius-control);
+    background: var(--accent-muted);
+    color: var(--accent); flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  /* 材料清单 */
+  .material-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .material-item:last-child { border-bottom: none; }
+  .checkbox {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border-input); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; flex-shrink: 0;
+  }
+  .checkbox.checked {
+    background: var(--success); border-color: var(--success); color: #fff;
+  }
+  .material-name { flex: 1; font-size: 13px; font-weight: 600; }
+  .material-name.done { text-decoration: line-through; color: var(--text-secondary); }
+  .material-status {
+    font-size: 11px; padding: 2px 8px;
+    border-radius: var(--radius-control);
+    background: var(--surface-nested);
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* 图表占位 */
+  .chart-placeholder {
+    height: 120px;
+    background: var(--surface-nested);
+    border-radius: var(--radius-control);
+    display: flex; align-items: flex-end;
+    justify-content: space-around;
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .chart-bar {
+    width: 20px; border-radius: 4px 4px 0 0;
+    background: var(--accent);
+    opacity: 0.5;
+    position: relative;
+  }
+  .chart-bar::after {
+    content: attr(data-val);
+    position: absolute; top: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px; color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* 热力图 */
+  .heatmap {
+    display: flex; gap: 3px; flex-wrap: wrap;
+  }
+  .heat-cell {
+    width: 12px; height: 12px; border-radius: 2px;
+    background: var(--surface-nested);
+    border: 1px solid var(--border);
+  }
+  .heat-cell.l1 { background: #dcfce7; border-color: #bbf7d0; }
+  .heat-cell.l2 { background: #86efac; border-color: #4ade80; }
+  .heat-cell.l3 { background: #22c55e; border-color: #16a34a; }
+  .heat-cell.l4 { background: #15803d; border-color: #166534; }
+
+  /* 注释 */
+  .annotation {
+    background: var(--surface-nested);
+    border-left: 3px solid var(--warning);
+    border-radius: 0 var(--radius-control) var(--radius-control) 0;
+    padding: 12px 16px;
+    margin: 20px 0;
+    font-size: 13px; color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .annotation-title {
+    font-weight: 700; color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  /* 底部 Tab */
+  .bottom-tab {
+    display: flex; justify-content: space-around;
+    background: var(--surface-card);
+    border-top: 1px solid var(--border);
+    padding: 10px 0;
+  }
+  .tab-item {
+    text-align: center; font-size: 11px;
+    color: var(--text-tertiary); padding: 4px 12px;
+    font-weight: 500;
+  }
+  .tab-item.active { color: var(--accent); font-weight: 700; }
+  .tab-icon {
+    width: 24px; height: 24px;
+    margin: 0 auto 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  /* 模态框/面板 */
+  .panel-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex; align-items: flex-end; justify-content: center;
+    z-index: 100;
+  }
+  .panel-sheet {
+    background: var(--surface-card);
+    width: 100%; max-width: 600px;
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    max-height: 85vh; overflow-y: auto;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .panel-close {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--text-tertiary);
+    cursor: pointer;
+    background: var(--surface-card);
+  }
+
+  /* 待办行 */
+  .tk-row {
+    display: flex; align-items: center; gap: 11px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .tk-row:last-child { border-bottom: none; }
+  .tk-chk {
+    flex: 0 0 auto; width: 18px; height: 18px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-input);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; background: var(--surface-card);
+    color: #fff; transition: all 0.15s;
+  }
+  .tk-chk.on { background: var(--accent); border-color: var(--accent); }
+  .tk-name {
+    flex: 1; min-width: 0;
+    font-size: 13.5px; font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tk-name.done { text-decoration: line-through; color: var(--text-secondary); }
+
+  /* 两列 */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* 聚焦行 */
+  .focus-row {
+    display: flex; align-items: center; gap: 11px;
+    padding: 6px 0;
+  }
+  .focus-row .fic {
+    width: 30px; height: 30px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+    background: var(--surface-nested);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .focus-row .ft { flex: 1; min-width: 0; }
+  .focus-row .fn {
+    font-size: 13.5px; font-weight: 700;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .focus-row .fn.done { text-decoration: line-through; color: var(--text-secondary); }
+  .focus-row .fm { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  @media (max-width: 768px) {
+    .bento { grid-template-columns: 1fr; }
+    .b3, .b4, .b5, .b6, .b7, .b8, .b12 { grid-column: span 1; }
+    .two-col { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .rings { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<h1>MewHub V4 融合方案线框图</h1>
+<p class="subtitle">保持现有浅色视觉风格 + bento 网格 · 融入原方案 PM 成长功能 · 不删任何模块</p>
+
+<!-- ===================== 首页布局 ===================== -->
+<div class="section">
+  <div class="section-title">首页布局（桌面端 1280px）</div>
+  <p class="section-desc">所有现有模块保留，用 bento 12 列网格排列。新增 PM 教练、申请追踪、我的积累三个核心模块</p>
+
+  <div class="device">
+    <div class="device-header">
+      <span>MewHub 首页 - 融合方案</span>
+      <span class="device-tag">浅色 · Bento 网格</span>
+    </div>
+    <div class="device-body">
+
+      <!-- Hero 问候 -->
+      <div class="hero-banner">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="hi">Good evening, twcz1542</div>
+            <div class="sub">今日聚焦：完成耶鲁文书初稿 · 和 PM 教练分析一个产品案例</div>
+          </div>
+          <div style="font-size:13px;color:var(--text-tertiary);font-weight:500;">
+            2026/08/23 周日
+          </div>
+        </div>
+        <div class="hstats">
+          <div class="hstat"><div class="n">12</div><div class="t">产品案例</div></div>
+          <div class="hstat"><div class="n">15</div><div class="t">连续打卡天</div></div>
+          <div class="hstat"><div class="n">7.0</div><div class="t">IELTS 当前</div></div>
+          <div class="hstat"><div class="n">53</div><div class="t">距申请截止</div></div>
+        </div>
+      </div>
+
+      <!-- 核心功能区 -->
+      <div class="sec-grp">
+        <div class="bar"></div>
+        <div class="zh">核心成长</div>
+        <div class="en">CORE GROWTH</div>
+        <div class="line"></div>
+      </div>
+
+      <div class="bento">
+        <!-- PM 教练 - 全宽 -->
+        <div class="tile b12 pm-coach-tile">
+          <div class="tile-h">
+            <div class="tic">🧠</div>
+            <div class="tt">
+              <div class="en">PM COACH</div>
+              <div class="zh">PM 智能教练</div>
+            </div>
+            <div style="margin-left:auto;">
+              <span class="mod-tag new">新增</span>
+            </div>
+          </div>
+          <div class="quick-actions">
+            <div class="quick-btn">分析用户旅程</div>
+            <div class="quick-btn">Review PRD</div>
+            <div class="quick-btn">竞品分析</div>
+            <div class="quick-btn">模拟面试</div>
+            <div class="quick-btn">记录为案例</div>
+          </div>
+          <div class="chat-bubble">
+            💬 今天想聊点什么？可以直接发送消息，或点击上方快捷入口开始产品分析。
+          </div>
+          <div class="chat-input">
+            <input type="text" placeholder="描述一个产品或功能，让我帮你分析...">
+            <button class="send-btn">↑</button>
+          </div>
+        </div>
+
+        <!-- 申请追踪 - 7 列 -->
+        <div class="tile b7">
+          <div class="tile-h">
+            <div class="tic">🎯</div>
+            <div class="tt">
+              <div class="en">APPLICATION TRACKER</div>
+              <div class="zh">申请追踪</div>
+            </div>
+            <div style="margin-left:auto;">
+              <span class="mod-tag new">新增</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;flex:1;">
+            <div style="flex:1;">
+              <div style="font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:10px;">耶鲁 M2M · Round 1</div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-dot done"></div>
+                  <div class="timeline-date">已完成</div>
+                  <div class="timeline-text">选校方案</div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot active"></div>
+                  <div class="timeline-date">进行中</div>
+                  <div class="timeline-text">文书材料</div>
+                  <div class="timeline-note">初稿待修改 · 截止 8/15</div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date">待开始</div>
+                  <div class="timeline-text">网申提交</div>
+                </div>
+              </div>
+            </div>
+            <div style="width:140px;flex-shrink:0;">
+              <div style="font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:8px;">IELTS</div>
+              <div style="text-align:center;padding:16px;background:var(--surface-nested);border-radius:var(--radius-tile);border:1px solid var(--border);">
+                <div style="font-size:32px;font-weight:600;color:var(--accent);font-family:var(--font-mono);">7.0</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">目标 7.5</div>
+                <div style="height:4px;background:var(--border);border-radius:999px;margin-top:8px;overflow:hidden;">
+                  <div style="height:100%;width:70%;background:var(--accent);border-radius:999px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 我的积累 - 5 列 -->
+        <div class="tile b5">
+          <div class="tile-h">
+            <div class="tic">📚</div>
+            <div class="tt">
+              <div class="en">MY PROGRESS</div>
+              <div class="zh">我的积累</div>
+            </div>
+            <div style="margin-left:auto;">
+              <span class="mod-tag new">新增</span>
+            </div>
+          </div>
+          <div class="stats-row" style="margin-bottom:12px;">
+            <div class="stat-card" style="padding:14px 8px;">
+              <div class="stat-num" style="font-size:22px;">12</div>
+              <div class="stat-label">案例</div>
+            </div>
+            <div class="stat-card" style="padding:14px 8px;">
+              <div class="stat-num" style="font-size:22px;">15</div>
+              <div class="stat-label">打卡</div>
+            </div>
+            <div class="stat-card" style="padding:14px 8px;">
+              <div class="stat-num" style="font-size:22px;">8.5k</div>
+              <div class="stat-label">PRD 字</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:8px;">最近案例</div>
+          <div class="list-item" style="padding:8px 10px;margin-bottom:6px;">
+            <div class="list-body">
+              <div class="list-title" style="font-size:12px;">小红书「附近」功能分析</div>
+              <div class="list-meta">LBS 策略 · 8/20</div>
+            </div>
+            <div class="list-tag" style="font-size:10px;padding:2px 6px;">分析</div>
+          </div>
+          <div class="list-item" style="padding:8px 10px;margin-bottom:0;">
+            <div class="list-body">
+              <div class="list-title" style="font-size:12px;">美团外卖下单流程优化</div>
+              <div class="list-meta">A/B 测试 · 8/18</div>
+            </div>
+            <div class="list-tag" style="font-size:10px;padding:2px 6px;">PRD</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 日常效率区 -->
+      <div class="sec-grp">
+        <div class="bar"></div>
+        <div class="zh">日常效率</div>
+        <div class="en">DAILY EFFICIENCY</div>
+        <div class="line"></div>
+      </div>
+
+      <div class="bento">
+        <!-- 今日待办 - 5 列 -->
+        <div class="tile b5">
+          <div class="tile-h">
+            <div class="tic">⭐</div>
+            <div class="tt">
+              <div class="en">FOCUS</div>
+              <div class="zh">今日待办</div>
+            </div>
+            <div class="r">3/7</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="font-size:22px;font-weight:600;letter-spacing:-0.03em;">43%</div>
+            <div style="flex:1;height:6px;border-radius:999px;background:var(--border);overflow:hidden;">
+              <div style="height:100%;width:43%;background:var(--accent);border-radius:999px;"></div>
+            </div>
+          </div>
+          <div class="tk-row">
+            <div class="tk-chk"></div>
+            <div class="tk-name">完成耶鲁文书初稿</div>
+          </div>
+          <div class="tk-row">
+            <div class="tk-chk on">✓</div>
+            <div class="tk-name done">雅思听力练习</div>
+          </div>
+          <div class="tk-row">
+            <div class="tk-chk"></div>
+            <div class="tk-name">竞品分析报告</div>
+          </div>
+        </div>
+
+        <!-- 今日概览 rings - 7 列 -->
+        <div class="tile b7">
+          <div class="tile-h">
+            <div class="tic">📊</div>
+            <div class="tt">
+              <div class="en">OVERVIEW</div>
+              <div class="zh">今日概览</div>
+            </div>
+          </div>
+          <div class="rings">
+            <div class="ring">
+              <div class="dial">
+                <div class="mid">
+                  <div class="pct">100%</div>
+                </div>
+              </div>
+              <div class="lbl">打卡</div>
+              <div class="sub">4/4 项</div>
+            </div>
+            <div class="ring">
+              <div class="dial">
+                <div class="mid">
+                  <div class="pct">43%</div>
+                </div>
+              </div>
+              <div class="lbl">待办</div>
+              <div class="sub">3/7 项</div>
+            </div>
+            <div class="ring">
+              <div class="dial">
+                <div class="mid">
+                  <div class="pct">2</div>
+                </div>
+              </div>
+              <div class="lbl">阅读</div>
+              <div class="sub">页</div>
+            </div>
+            <div class="ring">
+              <div class="dial">
+                <div class="mid">
+                  <div class="pct">--</div>
+                </div>
+              </div>
+              <div class="lbl">运动</div>
+              <div class="sub">今日</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 现有模块区 -->
+      <div class="sec-grp">
+        <div class="bar"></div>
+        <div class="zh">现有模块</div>
+        <div class="en">EXISTING MODULES</div>
+        <div class="line"></div>
+      </div>
+
+      <div class="bento">
+        <!-- 番茄钟 - 4 列 -->
+        <div class="tile b4">
+          <div class="tile-h">
+            <div class="tic">🍅</div>
+            <div class="tt">
+              <div class="en">POMODORO</div>
+              <div class="zh">番茄钟</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div style="text-align:center;padding:20px 0;">
+            <div style="width:100px;height:100px;border:4px solid var(--border);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;">
+              <div style="font-size:28px;font-weight:600;font-family:var(--font-mono);">25:00</div>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:center;margin-top:16px;">
+              <div style="padding:6px 16px;border:1px solid var(--border);border-radius:var(--radius-control);font-size:13px;font-weight:600;background:var(--surface-card);">开始</div>
+              <div style="padding:6px 16px;border:1px solid var(--border);border-radius:var(--radius-control);font-size:13px;font-weight:600;background:var(--accent);color:#fff;">暂停</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 心情趋势 - 4 列 -->
+        <div class="tile b4">
+          <div class="tile-h">
+            <div class="tic">😊</div>
+            <div class="tt">
+              <div class="en">MOOD</div>
+              <div class="zh">心情趋势</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div class="chart-placeholder" style="height:100px;">
+            <div class="chart-bar" style="height:60%;" data-val="4"></div>
+            <div class="chart-bar" style="height:80%;" data-val="5"></div>
+            <div class="chart-bar" style="height:70%;" data-val="4"></div>
+            <div class="chart-bar" style="height:90%;" data-val="5"></div>
+            <div class="chart-bar" style="height:75%;" data-val="4"></div>
+            <div class="chart-bar" style="height:85%;" data-val="5"></div>
+            <div class="chart-bar" style="height:80%;" data-val="5"></div>
+          </div>
+        </div>
+
+        <!-- 记账 - 4 列 -->
+        <div class="tile b4">
+          <div class="tile-h">
+            <div class="tic">💰</div>
+            <div class="tt">
+              <div class="en">FINANCE</div>
+              <div class="zh">记账</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+            <div style="font-size:26px;font-weight:600;letter-spacing:-0.03em;">¥1,240</div>
+            <div style="font-size:11px;color:var(--text-secondary);">本月支出</div>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);font-weight:500;">预算剩余 ¥760</div>
+        </div>
+
+        <!-- 习惯打卡 - 6 列 -->
+        <div class="tile b6">
+          <div class="tile-h">
+            <div class="tic">✅</div>
+            <div class="tt">
+              <div class="en">HABITS</div>
+              <div class="zh">习惯打卡</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="focus-row">
+              <div class="fic">📖</div>
+              <div class="ft">
+                <div class="fn">每日阅读</div>
+                <div class="fm">连续 12 天</div>
+              </div>
+              <div style="margin-left:auto;font-size:12px;font-weight:600;color:var(--success);">✓ 已打卡</div>
+            </div>
+            <div class="focus-row">
+              <div class="fic">🏃</div>
+              <div class="ft">
+                <div class="fn">运动 30min</div>
+                <div class="fm">连续 3 天</div>
+              </div>
+              <div style="margin-left:auto;font-size:12px;font-weight:600;color:var(--text-tertiary);">○ 未打卡</div>
+            </div>
+            <div class="focus-row">
+              <div class="fic">🧠</div>
+              <div class="ft">
+                <div class="fn">产品分析</div>
+                <div class="fm">连续 5 天</div>
+              </div>
+              <div style="margin-left:auto;font-size:12px;font-weight:600;color:var(--success);">✓ 已打卡</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 阅读 - 6 列 -->
+        <div class="tile b6">
+          <div class="tile-h">
+            <div class="tic">📚</div>
+            <div class="tt">
+              <div class="en">READING</div>
+              <div class="zh">阅读</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:34px;height:46px;border-radius:5px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;">书</div>
+              <div style="flex:1;">
+                <div style="font-size:13.5px;font-weight:700;">人人都是产品经理</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">苏杰 · 65%</div>
+                <div style="height:5px;border-radius:999px;background:var(--border);overflow:hidden;margin-top:6px;">
+                  <div style="height:100%;width:65%;background:var(--accent);border-radius:999px;"></div>
+                </div>
+              </div>
+              <div style="font-size:14px;font-weight:600;flex-shrink:0;">65%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 雅思备考 - 6 列 -->
+        <div class="tile b6">
+          <div class="tile-h">
+            <div class="tic">📝</div>
+            <div class="tt">
+              <div class="en">IELTS</div>
+              <div class="zh">雅思备考</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;">
+            <div style="text-align:center;">
+              <div style="width:70px;height:70px;border:3px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <div>
+                  <div style="font-size:18px;font-weight:600;">7.0</div>
+                  <div style="font-size:9px;color:var(--text-secondary);">当前</div>
+                </div>
+              </div>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                <span style="font-weight:600;">听力</span><span>7.5</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                <span style="font-weight:600;">阅读</span><span>7.0</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                <span style="font-weight:600;">写作</span><span>6.5</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;">
+                <span style="font-weight:600;">口语</span><span>7.0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 项目进度 - 6 列 -->
+        <div class="tile b6">
+          <div class="tile-h">
+            <div class="tic">🚀</div>
+            <div class="tt">
+              <div class="en">PROJECTS</div>
+              <div class="zh">项目进度</div>
+            </div>
+            <div style="margin-left:auto;"><span class="mod-tag keep">保留</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">
+                <span>碳智优 IoT 平台</span><span>78%</span>
+              </div>
+              <div style="height:7px;border-radius:999px;background:var(--border);overflow:hidden;">
+                <div style="height:100%;width:78%;background:var(--accent);border-radius:999px;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">
+                <span>喵星人商城</span><span>45%</span>
+              </div>
+              <div style="height:7px;border-radius:999px;background:var(--border);overflow:hidden;">
+                <div style="height:100%;width:45%;background:var(--warning);border-radius:999px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">融合方案原则</div>
+        <b>视觉</b>：完全沿用现有浅色主题、Inter 字体、bento 12 列网格、白色卡片 + 灰色边框。<br>
+        <b>功能</b>：新增 PM 教练、申请追踪、我的积累三个核心模块（蓝色标签）。<br>
+        <b>现有模块</b>：番茄钟、心情、记账、习惯、阅读、IELTS、项目进度全部保留（绿色标签），位置后移但功能不变。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PM 教练对话面板 ===================== -->
+<div class="section">
+  <div class="section-title">PM 教练对话面板（点击首页 PM 教练瓷砖展开）</div>
+  <p class="section-desc">全屏面板，保持现有面板系统风格。SSE 流式输出 + 结构化回复 + 快捷操作</p>
+
+  <div class="device" style="max-width: 700px; margin: 0 auto;">
+    <div class="device-header">
+      <span>PM 智能教练面板</span>
+      <span class="device-tag">新增面板</span>
+    </div>
+    <div class="device-body">
+      <!-- Agent 切换 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div style="padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;background:var(--accent);color:#fff;border:1px solid var(--accent);">🧠 PM 教练</div>
+        <div style="padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;background:var(--surface-card);border:1px solid var(--border);color:var(--text-secondary);">📋 申请管家</div>
+        <div style="padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;background:var(--surface-card);border:1px solid var(--border);color:var(--text-tertiary);">🎤 面试陪练 (预留)</div>
+      </div>
+
+      <!-- 快捷入口 -->
+      <div class="quick-actions">
+        <div class="quick-btn">分析用户旅程</div>
+        <div class="quick-btn">Review PRD</div>
+        <div class="quick-btn">竞品分析</div>
+        <div class="quick-btn">模拟面试</div>
+        <div class="quick-btn">记录为案例</div>
+      </div>
+
+      <!-- 对话区 -->
+      <div style="background:var(--surface-nested);border:1px solid var(--border);border-radius:var(--radius-card);padding:16px;min-height:300px;margin-bottom:16px;">
+        <!-- AI -->
+        <div style="display:flex;gap:10px;margin-bottom:16px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0;">🧠</div>
+          <div style="max-width:75%;">
+            <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:12px 12px 12px 4px;padding:10px 14px;font-size:13px;line-height:1.7;">
+              你好！我是你的 PM 成长教练。今天想聊点什么？可以发一个产品让我分析，或者描述一个需求帮你梳理 PRD。
+            </div>
+          </div>
+        </div>
+
+        <!-- 用户 -->
+        <div style="display:flex;gap:10px;margin-bottom:16px;justify-content:flex-end;">
+          <div style="max-width:75%;">
+            <div style="background:var(--accent);color:#fff;border-radius:12px 12px 4px 12px;padding:10px 14px;font-size:13px;">
+              帮我分析小红书的「附近」功能
+            </div>
+          </div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--surface-nested);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">👤</div>
+        </div>
+
+        <!-- AI 结构化回复 -->
+        <div style="display:flex;gap:10px;margin-bottom:16px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0;">🧠</div>
+          <div style="max-width:80%;">
+            <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:12px 12px 12px 4px;padding:12px 16px;font-size:13px;line-height:1.7;">
+              <div style="font-weight:700;margin-bottom:10px;font-size:14px;">「附近」功能分析</div>
+              <div style="background:var(--surface-nested);border:1px solid var(--border);border-radius:var(--radius-control);padding:10px 12px;margin-bottom:10px;font-size:12px;">
+                <div style="font-weight:600;color:var(--accent);margin-bottom:6px;">用户-场景-需求-方案-指标</div>
+                👤 <b>用户</b>：有本地生活探索需求的年轻群体<br>
+                📍 <b>场景</b>：在陌生城市/社区寻找附近好去处<br>
+                🎯 <b>需求</b>：发现附近 POI + 看真实评价 + 路线导航<br>
+                💡 <b>方案</b>：LBS 信息流 + 兴趣标签筛选 + 地图模式<br>
+                📊 <b>指标</b>：附近页渗透率、POI 点击率、到店转化率
+              </div>
+              <div style="font-size:12px;color:var(--text-secondary);font-weight:500;">
+                💡 关键洞察：小红书用「内容+位置」双引擎驱动，区别于纯工具类地图应用。
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <span style="font-size:11px;padding:4px 10px;background:var(--accent-muted);color:var(--accent);border-radius:var(--radius-control);font-weight:600;cursor:pointer;border:1px solid var(--border);">📥 保存为案例</span>
+                <span style="font-size:11px;padding:4px 10px;background:var(--surface-nested);border-radius:var(--radius-control);font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--text-secondary);">🔄 继续深挖</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 输入框 -->
+      <div class="chat-input">
+        <input type="text" placeholder="输入消息..." style="font-size:14px;">
+        <button class="send-btn">↑</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 我的积累面板 ===================== -->
+<div class="section">
+  <div class="section-title">我的积累面板（点击首页"我的积累"瓷砖展开）</div>
+
+  <div class="device" style="max-width: 700px; margin: 0 auto;">
+    <div class="device-header">
+      <span>我的积累</span>
+      <span class="device-tag">新增面板</span>
+    </div>
+    <div class="device-body">
+      <!-- 统计 -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">12</div>
+          <div class="stat-label">产品案例</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">86</div>
+          <div class="stat-label">打卡天数</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">8.5k</div>
+          <div class="stat-label">PRD 累计字</div>
+        </div>
+      </div>
+
+      <!-- 热力图 -->
+      <div class="tile" style="margin-bottom:16px;">
+        <div class="tile-h">
+          <div class="tic">🔥</div>
+          <div class="tt">
+            <div class="en">ACTIVITY</div>
+            <div class="zh">打卡热力图</div>
+          </div>
+        </div>
+        <div class="heatmap">
+          <script>
+            const levels = ['', 'l1', 'l2', 'l3', 'l4'];
+            for (let i = 0; i < 84; i++) {
+              const lvl = Math.random() > 0.3 ? levels[Math.floor(Math.random() * 4) + 1] : '';
+              document.write(`<div class="heat-cell ${lvl}"></div>`);
+            }
+          </script>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--text-secondary);">
+          <span>少</span>
+          <div style="display:flex;gap:3px;">
+            <div class="heat-cell" style="width:10px;height:10px;"></div>
+            <div class="heat-cell l1" style="width:10px;height:10px;"></div>
+            <div class="heat-cell l2" style="width:10px;height:10px;"></div>
+            <div class="heat-cell l3" style="width:10px;height:10px;"></div>
+            <div class="heat-cell l4" style="width:10px;height:10px;"></div>
+          </div>
+          <span>多</span>
+          <span style="margin-left:auto;">最近 12 周</span>
+        </div>
+      </div>
+
+      <!-- 案例列表 -->
+      <div class="tile">
+        <div class="tile-h">
+          <div class="tic">📁</div>
+          <div class="tt">
+            <div class="en">CASE LIBRARY</div>
+            <div class="zh">产品案例库</div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">📱</div>
+          <div class="list-body">
+            <div class="list-title">小红书「附近」功能分析</div>
+            <div class="list-meta">S: 用户需要本地生活信息 → T: 分析附近页交互 → A: 拆解信息架构 → R: 发现LBS推荐策略</div>
+          </div>
+          <div class="list-tag">产品分析</div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">🛒</div>
+          <div class="list-body">
+            <div class="list-title">美团外卖下单流程优化</div>
+            <div class="list-meta">S: 下单转化率低 → T: 优化结算页 → A: A/B测试 → R: 转化率提升12%</div>
+          </div>
+          <div class="list-tag">PRD</div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">🎵</div>
+          <div class="list-body">
+            <div class="list-title">抖音 vs 快手推荐算法对比</div>
+            <div class="list-meta">兴趣图谱 vs 社交图谱分发策略差异</div>
+          </div>
+          <div class="list-tag">竞品</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 申请追踪面板 ===================== -->
+<div class="section">
+  <div class="section-title">申请追踪面板（点击首页"申请追踪"瓷砖展开）</div>
+
+  <div class="device" style="max-width: 700px; margin: 0 auto;">
+    <div class="device-header">
+      <span>申请追踪</span>
+      <span class="device-tag">新增面板</span>
+    </div>
+    <div class="device-body">
+      <!-- 学校卡片 -->
+      <div class="tile" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--surface-nested);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;">🎓</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;">耶鲁 M2M</div>
+            <div style="font-size:12px;color:var(--text-secondary);font-weight:500;">Management & Technology · Round 1</div>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:20px;font-weight:700;color:var(--warning);">进行中</div>
+            <div style="font-size:11px;color:var(--text-secondary);font-weight:500;">材料准备阶段</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span style="font-size:11px;padding:3px 10px;background:#fffbeb;color:var(--warning);border-radius:var(--radius-control);font-weight:600;border:1px solid #fde68a;">⏰ 截止: 2025-09-15</span>
+          <span style="font-size:11px;padding:3px 10px;background:var(--accent-muted);color:var(--accent);border-radius:var(--radius-control);font-weight:600;border:1px solid var(--border);">📝 文书撰写中</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- 时间线 -->
+        <div class="tile">
+          <div class="tile-h">
+            <div class="tic">📍</div>
+            <div class="tt">
+              <div class="en">TIMELINE</div>
+              <div class="zh">申请进度</div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot done"></div>
+              <div class="timeline-date">2025-06</div>
+              <div class="timeline-text">选校定项</div>
+              <div class="timeline-note">耶鲁 M2M / LBS MFA</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot active"></div>
+              <div class="timeline-date">2025-08-15</div>
+              <div class="timeline-text">材料准备</div>
+              <div class="timeline-note">文书初稿 / 推荐信</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">2025-09-15</div>
+              <div class="timeline-text">网申提交</div>
+              <div class="timeline-note">耶鲁 Round 1 截止</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">2025-11</div>
+              <div class="timeline-text">面试准备</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">2026-01</div>
+              <div class="timeline-text">录取决策</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IELTS 趋势 -->
+        <div class="tile">
+          <div class="tile-h">
+            <div class="tic">📈</div>
+            <div class="tt">
+              <div class="en">IELTS TREND</div>
+              <div class="zh">分数趋势</div>
+            </div>
+          </div>
+          <div class="chart-placeholder" style="height:120px;">
+            <div class="chart-bar" style="height:40%;opacity:0.4;" data-val="6.0"></div>
+            <div class="chart-bar" style="height:40%;opacity:0.

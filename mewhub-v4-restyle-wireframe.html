@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MewHub V4 重构线框图 · 原方案功能 + 现有样式</title>
+<style>
+  /* ========== 现有样式系统（从 index.html 复制） ========== */
+  :root {
+    --page-bg: #ffffff;
+    --surface-card: #ffffff;
+    --surface-nested: #f9fafb;
+    --border: #e5e7eb;
+    --border-input: #d1d5db;
+    --text: #111827;
+    --text-secondary: #4b5563;
+    --text-tertiary: #9ca3af;
+    --brand-50: #f8fafc;
+    --brand-100: #f1f5f9;
+    --brand-500: #64748b;
+    --brand-600: #475569;
+    --brand-700: #334155;
+    --accent: #475569;
+    --accent-muted: #f8fafc;
+    --on-accent: #ffffff;
+    --danger: #ef4444;
+    --danger-muted: #fef2f2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --radius-sm: 6px;
+    --radius-control: 8px;
+    --radius-tile: 12px;
+    --radius-card: 16px;
+    --radius-lg: 16px;
+    --shadow-card: none;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono: 'JetBrains Mono', "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font); background: var(--page-bg); color: var(--text);
+    font-size: 14px; line-height: 1.5; padding: 30px 20px;
+  }
+
+  /* ========== 线框图展示布局 ========== */
+  .wf-wrap { max-width: 1280px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .subtitle { text-align: center; color: var(--text-secondary); font-size: 13px; margin-bottom: 40px; font-weight: 500; }
+  .section { margin-bottom: 50px; }
+  .section-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding-bottom: 6px; border-bottom: 2px solid var(--accent);
+  }
+  .section-desc { color: var(--text-secondary); font-size: 12.5px; margin-bottom: 20px; margin-top: -10px; font-weight: 500; }
+
+  /* ========== 模拟设备 ========== */
+  .device {
+    background: var(--page-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-card); overflow: hidden; margin-bottom: 24px;
+  }
+  .device-header {
+    background: var(--surface-nested); padding: 10px 18px;
+    font-size: 12px; font-weight: 600; color: var(--accent);
+    border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+  }
+  .device-tag { background: var(--accent); color: #fff; padding: 2px 8px; border-radius: var(--radius-sm); font-size: 10.5px; font-weight: 600; }
+  .device-body { padding: 24px; }
+
+  /* ========== Sidebar（左侧导航） ========== */
+  .mock-sidebar {
+    width: 220px; background: var(--surface-nested); border-right: 1px solid var(--border);
+    padding: 20px 14px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .mock-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 0 4px; }
+  .mock-ava { width: 34px; height: 34px; border-radius: var(--radius-control); background: var(--surface-card); border: 1px solid var(--border); }
+  .mock-brand h3 { font-size: 14px; font-weight: 600; }
+  .mock-brand p { font-size: 10.5px; color: var(--text-tertiary); font-weight: 500; }
+  .mock-nav { padding: 8px 10px; border-radius: var(--radius-control); font-size: 12.5px; font-weight: 500; color: var(--text-secondary); cursor: pointer; }
+  .mock-nav:hover { background: var(--drawer-hover); color: var(--text); }
+  .mock-nav.active { background: var(--accent-muted); color: var(--accent); font-weight: 600; }
+  .mock-sep { font-size: 10px; color: var(--text-tertiary); padding: 14px 10px 6px; letter-spacing: 0.08em; font-weight: 600; text-transform: uppercase; }
+
+  /* ========== Tab 导航栏 ========== */
+  .tab-bar {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;
+  }
+  .tab {
+    padding: 10px 20px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: all .12s; display: flex; align-items: center; gap: 6px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab .badge {
+    background: var(--accent-muted); color: var(--accent); font-size: 10px; font-weight: 700;
+    padding: 1px 6px; border-radius: 999px; border: 1px solid var(--border);
+  }
+
+  /* ========== 通用组件 ========== */
+  .card {
+    background: var(--surface-card); border: 1px solid var(--border);
+    border-radius: var(--radius-card); padding: 18px;
+  }
+  .card-h {
+    display: flex; align-items: center; gap: 9px; margin-bottom: 14px;
+  }
+  .card-h .icon {
+    width: 30px; height: 30px; border-radius: var(--radius-control);
+    background: var(--accent-muted); display: grid; place-items: center;
+    font-size: 14px; color: var(--accent);
+  }
+  .card-h .tt { font-size: 14px; font-weight: 700; }
+  .card-h .sub { margin-left: auto; font-size: 11.5px; color: var(--text-secondary); font-weight: 500; }
+
+  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+  .b3 { grid-column: span 3; }
+  .b4 { grid-column: span 4; }
+  .b5 { grid-column: span 5; }
+  .b6 { grid-column: span 6; }
+  .b7 { grid-column: span 7; }
+  .b8 { grid-column: span 8; }
+  .b12 { grid-column: span 12; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+  }
+  .tag-green { background: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; }
+  .tag-blue { background: var(--accent-muted); color: var(--accent); border: 1px solid var(--border); }
+  .tag-orange { background: #fffbeb; color: var(--warning); border: 1px solid #fde68a; }
+  .tag-gray { background: var(--surface-nested); color: var(--text-secondary); border: 1px solid var(--border); }
+
+  /* ========== PM 对话区 ========== */
+  .chat-area {
+    border: 1px solid var(--border); border-radius: var(--radius-card);
+    background: var(--surface-nested); min-height: 340px; display: flex; flex-direction: column;
+  }
+  .chat-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; background: var(--surface-card);
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+  }
+  .chat-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-muted); border: 1px solid var(--border); display: grid; place-items: center; font-size: 14px; }
+  .chat-meta { flex: 1; }
+  .chat-meta .name { font-size: 13.5px; font-weight: 700; }
+  .chat-meta .status { font-size: 11px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .chat-msgs { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+  .msg-user, .msg-ai { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+  .msg-user { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-radius: 12px 12px 4px 12px; }
+  .msg-ai { align-self: flex-start; background: var(--surface-card); border: 1px solid var(--border); border-radius: 12px 12px 12px 4px; }
+  .chat-input {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px; background: var(--surface-card);
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
+  }
+  .chat-input .inp {
+    flex: 1; border: 1px solid var(--border); border-radius: var(--radius-control);
+    padding: 8px 12px; font-size: 13px; background: var(--surface-nested); color: var(--text);
+  }
+  .chat-input .btn {
+    background: var(--accent); color: var(--on-accent); border: none;
+    padding: 8px 16px; border-radius: var(--radius-control); font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .quick-actions {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .qact {
+    background: var(--surface-card); border: 1px solid var(--border);
+    padding: 5px 10px; border-radius: var(--radius-control); font-size: 11.5px; font-weight: 600;
+    color: var(--text-secondary); cursor: pointer;
+  }
+  .qact:hover { border-color: var(--border-input); color: var(--text); }
+
+  /* ========== 申请时间线 ========== */
+  .timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--border); border-radius: 1px;
+  }
+  .tl-item { position: relative; padding: 10px 0 16px; }
+  .tl-dot {
+    position: absolute; left: -20px; top: 13px; width: 10px; height: 10px;
+    border-radius: 50%; border: 2px solid var(--border); background: var(--surface-card);
+  }
+  .tl-dot.done { background: var(--success); border-color: var(--success); }
+  .tl-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-muted); }
+  .tl-title { font-size: 13px; font-weight: 700; }
+  .tl-status { font-size: 11.5px; color: var(--text-secondary); font-weight: 500; margin-top: 2px; }
+  .tl-date { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; font-weight: 500; }
+
+  /* ========== 材料清单 ========== */
+  .checklist { display: flex; flex-direction: column; gap: 6px; }
+  .ck-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+    border-radius: var(--radius-control); background: var(--surface-nested); font-size: 12.5px;
+  }
+  .ck-box { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 4px; flex: 0 0 auto; }
+  .ck-box.done { background: var(--success); border-color: var(--success); }
+  .ck-name { flex: 1; font-weight: 500; }
+  .ck-name.done { text-decoration: line-through; color: var(--text-tertiary); }
+  .ck-tag { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; }
+
+  /* ========== 统计卡片 ========== */
+  .stat-card {
+    background: var(--surface-card); border: 1px solid var(--border);
+    border-radius: var(--radius-card); padding: 18px; text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; font-family: var(--font-mono); color: var(--text); }
+  .stat-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; margin-top: 4px; }
+  .stat-trend { font-size: 11px; color: var(--success); font-weight: 600; margin-top: 4px; }
+
+  /* ========== 热力图 ========== */
+  .heatmap { display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px; }
+  .hm-cell { aspect-ratio: 1; border-radius: 3px; background: var(--surface-nested); }
+  .hm-cell.l1 { background: #dcfce7; }
+  .hm-cell.l2 { background: #86efac; }
+  .hm-cell.l3 { background: #22c55e; }
+
+  /* ========== 案例列表 ========== */
+  .case-item {
+    padding: 10px 12px; border-radius: var(--radius-control);
+    border: 1px solid var(--border); background: var(--surface-card); margin-bottom: 8px;
+  }
+  .case-title { font-size: 13px; font-weight: 700; }
+  .case-insight { font-size: 11.5px; color: var(--text-secondary); margin-top: 3px; font-weight: 500; }
+  .case-meta { display: flex; gap: 6px; margin-top: 6px; }
+
+  /* ========== 雅思分数图 ========== */
+  .ielts-chart {
+    height: 140px; background: var(--surface-nested); border-radius: var(--radius-control);
+    display: flex; align-items: flex-end; justify-content: space-around; padding: 16px 12px 8px;
+    gap: 8px;
+  }
+  .iel-bar {
+    flex: 1; background: var(--accent); border-radius: 4px 4px 0 0;
+    opacity: 0.8; position: relative;
+  }
+  .iel-bar::after {
+    content: attr(data-score); position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; font-weight: 700; color: var(--text);
+  }
+
+  /* ========== 模块快捷入口 ========== */
+  .mod-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .mod-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px; border-radius: var(--radius-control);
+    background: var(--surface-nested); border: 1px solid var(--border); cursor: pointer;
+  }
+  .mod-item:hover { border-color: var(--border-input); }
+  .mod-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface-card); border: 1px solid var(--border); display: grid; place-items: center; font-size: 14px; flex: 0 0 auto; }
+  .mod-info { min-width: 0; }
+  .mod-name { font-size: 12.5px; font-weight: 700; }
+  .mod-desc { font-size: 10.5px; color: var(--text-secondary); font-weight: 500; }
+
+  /* ========== 布局辅助 ========== */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .gap-4 { gap: 4px; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .flex-1 { flex: 1; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mb-12 { margin-bottom: 12px; }
+  .text-xs { font-size: 11px; }
+  .text-sm { font-size: 12.5px; }
+  .text-tertiary { color: var(--text-tertiary); }
+  .text-secondary { color: var(--text-secondary); }
+  .font-mono { font-family: var(--font-mono); }
+  .font-bold { font-weight: 700; }
+  .w-full { width: 100%; }
+
+  /* ========== 标注 ========== */
+  .anno {
+    background: #fefce8; border: 1px solid #fde68a; color: #854d0e;
+    padding: 10px 14px; border-radius: var(--radius-control); font-size: 12px; font-weight: 500; margin-bottom: 16px;
+  }
+  .anno strong { color: #713f12; }
+
+  /* ========== 响应式 ========== */
+  @media (max-width: 900px) {
+    .bento { grid-template-columns: repeat(4, 1fr); }
+    .b3, .b4, .b5, .b6, .b7, .b8 { grid-column: span 4; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wf-wrap">
+  <h1>MewHub V4 重构线框图</h1>
+  <p class="subtitle">原方案功能架构 · 现有浅色样式 · 保留全部模块</p>
+
+  <!-- ====== 设计说明 ====== -->
+  <div class="section">
+    <div class="section-title">设计说明</div>
+    <p class="section-desc">保持现有浅色主题、Inter 字体、卡片样式不变，将原方案的 3 Tab 结构映射到现有 sidebar 导航中</p>
+    <div class="anno">
+      <strong>重构原则：</strong>1) 视觉样式 100% 复用现有 CSS 变量；2) 保留全部 6 个现有 Agent/模块；3) 新增 PM 教练 + 申请管家；4) 用 3 个主 Tab 重新组织信息架构
+    </div>
+  </div>
+
+  <!-- ====== Tab 1: PM 成长 ====== -->
+  <div class="section">
+    <div class="section-title">
+      <span style="font-size:18px;">💬</span> Tab 1：PM 成长
+      <span style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-left:8px;">原方案核心 · 每日使用</span>
+    </div>
+    <p class="section-desc">PM 教练对话区 + 现有模块快捷入口（选题编辑、生活记者、财经编辑、书评人）</p>
+
+    <div class="device">
+      <div class="device-header">
+        <span>PM 成长页面 · 浅色主题 · Inter 字体</span>
+        <span class="device-tag">Tab 1</span>
+      </div>
+      <div class="device-body">
+        <!-- Tab 导航 -->
+        <div class="tab-bar">
+          <div class="tab active">💬 PM 成长</div>
+          <div class="tab">🎓 申请追踪 <span class="badge">2</span></div>
+          <div class="tab">📊 数据中心</div>
+        </div>
+
+        <div class="bento">
+          <!-- 左侧：PM 教练对话区 (占8列) -->
+          <div class="b8">
+            <div class="chat-area">
+              <div class="chat-header">
+                <div class="chat-avatar">🎯</div>
+                <div class="chat-meta">
+                  <div class="name">PM 成长教练</div>
+                  <div class="status"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span> 在线</div>
+                </div>
+                <div style="margin-left:auto;">
+                  <select style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 8px;font-size:11.5px;background:var(--surface-nested);color:var(--text);">
+                    <option>PM 教练</option>
+                    <option>申请管家</option>
+                  </select>
+                </div>
+              </div>
+              <div class="chat-msgs">
+                <div class="msg-ai">
+                  <strong>PM 教练：</strong>你好！今天想练哪类产品题？<br><br>
+                  你可以：
+                  <br>• 发一个产品让我分析（如"小红书推荐算法"）
+                  <br>• 描述一个需求，我帮你梳理 PRD
+                  <br>• 选两个产品做竞品对比
+                </div>
+                <div class="msg-user">帮我分析一下抖音的评论区设计</div>
+                <div class="msg-ai">
+                  <strong>分析框架：用户-场景-需求-方案-指标</strong><br><br>
+                  <strong>用户：</strong>内容消费者、创作者<br>
+                  <strong>场景：</strong>看完视频后的互动决策点<br>
+                  <strong>需求：</strong>表达认同、寻求共鸣、获取信息<br>
+                  ...
+                </div>
+              </div>
+              <div class="quick-actions" style="padding:0 16px;">
+                <span class="qact">📋 分析这个产品</span>
+                <span class="qact">📝 帮我写 PRD</span>
+                <span class="qact">⚖️ 竞品对比</span>
+                <span class="qact">⭐ 记录为案例</span>
+                <span class="qact">📤 归档到 Notion</span>
+              </div>
+              <div class="chat-input">
+                <input class="inp" placeholder="和 PM 教练对话，或输入产品名开始分析..." />
+                <button class="btn">发送</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：模块快捷入口 + 今日聚焦 (占4列) -->
+          <div class="b4" style="display:flex;flex-direction:column;gap:14px;">
+            <!-- 现有模块快捷入口 -->
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">🧩</div>
+                <div class="tt">工具箱</div>
+                <span class="tag tag-gray">保留模块</span>
+              </div>
+              <div class="mod-grid">
+                <div class="mod-item">
+                  <div class="mod-icon">✏️</div>
+                  <div class="mod-info">
+                    <div class="mod-name">选题编辑</div>
+                    <div class="mod-desc">待办/任务管理</div>
+                  </div>
+                </div>
+                <div class="mod-item">
+                  <div class="mod-icon">📷</div>
+                  <div class="mod-info">
+                    <div class="mod-name">生活记者</div>
+                    <div class="mod-desc">习惯/打卡</div>
+                  </div>
+                </div>
+                <div class="mod-item">
+                  <div class="mod-icon">💰</div>
+                  <div class="mod-info">
+                    <div class="mod-name">财经编辑</div>
+                    <div class="mod-desc">财务分析</div>
+                  </div>
+                </div>
+                <div class="mod-item">
+                  <div class="mod-icon">📚</div>
+                  <div class="mod-info">
+                    <div class="mod-name">书评人</div>
+                    <div class="mod-desc">阅读管理</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 今日聚焦 -->
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">⭐</div>
+                <div class="tt">今日聚焦</div>
+              </div>
+              <div style="font-size:12.5px;color:var(--text-secondary);font-weight:500;line-height:1.6;">
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--warning);">○</span> 完成雅思听力模考
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--warning);">○</span> 分析一个社交产品功能
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 0;">
+                  <span style="color:var(--success);">●</span> 背单词 50 个
+                </div>
+              </div>
+            </div>
+
+            <!-- 快速统计 -->
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">📈</div>
+                <div class="tt">本周进度</div>
+              </div>
+              <div style="display:flex;gap:12px;">
+                <div style="flex:1;text-align:center;">
+                  <div style="font-size:20px;font-weight:700;font-family:var(--font-mono);">3</div>
+                  <div style="font-size:11px;color:var(--text-secondary);font-weight:500;">产品分析</div>
+                </div>
+                <div style="flex:1;text-align:center;">
+                  <div style="font-size:20px;font-weight:700;font-family:var(--font-mono);">5</div>
+                  <div style="font-size:11px;color:var(--text-secondary);font-weight:500;">连续打卡</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Tab 2: 申请追踪 ====== -->
+  <div class="section">
+    <div class="section-title">
+      <span style="font-size:18px;">🎓</span> Tab 2：申请追踪
+      <span style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-left:8px;">留学进度 · 被动监督</span>
+    </div>
+    <p class="section-desc">申请时间线 + 雅思分数趋势 + 材料清单 + 雅思教练</p>
+
+    <div class="device">
+      <div class="device-header">
+        <span>申请追踪页面 · 浅色主题 · Inter 字体</span>
+        <span class="device-tag">Tab 2</span>
+      </div>
+      <div class="device-body">
+        <div class="tab-bar">
+          <div class="tab">💬 PM 成长</div>
+          <div class="tab active">🎓 申请追踪 <span class="badge">2</span></div>
+          <div class="tab">📊 数据中心</div>
+        </div>
+
+        <div class="bento">
+          <!-- 学校概览 -->
+          <div class="b12" style="margin-bottom:4px;">
+            <div class="card" style="display:flex;align-items:center;gap:20px;padding:14px 18px;">
+              <div style="font-size:28px;">🏫</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;">目标学校：香港科技大学 · MSc Information Systems</div>
+                <div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:2px;">申请季：2026 Fall · 中介：XX留学</div>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <span class="tag tag-blue">申请中</span>
+                <span class="tag tag-orange">待提交文书</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 申请时间线 (占4列) -->
+          <div class="b4">
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">📍</div>
+                <div class="tt">申请进度</div>
+                <span class="tag tag-green">2/5 完成</span>
+              </div>
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-dot done"></div>
+                  <div class="tl-title">选校方案</div>
+                  <div class="tl-status" style="color:var(--success);">✓ 已确认</div>
+                  <div class="tl-date">2026-07-15</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot active"></div>
+                  <div class="tl-title">文书材料</div>
+                  <div class="tl-status" style="color:var(--accent);">● 撰写中</div>
+                  <div class="tl-date">截止：2026-09-01</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-title">网申提交</div>
+                  <div class="tl-status">○ 未开始</div>
+                  <div class="tl-date">预计：2026-10-15</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-title">面试</div>
+                  <div class="tl-status">○ 未开始</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-title">签证</div>
+                  <div class="tl-status">○ 未开始</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 雅思分数 (占4列) -->
+          <div class="b4">
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">📊</div>
+                <div class="tt">雅思趋势</div>
+                <span class="tag tag-blue">保留模块</span>
+              </div>
+              <div class="ielts-chart">
+                <div class="iel-bar" style="height:60%;" data-score="6.0"></div>
+                <div class="iel-bar" style="height:60%;" data-score="6.0"></div>
+                <div class="iel-bar" style="height:75%;" data-score="6.5"></div>
+                <div class="iel-bar" style="height:75%;opacity:0.4;" data-score="?"></div>
+              </div>
+              <div style="display:flex;justify-content:space-around;margin-top:8px;font-size:10.5px;color:var(--text-tertiary);font-weight:500;">
+                <span>6月</span><span>7月</span><span>8月</span><span>目标</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <div style="flex:1;text-align:center;padding:8px;background:var(--surface-nested);border-radius:var(--radius-sm);">
+                  <div style="font-size:16px;font-weight:700;font-family:var(--font-mono);">6.5</div>
+                  <div style="font-size:10px;color:var(--text-secondary);font-weight:500;">当前总分</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:8px;background:var(--surface-nested);border-radius:var(--radius-sm);">
+                  <div style="font-size:16px;font-weight:700;font-family:var(--font-mono);">7.0</div>
+                  <div style="font-size:10px;color:var(--text-secondary);font-weight:500;">目标分数</div>
+                </div>
+              </div>
+              <button style="width:100%;margin-top:10px;padding:7px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-card);font-size:12px;font-weight:600;color:var(--text);cursor:pointer;">+ 添加分数</button>
+            </div>
+          </div>
+
+          <!-- 材料清单 (占4列) -->
+          <div class="b4">
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">📋</div>
+                <div class="tt">材料清单</div>
+                <span class="tag tag-green">4/8 完成</span>
+              </div>
+              <div class="checklist">
+                <div class="ck-item">
+                  <div class="ck-box done"></div>
+                  <div class="ck-name done">个人陈述 PS</div>
+                  <span class="ck-tag tag-green">已提交</span>
+                </div>
+                <div class="ck-item">
+                  <div class="ck-box done"></div>
+                  <div class="ck-name done">简历 CV</div>
+                  <span class="ck-tag tag-green">已提交</span>
+                </div>
+                <div class="ck-item">
+                  <div class="ck-box"></div>
+                  <div class="ck-name">推荐信 RL</div>
+                  <span class="ck-tag tag-orange">待联系导师</span>
+                </div>
+                <div class="ck-item">
+                  <div class="ck-box"></div>
+                  <div class="ck-name">成绩单</div>
+                  <span class="ck-tag tag-gray">未开始</span>
+                </div>
+                <div class="ck-item">
+                  <div class="ck-box"></div>
+                  <div class="ck-name">在读证明</div>
+                  <span class="ck-tag tag-gray">未开始</span>
+                </div>
+                <div class="ck-item">
+                  <div class="ck-box"></div>
+                  <div class="ck-name">作品集</div>
+                  <span class="ck-tag tag-blue">进行中</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Tab 3: 数据中心 ====== -->
+  <div class="section">
+    <div class="section-title">
+      <span style="font-size:18px;">📊</span> Tab 3：数据中心
+      <span style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-left:8px;">我的积累 · 成长可视</span>
+    </div>
+    <p class="section-desc">统计卡片 + 产品案例库 + 打卡热力图 + Notion 文章</p>
+
+    <div class="device">
+      <div class="device-header">
+        <span>数据中心页面 · 浅色主题 · Inter 字体</span>
+        <span class="device-tag">Tab 3</span>
+      </div>
+      <div class="device-body">
+        <div class="tab-bar">
+          <div class="tab">💬 PM 成长</div>
+          <div class="tab">🎓 申请追踪</div>
+          <div class="tab active">📊 数据中心</div>
+        </div>
+
+        <div class="bento">
+          <!-- 统计卡片行 -->
+          <div class="b3">
+            <div class="stat-card">
+              <div class="stat-num" style="color:var(--accent);">12</div>
+              <div class="stat-label">已分析产品</div>
+              <div class="stat-trend">↑ 本周 +3</div>
+            </div>
+          </div>
+          <div class="b3">
+            <div class="stat-card">
+              <div class="stat-num" style="color:var(--success);">15</div>
+              <div class="stat-label">连续打卡天</div>
+              <div class="stat-trend">🔥 保持中</div>
+            </div>
+          </div>
+          <div class="b3">
+            <div class="stat-card">
+              <div class="stat-num" style="color:var(--warning);">8.5k</div>
+              <div class="stat-label">PRD 累计字数</div>
+              <div class="stat-trend">↑ +1.2k 本周</div>
+            </div>
+          </div>
+          <div class="b3">
+            <div class="stat-card">
+              <div class="stat-num" style="color:var(--brand-500);">6.5</div>
+              <div class="stat-label">最新雅思分数</div>
+              <div class="stat-trend">目标 7.0</div>
+            </div>
+          </div>
+
+          <!-- 产品案例库 (占7列) -->
+          <div class="b7">
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">💼</div>
+                <div class="tt">产品案例库</div>
+                <span class="tag tag-blue">STAR 结构</span>
+              </div>
+              <div class="case-item">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <span class="tag tag-blue">产品分析</span>
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-08-20</span>
+                </div>
+                <div class="case-title">抖音评论区设计分析</div>
+                <div class="case-insight">通过「热评」机制降低消费门槛，用「神回复」激励创作者互动</div>
+              </div>
+              <div class="case-item">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <span class="tag tag-green">PRD 练习</span>
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-08-18</span>
+                </div>
+                <div class="case-title">为老年群体设计短视频「一键转发」功能</div>
+                <div class="case-insight">简化分享路径，降低操作步骤从 4 步到 1 步</div>
+              </div>
+              <div class="case-item">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <span class="tag tag-orange">竞品对比</span>
+                  <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-08-15</span>
+                </div>
+                <div class="case-title">小红书 vs 抖音：内容分发逻辑对比</div>
+                <div class="case-insight">双列发现 vs 单列沉浸，对应不同用户心智模型</div>
+              </div>
+              <button style="width:100%;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;">+ 查看全部 12 个案例</button>
+            </div>
+          </div>
+
+          <!-- 打卡热力图 (占5列) -->
+          <div class="b5">
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">🔥</div>
+                <div class="tt">打卡热力图</div>
+                <span class="tag tag-green">15 天连击</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);font-weight:500;margin-bottom:10px;">最近两周活跃度</div>
+              <div class="heatmap">
+                <div class="hm-cell"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div>
+                <div class="hm-cell"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell"></div>
+                <div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div>
+                <div class="hm-cell l1"></div><div class="hm-cell"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div>
+                <div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div>
+                <div class="hm-cell"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div>
+                <div class="hm-cell l2"></div><div class="hm-cell l1"></div><div class="hm-cell"></div><div class="hm-cell l1"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:12px;font-size:11px;color:var(--text-secondary);font-weight:500;">
+                <span>活跃度：</span>
+                <div style="display:flex;align-items:center;gap:3px;"><div class="hm-cell" style="width:10px;height:10px;"></div> 无</div>
+                <div style="display:flex;align-items:center;gap:3px;"><div class="hm-cell l1" style="width:10px;height:10px;"></div> 低</div>
+                <div style="display:flex;align-items:center;gap:3px;"><div class="hm-cell l2" style="width:10px;height:10px;"></div> 中</div>
+                <div style="display:flex;align-items:center;gap:3px;"><div class="hm-cell l3" style="width:10px;height:10px;"></div> 高</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notion 文章同步 (占12列) -->
+          <div class="b12">
+            <div class="card">
+              <div class="card-h">
+                <div class="icon">📝</div>
+                <div class="tt">Notion 文章同步</div>
+                <span class="tag tag-gray">自动拉取 #mewhub 标签</span>
+              </div>
+              <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
+                <div style="min-width:220px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-nested);">
+                  <div style="font-size:12.5px;font-weight:700;margin-bottom:4px;">AI Agent 产品方法论笔记</div>
+                  <div style="font-size:11px;color:var(--text-secondary);font-weight:500;line-height:1.5;">整理了 ReAct、CoT、Function Calling 三种范式的对比...</div>
+                  <div style="font-size:10.5px;color:var(--text-tertiary);margin-top:6px;font-weight:500;">编辑于 2 天前</div>
+                </div>
+                <div style="min-width:220px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-nested);">
+                  <div style="font-size:12.5px;font-weight:700;margin-bottom:4px;">MewHub 产品需求文档</div>
+                  <div style="font-size:11px;color:var(--text-secondary);font-weight:500;line-height:1.5;">V4 版本的功能规划和数据模型设计...</div>
+                  <div style="font-size:10.5px;color:var(--text-tertiary);margin-top:6px;font-weight:500;">编辑于 5 天前</div>
+                </div>
+                <div style="min-width:220px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-nested);">
+                  <div style="font-size:12.5px;font-weight:700;margin-bottom:4px;">留学申请时间规划表</div>
+                  <div style="font-size:11px;color:var(--text-secondary);font-weight:500;line-height:1.5;">从 7 月到次年 3 月的完整申请节点...</div>
+                  <div style="font-size:10.5px;color:var(--text-tertiary);margin-top:6px;font-weight:500;">编辑于 1 周前</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 架构对比 ====== -->
+  <div class="section">
+    <div class="section-title">架构对比：原方案 vs 重构方案</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="card">
+        <div class="card-h">
+          <div class="icon" style="background:#fee2e2;color:#991b1b;">📋</div>
+          <div class="tt">原方案（mewhub-v4-plan.md）</div>
+        </div>
+        <div style="font-size:12.5px;color:var(--text-secondary);line-height:2;font-weight:500;">
+          • 深色主题（#0f1115）<br>
+          • React + Vite 技术栈<br>
+          • 删除 4 个现有 Agent<br>
+          • 仅保留 2 个常驻 Agent<br>
+          • 3 Tab 结构（PM/申请/积累）<br>
+          • 记账/阅读/习惯 全部删除<br>
+          • 开发周期：3-5 天 MVP
+        </div>
+      </div>
+      <div class="card" style="border-color:var(--success);">
+        <div class="card-h">
+          <div class="icon" style="background:#dcfce7;color:#166534;">✅</div>
+          <div class="tt">重构方案（本线框图）</div>
+        </div>
+        <div style="font-size:12.5px;color:var(--text-secondary);line-height:2;font-weight:500;">
+          • <strong>浅色主题（#ffffff）— 现有样式</strong><br>
+          • <strong>Vanilla JS 单文件 — 现有架构</strong><br>
+          • <strong>保留全部 6 个现有模块</strong><br>
+          • <strong>新增 PM 教练 + 申请管家</strong><br>
+          • 3 Tab 结构（PM/申请/积累）<br>
+          • 旧模块移至「工具箱」快捷入口<br>
+          • 渐进式改造，无破坏性变更
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 实施建议 ====== -->
+  <div class="section">
+    <div class="section-title">实施路径（不改代码，仅设计）</div>
+    <div class="anno" style="background:var(--accent-muted);border-color:var(--border);color:var(--text-secondary);">
+      <strong>Phase 1：</strong>在当前 index.html 中新增 3 个 Tab 路由（PM成长/申请追踪/数据中心）<br>
+      <strong>Phase 2：</strong>新增 PM 教练对话界面（复用现有 MewAI 聊天组件样式）<br>
+      <strong>Phase 3：</strong>新增申请追踪面板（时间线 + 材料清单 + 雅思趋势）<br>
+      <strong>Phase 4：</strong>新增数据中心（统计卡片 + 案例列表 + 热力图）<br>
+      <strong>Phase 5：</strong>将现有 6 个模块整合到「工具箱」侧边栏或快捷入口
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
