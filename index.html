@@ -113,22 +113,10 @@
   .navi svg { color: var(--text-tertiary); flex: 0 0 auto; }
   .navi.active svg { color: var(--accent); }
 
-  /* ---------- v4 Tab navigation ---------- */
-  .tab-bar {
-    display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;
-  }
-  .tab-bar .tab {
-    padding: 10px 18px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
-    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
-    transition: all .12s; display: flex; align-items: center; gap: 6px; background: none; border-top: none; border-left: none; border-right: none;
-  }
-  .tab-bar .tab:hover { color: var(--text); }
-  .tab-bar .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  /* ---------- v4 页面通用布局 ---------- */
   @keyframes pmPulse { 0%,100%{opacity:.25} 50%{opacity:1} }
-  .tab-bar .tab .badge {
-    background: var(--accent-muted); color: var(--accent); font-size: 10px; font-weight: 700;
-    padding: 1px 6px; border-radius: 999px; border: 1px solid var(--border);
-  }
+  .v4grid { display:grid; gap:14px; align-items:start; }
+  .v4grid .card { min-width:0; }
   .nav-sep { font-size: 10.5px; color:var(--text-tertiary); padding: 16px 12px 8px; letter-spacing: .08em; font-weight:600; text-transform:uppercase; }
   .sidebar .foot { padding: 16px 20px; font-size: 11px; color:var(--text-tertiary); border-top: 1px solid var(--border); font-weight:500; }
 
@@ -1329,6 +1317,11 @@
     .ielts-tile .ielts-sub-row { flex:1 1 calc(50% - 8px); min-width:0; }
     .ielts-tile .ielts-tile-actions { flex-direction:row; }
     .ielts-tile .ielts-action { flex:1; }
+    /* V4 新页面：三页网格窄屏全部单列堆叠 */
+    .v4grid { grid-template-columns:1fr !important; }
+    .v4grid > * { grid-column:span 1 !important; }
+    .v4grid .card { width:100%; }
+    .ap-hero { flex-wrap:wrap; }
   }
 </style>
 <style>.trae-browser-inspect-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:999997;pointer-events:auto;background:rgba(0,0,0,0)}.trae-browser-inspect-highlight-box{position:absolute;top:0;left:0;z-index:999998;display:none}.trae-browser-inspect-highlight-tag{position:absolute;left:0px;top:0px;height:18px;padding:0 6px;box-sizing:border-box;border-radius:4px;background-color:var(--vscode-icube-colorSuccessHover, "#2FB287");color:var(--vscode-icube-colorSnow, "#fff");font-size:12px;font-weight:400;display:none;align-items:center;z-index:999999}.trae-browser-inspect-highlight-box-show{display:flex}.trae-browser-inspect-select-button.trae-browser-inspect-highlight-box-show{display:flex !important}.trae-browser-inspect-select-button{position:absolute;top:0;left:0;background-color:var(--vscode-icube--bg-bg-base-secondary, "#222427");color:var(--vscode-icube--text-text-default-active, "#F5F9FE");font-size:11px;font-weight:500;border:1px solid var(--vscode-icube--border-neutral-l1, "#E0E2F217");border-radius:6px;padding:0 8px;height:32px;display:none;align-items:center;cursor:pointer;z-index:999999;gap:4px}.trae-browser-inspect-select-button svg,.trae-browser-inspect-select-button span{z-index:1}.trae-browser-inspect-select-highlight-box{background:rgba(0,0,0,0) !important}.trae-browser-inspect-select-highlight-box .trae-browser-inspect-highlight-tag{background-color:var(--vscode-icube--status-success-active, "#1E8B56")}.trae-browser-inspect-comment-card-container{position:fixed;top:0;left:0;z-index:9999999;pointer-events:auto}.trae-browser-inspect-comment-card-container .trae-browser-inspect-comment-card{display:flex;padding-top:0px !important;align-items:center;z-index:9999999 !important;background-color:var(--vscode-icube--bg-bg-menu)}*[contenteditable]{outline:none}.trae-browser-inspect-click-effect{position:fixed;width:40px;height:40px;margin-left:-20px;margin-top:-20px;border-radius:50%;background-color:var(--vscode-icube-colorSuccessHover, #2FB287);pointer-events:none;animation:trae-browser-inspect-ripple 500ms ease-out forwards;z-index:999999}@keyframes trae-browser-inspect-ripple{0%{transform:scale(0.3);opacity:.8}100%{transform:scale(2);opacity:0}}.trae-browser-inspect-ref-box{position:absolute;border:2px solid var(--vscode-icube-colorSuccessHover, "#2FB287");pointer-events:none;z-index:999998;animation:trae-browser-inspect-fadeInOut 2s ease-in-out forwards}.trae-browser-inspect-ref-label{position:absolute;top:-14px;left:0;height:14px;padding:0 4px;box-sizing:border-box;border-radius:2px;background-color:var(--vscode-icube-colorSuccessHover, "#2FB287");color:var(--vscode-icube-colorSnow, "#fff");font-size:9px;font-weight:500;display:flex;align-items:center;white-space:nowrap;z-index:999999}@keyframes trae-browser-inspect-fadeInOut{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}.trae-browser-inspect-input-highlight{position:absolute;border:2px solid var(--vscode-icube-colorSuccessHover, "#2FB287");border-radius:4px;pointer-events:none;z-index:999998;box-shadow:0 0 8px var(--vscode-icube-colorSuccessHover, "#2FB287");animation:trae-browser-inspect-input-pulse 600ms ease-out forwards}@keyframes trae-browser-inspect-input-pulse{0%{opacity:0;box-shadow:0 0 0 var(--vscode-icube-colorSuccessHover, "#2FB287")}30%{opacity:1;box-shadow:0 0 12px var(--vscode-icube-colorSuccessHover, "#2FB287")}100%{opacity:0;box-shadow:0 0 0 var(--vscode-icube-colorSuccessHover, "#2FB287")}}.trae-browser-inspect-virtual-cursor{position:fixed;width:20px;height:20px;pointer-events:none;z-index:9999999;opacity:0;transition:opacity .2s ease}.trae-browser-inspect-virtual-cursor.trae-browser-inspect-cursor-visible{opacity:1}.trae-browser-inspect-virtual-cursor.trae-browser-inspect-cursor-idle{animation:trae-browser-inspect-cursor-breathe 2s ease-in-out infinite}.trae-browser-inspect-virtual-cursor svg{width:20px;height:20px;filter:drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))}@keyframes trae-browser-inspect-cursor-breathe{0%,100%{opacity:.7}50%{opacity:1}}.trae-browser-inspect-scroll-indicator{position:fixed;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;background-color:rgba(0,0,0,.7);color:#fff;font-size:13px;font-weight:500;pointer-events:none;z-index:999999;animation:trae-browser-inspect-indicator-fade 800ms ease-out forwards;backdrop-filter:blur(4px)}.trae-browser-inspect-scroll-indicator svg{width:16px;height:16px;fill:#fff}.trae-browser-inspect-scroll-indicator.trae-scroll-up{top:12px;left:50%;transform:translateX(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-down{bottom:12px;left:50%;transform:translateX(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-left{left:12px;top:50%;transform:translateY(-50%)}.trae-browser-inspect-scroll-indicator.trae-scroll-right{right:12px;top:50%;transform:translateY(-50%)}@keyframes trae-browser-inspect-indicator-fade{0%{opacity:0;transform:translateX(-50%) scale(0.9)}15%{opacity:1;transform:translateX(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}.trae-browser-inspect-scroll-indicator.trae-scroll-left,.trae-browser-inspect-scroll-indicator.trae-scroll-right{animation-name:trae-browser-inspect-indicator-fade-y}@keyframes trae-browser-inspect-indicator-fade-y{0%{opacity:0;transform:translateY(-50%) scale(0.9)}15%{opacity:1;transform:translateY(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}.trae-browser-inspect-key-badge{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:8px;background-color:rgba(0,0,0,.8);color:#fff;font-size:18px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;pointer-events:none;z-index:999999;animation:trae-browser-inspect-key-pop 500ms ease-out forwards;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 12px rgba(0,0,0,.3);letter-spacing:1px}@keyframes trae-browser-inspect-key-pop{0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(0.9)}20%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}.trae-browser-inspect-step-badge{position:fixed;top:12px;left:12px;padding:6px 12px;border-radius:6px;background-color:var(--vscode-icube-colorSuccessHover, #2FB287);color:#fff;font-size:12px;font-weight:600;pointer-events:none;z-index:999999;animation:trae-browser-inspect-step-slide 600ms ease-out forwards;box-shadow:0 2px 8px rgba(47,178,135,.3);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.trae-browser-inspect-step-badge.trae-step-old{opacity:.4;transform:translateY(0)}@keyframes trae-browser-inspect-step-slide{0%{opacity:0;transform:translateX(-20px)}20%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(0)}}.trae-browser-inspect-drag-trail{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999998}.trae-browser-inspect-drag-trail svg{width:100%;height:100%}.trae-browser-inspect-drag-trail .trae-drag-path{fill:none;stroke:var(--vscode-icube-colorSuccessHover, #2FB287);stroke-width:2;stroke-dasharray:8 4;opacity:.6;animation:trae-browser-inspect-dash 600ms linear forwards}.trae-browser-inspect-drag-trail .trae-drag-dot{fill:var(--vscode-icube-colorSuccessHover, #2FB287);filter:drop-shadow(0 0 4px rgba(47, 178, 135, 0.6))}.trae-browser-inspect-drag-trail .trae-drag-endpoint{fill:none;stroke:var(--vscode-icube-colorSuccessHover, #2FB287);stroke-width:2;opacity:.5}@keyframes trae-browser-inspect-dash{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}.trae-browser-inspect-drag-trail.trae-drag-fade{animation:trae-browser-inspect-trail-fade 400ms ease-out forwards}@keyframes trae-browser-inspect-trail-fade{0%{opacity:1}100%{opacity:0}}</style><script type="module">(async () => {
@@ -5866,21 +5859,12 @@ function renderAgents(){
 }
 
 /* ---------- V4 新页面：PM 成长 / 申请追踪 / 数据中心 ---------- */
-function renderTabBar(activeTab){
-  return `<div class="tab-bar">
-    <div class="tab ${activeTab==='pm'?'active':''}" data-tab="pm" onclick="go('pm')">${icon("message-circle",15)} PM 成长</div>
-    <div class="tab ${activeTab==='application'?'active':''}" data-tab="application" onclick="go('application')">${icon("graduation-cap",15)} 申请追踪</div>
-    <div class="tab ${activeTab==='datacenter'?'active':''}" data-tab="datacenter" onclick="go('datacenter')">${icon("bar-chart-2",15)} 数据中心</div>
-  </div>`;
-}
-
 function renderPMGrowth(){
   const coachIcon = PMCoach.persona === 'butler' ? '📋' : '🎯';
   const coachName = PMCoach.persona === 'butler' ? '申请管家' : 'PM 成长教练';
   const coachSub = PMCoach.persona === 'butler' ? '留学进度追踪 · 被动提醒' : '产品思维训练 · 案例积累';
   $("#screen").innerHTML = `<div class="header"><div><h2>PM 成长</h2><p>和 PM 教练对话，积累产品案例，训练产品思维</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
-  ${renderTabBar('pm')}
-  <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start;">
+  <div class="v4grid" style="grid-template-columns:1.6fr 1fr;">
     <div class="card" style="min-height:420px;display:flex;flex-direction:column;">
       <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
         <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-muted);border:1px solid var(--border);display:grid;place-items:center;font-size:14px;">${coachIcon}</div>
@@ -5933,9 +5917,8 @@ function renderPMGrowth(){
 
 function renderApplication(){
   $("#screen").innerHTML = `<div class="header"><div><h2>申请追踪</h2><p>留学进度监督 · 雅思分数 · 材料清单</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
-  ${renderTabBar('application')}
-  <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:14px;">
-    <div class="card" style="grid-column:span 12;display:flex;align-items:center;gap:16px;padding:14px 18px;">
+  <div class="v4grid" style="grid-template-columns:repeat(12,1fr);">
+    <div class="card ap-hero" style="grid-column:span 12;display:flex;align-items:center;gap:16px;padding:14px 18px;">
       <div style="font-size:26px;">🏫</div>
       <div><div style="font-size:15px;font-weight:700;">目标学校：香港科技大学 · MSc Information Systems</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:2px;">申请季：2026 Fall</div></div>
       <div style="margin-left:auto;display:flex;gap:8px;">
@@ -5984,8 +5967,7 @@ function renderApplication(){
 
 function renderDataCenter(){
   $("#screen").innerHTML = `<div class="header"><div><h2>数据中心</h2><p>产品案例库 · 打卡热力图 · Notion 文章同步</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
-  ${renderTabBar('datacenter')}
-  <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:14px;">
+  <div class="v4grid" style="grid-template-columns:repeat(12,1fr);">
     <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--accent);">12</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">已分析产品</div><div style="font-size:11px;color:var(--success);font-weight:600;margin-top:4px;">↑ 本周 +3</div></div></div>
     <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--success);">15</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">连续打卡天</div><div style="font-size:11px;color:var(--success);font-weight:600;margin-top:4px;">🔥 保持中</div></div></div>
     <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--warning);">8.5k</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">PRD 累计字数</div><div style="font-size:11px;color:var(--success);font-weight:600;margin-top:4px;">↑ +1.2k 本周</div></div></div>
