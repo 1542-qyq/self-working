@@ -124,6 +124,7 @@
   }
   .tab-bar .tab:hover { color: var(--text); }
   .tab-bar .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  @keyframes pmPulse { 0%,100%{opacity:.25} 50%{opacity:1} }
   .tab-bar .tab .badge {
     background: var(--accent-muted); color: var(--accent); font-size: 10px; font-weight: 700;
     padding: 1px 6px; border-radius: 999px; border: 1px solid var(--border);
@@ -5874,33 +5875,30 @@ function renderTabBar(activeTab){
 }
 
 function renderPMGrowth(){
+  const coachIcon = PMCoach.persona === 'butler' ? '📋' : '🎯';
+  const coachName = PMCoach.persona === 'butler' ? '申请管家' : 'PM 成长教练';
+  const coachSub = PMCoach.persona === 'butler' ? '留学进度追踪 · 被动提醒' : '产品思维训练 · 案例积累';
   $("#screen").innerHTML = `<div class="header"><div><h2>PM 成长</h2><p>和 PM 教练对话，积累产品案例，训练产品思维</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
   ${renderTabBar('pm')}
   <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start;">
     <div class="card" style="min-height:420px;display:flex;flex-direction:column;">
       <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-muted);border:1px solid var(--border);display:grid;place-items:center;font-size:14px;">🎯</div>
-        <div style="flex:1;"><div style="font-size:13.5px;font-weight:700;">PM 成长教练</div><div style="font-size:11px;color:var(--success);font-weight:500;display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>在线</div></div>
-        <select style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 8px;font-size:11.5px;background:var(--surface-nested);color:var(--text);"><option>PM 教练</option><option>申请管家</option></select>
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-muted);border:1px solid var(--border);display:grid;place-items:center;font-size:14px;">${coachIcon}</div>
+        <div style="flex:1;"><div style="font-size:13.5px;font-weight:700;">${coachName}</div><div style="font-size:11px;color:var(--success);font-weight:500;display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>${coachSub}</div></div>
+        <select id="pmAgentSelect" style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 8px;font-size:11.5px;background:var(--surface-nested);color:var(--text);"><option value="pm" ${PMCoach.persona==='pm'?'selected':''}>PM 教练</option><option value="butler" ${PMCoach.persona==='butler'?'selected':''}>申请管家</option></select>
       </div>
-      <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;background:var(--surface-nested);">
-        <div style="align-self:flex-start;max-width:80%;padding:10px 14px;border-radius:12px 12px 12px 4px;background:var(--surface-card);border:1px solid var(--border);font-size:13px;line-height:1.5;">
-          <strong>PM 教练：</strong>你好！今天想练哪类产品题？<br><br>你可以：<br>• 发一个产品让我分析<br>• 描述一个需求，我帮你梳理 PRD<br>• 选两个产品做竞品对比
-        </div>
-        <div style="align-self:flex-end;max-width:80%;padding:10px 14px;border-radius:12px 12px 4px 12px;background:var(--accent);color:var(--on-accent);font-size:13px;line-height:1.5;">帮我分析一下抖音的评论区设计</div>
-        <div style="align-self:flex-start;max-width:80%;padding:10px 14px;border-radius:12px 12px 12px 4px;background:var(--surface-card);border:1px solid var(--border);font-size:13px;line-height:1.5;">
-          <strong>分析框架：用户-场景-需求-方案-指标</strong><br><br><strong>用户：</strong>内容消费者、创作者<br><strong>场景：</strong>看完视频后的互动决策点<br><strong>需求：</strong>表达认同、寻求共鸣、获取信息<br>...
-        </div>
+      <div id="pmChatMsgs" style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;background:var(--surface-nested);">
+        ${PMCoach.msgsHTML()}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px 4px;background:var(--surface-card);">
-        <span style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">📋 分析这个产品</span>
-        <span style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">📝 帮我写 PRD</span>
-        <span style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">⚖️ 竞品对比</span>
-        <span style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">⭐ 记录为案例</span>
+        <span data-pm-quick="帮我分析抖音的评论区设计" style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">📋 分析这个产品</span>
+        <span data-pm-quick="帮我写 PRD：为老年群体设计短视频一键转发" style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">📝 帮我写 PRD</span>
+        <span data-pm-quick="小红书 vs 抖音 竞品对比" style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">⚖️ 竞品对比</span>
+        <span data-pm-quick="记录为案例" style="background:var(--surface-nested);border:1px solid var(--border);padding:4px 10px;border-radius:var(--radius-control);font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;">⭐ 记录为案例</span>
       </div>
       <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--surface-card);border-radius:0 0 var(--radius-card) var(--radius-card);">
-        <input placeholder="和 PM 教练对话，或输入产品名开始分析..." style="flex:1;border:1px solid var(--border);border-radius:var(--radius-control);padding:8px 12px;font-size:13px;background:var(--surface-nested);color:var(--text);" />
-        <button style="background:var(--accent);color:var(--on-accent);border:none;padding:8px 16px;border-radius:var(--radius-control);font-size:13px;font-weight:600;cursor:pointer;">发送</button>
+        <input id="pmChatInput" placeholder="${PMCoach.persona==='butler' ? '告诉管家中介的最新进展，或输入雅思分数...' : '和 PM 教练对话，或输入产品名开始分析...'}" style="flex:1;border:1px solid var(--border);border-radius:var(--radius-control);padding:8px 12px;font-size:13px;background:var(--surface-nested);color:var(--text);" />
+        <button id="pmChatSend" style="background:var(--accent);color:var(--on-accent);border:none;padding:8px 16px;border-radius:var(--radius-control);font-size:13px;font-weight:600;cursor:pointer;">发送</button>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;">
@@ -5930,6 +5928,7 @@ function renderPMGrowth(){
       </div>
     </div>
   </div>`;
+  PMCoach.wire();
 }
 
 function renderApplication(){
@@ -6916,6 +6915,121 @@ $("#avatarInput").onchange = e => {
   reader.onload = () => { data.__avatar = reader.result; $("#avaImg").src = reader.result; store.save(); };
   reader.readAsDataURL(f);
   e.target.value = "";
+};
+
+/* ---------- V4 PM 教练 / 申请管家（双人格对话） ---------- */
+const PMCoach = {
+  persona: 'pm',
+  msgs: [],
+  _init: false,
+
+  init(){
+    if(this._init) return;
+    this._init = true;
+    this.msgs.push({ role:'bot', text:'你好，我是 <b>PM 成长教练</b> 🎯<br>我可以：<br>• 📋 输入产品名，用「用户-场景-需求-方案-指标」框架分析<br>• 📝 描述需求，帮你梳理 PRD<br>• ⚖️ 给两个产品做竞品对比<br>• ⭐ 说「记录为案例」，提炼成 STAR 案例' });
+  },
+
+  msgsHTML(){
+    this.init();
+    return this.msgs.map(m => {
+      const time = m.time ? `<div class="m-time" style="display:block;font-size:10px;color:var(--text-tertiary);margin-top:4px;">${m.time}</div>` : '';
+      if(m.role === 'user'){
+        return `<div class="c-msg user"><div><div class="m-bubble" style="padding:9px 12px;border-radius:12px 12px 2px 12px;background:var(--accent);color:var(--on-accent);">${esc(m.text)}</div>${time}</div></div>`;
+      }
+      return `<div class="c-msg bot"><div><div class="m-bubble" style="padding:9px 12px;border-radius:12px 12px 12px 2px;background:var(--surface-card);border:1px solid var(--border);color:var(--text);">${m.text}</div>${time}</div></div>`;
+    }).join('');
+  },
+
+  async send(text){
+    const msgsEl = document.getElementById('pmChatMsgs');
+    if(!msgsEl || !text.trim()) return;
+    const time = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    this.msgs.push({ role:'user', text, time });
+    msgsEl.innerHTML = this.msgsHTML();
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+
+    const typing = document.createElement('div');
+    typing.id = 'pmTyping';
+    typing.style.cssText = 'display:flex;gap:4px;align-self:flex-start;padding:4px 2px;';
+    typing.innerHTML = '<i style="width:5px;height:5px;border-radius:50%;background:var(--text-tertiary);animation:pmPulse 1.2s infinite ease-in-out;"></i><i style="width:5px;height:5px;border-radius:50%;background:var(--text-tertiary);animation:pmPulse 1.2s infinite ease-in-out .18s;"></i><i style="width:5px;height:5px;border-radius:50%;background:var(--text-tertiary);animation:pmPulse 1.2s infinite ease-in-out .36s;"></i>';
+    msgsEl.appendChild(typing);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+
+    await new Promise(r => setTimeout(r, 900));
+
+    const reply = this._demoReply(text);
+    this.msgs.push({ role:'bot', text: reply, time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) });
+    msgsEl.innerHTML = this.msgsHTML();
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  },
+
+  _demoReply(text){
+    return this.persona === 'butler' ? this._butlerReply(text) : this._pmReply(text);
+  },
+
+  _pmReply(text){
+    const t = text.trim();
+    if(t.includes('记录为案例') || t.includes('案例')){
+      return '⭐ 已提炼为 STAR 案例：<br><br><b>Situation</b>：分析社交产品评论区时发现互动率低<br><b>Task</b>：找出提升评论互动的关键机制<br><b>Action</b>：拆解「热评」排序 +「神回复」激励 + 盖楼引导<br><b>Result</b>：提炼出「降低消费门槛 + 激励创作者」双轮模型<br><br>已归档到数据中心「产品案例库」，可随时回看。';
+    }
+    if(/vs|对比/.test(t)){
+      return '⚖️ 竞品对比，建议从 4 个维度切入：<br><br><b>1. 用户场景</b>：各自解决什么核心诉求？<br><b>2. 内容分发</b>：推荐算法与分发逻辑差异<br><b>3. 互动机制</b>：评论 / 转发 / 关注关系如何设计<br><b>4. 商业模型</b>：变现路径与内容生态<br><br>选一个维度展开说，我们逐层深挖。';
+    }
+    if(/PRD|prd|写一个|设计一个/.test(t)){
+      return '📝 PRD 骨架如下，我们逐块补全：<br><br><b>背景与目标</b>：为什么做？核心指标是什么？<br><b>目标用户</b>：画像 + 使用场景<br><b>需求清单</b>：P0 主流程 / P1 增强 / P2 后续<br><b>关键流程</b>：主链路 + 异常分支<br><b>验收标准</b>：怎么衡量成功<br><br>先发我需求背景，从背景与目标开始。';
+    }
+    if(/分析|讲讲|拆解/.test(t)){
+      return '📋 开始产品分析，走「用户-场景-需求-方案-指标」五步框架：<br><br><b>1. 用户</b>：核心用户是谁？有什么特征<br><b>2. 场景</b>：什么时机用？频次如何<br><b>3. 需求</b>：解决了什么真实痛点<br><b>4. 方案</b>：产品如何解决，核心机制是什么<br><b>5. 指标</b>：用什么数据衡量成功<br><br>先说说你观察到的用户和场景，我们一步步来。';
+    }
+    return '🎯 收到！你可以：<br><br>• <b>分析产品</b>：「帮我分析抖音的评论区设计」<br>• <b>写 PRD</b>：「为老年群体设计短视频一键转发」<br>• <b>竞品对比</b>：「小红书 vs 抖音」<br>• <b>记录案例</b>：说「记录为案例」自动提炼 STAR';
+  },
+
+  _butlerReply(text){
+    const t = text.trim();
+    if(/雅思|听力|阅读|写作|口语/.test(t)){
+      return '🎓 雅思记录已更新：<br><br>• 最近一次：<b>6.5</b>（2026-08）<br>• 目标：<b>7.0</b>（差距 0.5）<br><br>趋势图已同步（申请追踪页可查看），下次出分继续发我。';
+    }
+    if(/材料|提交|寄送/.test(t)){
+      return '📋 材料清单已更新：<br><br>✅ PS（已提交）　✅ CV（已提交）<br>⏳ 推荐信（待联系导师）<br>⏳ 成绩单（未开始）<br>📌 作品集（进行中）<br><br>当前进度 <b>4/8</b>，还有一项提交后告诉我。';
+    }
+    if(/进展|中介|进度|文书/.test(t)){
+      return '📍 申请时间线已更新：<br><br>✅ 选校方案（已确认）07-15<br>🔵 文书材料（撰写中）截止 09-01<br>○ 网申提交（未开始）预计 10-15<br>○ 面试 · ○ 签证<br><br>收到，我会持续跟进。';
+    }
+    return '📋 收到，当前进度快照：<br><br>📍 时间线：2/5 节点完成<br>📋 材料清单：4/8 已提交<br>🎓 雅思：6.5 → 目标 7.0<br><br>告诉我最新进展，如：<br>• 「进展：文书已交初稿」<br>• 「材料：成绩单已提交」<br>• 「雅思：听力 7.0」';
+  },
+
+  wire(){
+    const select = document.getElementById('pmAgentSelect');
+    if(select){
+      select.onchange = () => {
+        this.persona = select.value;
+        const greeting = this.persona === 'butler'
+          ? '你好，我是 <b>申请管家</b> 📋<br>只负责追踪和提醒，告诉我中介的最新进展即可。<br>• 「进展：文书已交初稿」<br>• 「材料：成绩单已提交」<br>• 「雅思：听力 7.0」'
+          : '已切回 <b>PM 成长教练</b> 🎯，继续发产品名开始分析吧。';
+        this.msgs.push({ role:'bot', text: greeting });
+        go('pm');
+      };
+    }
+
+    const input = document.getElementById('pmChatInput');
+    const sendBtn = document.getElementById('pmChatSend');
+    const sendMsg = () => {
+      if(!input) return;
+      const text = input.value.trim();
+      if(!text) return;
+      input.value = '';
+      this.send(text);
+    };
+    if(sendBtn) sendBtn.onclick = sendMsg;
+    if(input) input.onkeydown = e => { if(e.key === 'Enter') sendMsg(); };
+
+    document.querySelectorAll('[data-pm-quick]').forEach(chip => {
+      chip.onclick = () => { if(input){ input.value = chip.dataset.pmQuick; sendMsg(); } };
+    });
+
+    const msgsEl = document.getElementById('pmChatMsgs');
+    if(msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
 };
 
 /* ============================================================
