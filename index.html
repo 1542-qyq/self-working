@@ -5105,7 +5105,7 @@ function ieltsTileHTML(){
       <span class="ielts-sub-today">${today?`📋${today}`:''}</span>
     </div>`;
   }).join("");
-  return `<div class="tile ielts-tile"><div class="tile-h"><span class="tic" style="background:linear-gradient(135deg,#6b8e5a,#8fbc8f);color:#fff">${icon("book",16)}</span><div class="tt"><span class="en">IELTS PREP</span><span class="zh">雅思备考</span></div><span class="r" style="color:#6b8e5a">${doneItems}/${totalItems} 完成</span></div>
+  return `<div class="tile b12 ielts-tile"><div class="tile-h"><span class="tic" style="background:linear-gradient(135deg,#6b8e5a,#8fbc8f);color:#fff">${icon("book",16)}</span><div class="tt"><span class="en">IELTS PREP</span><span class="zh">雅思备考</span></div><span class="r" style="color:#6b8e5a">${doneItems}/${totalItems} 完成</span></div>
     <div class="ielts-body">
       <div class="ielts-overview">
         <div class="ielts-ring-wrap">${ringSVG(overallPct,'#6b8e5a',80)}<div class="ielts-ring-label"><b>${overallPct}%</b><span>完成率</span></div></div>
