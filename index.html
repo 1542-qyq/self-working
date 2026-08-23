@@ -4581,6 +4581,7 @@
   --bg-bg-brand-old: #32f08c;
   --gradient-brand: linear-gradient(90deg, #3ee1a3 0%, #32f08c 36%, #60f2bd 71.63%, #a0fde7 100%);
 }
+.demo-badge{position:fixed;right:12px;bottom:12px;z-index:9999;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;color:#fff;background:linear-gradient(90deg,#7c5cff,#a855f7);box-shadow:0 4px 14px rgba(124,92,255,.35);pointer-events:none;opacity:.92;letter-spacing:.5px}
 </style></head>
 <body>
 <div class="layout">
@@ -4861,8 +4862,17 @@
    共用工具函数/CONFIG/ICONS 已抽离到 assets/common.js
    ============================================================ */
 
+if(IS_DEMO_MODE){
+  const b = document.createElement('div');
+  b.className = 'demo-badge';
+  b.textContent = '演示模式 · 数据不保存';
+  b.title = '当前为演示模式（?mode=demo），展示剧本数据；所有修改仅本次会话生效，刷新后还原。';
+  document.body.appendChild(b);
+}
+
 const store = {
   load(){
+    if(IS_DEMO_MODE) return buildDemoData();
     const raw = localStorage.getItem(CONFIG.storageKey);
     let d;
     if(raw){ try { d = JSON.parse(raw); } catch(e){} }
@@ -4933,7 +4943,10 @@ const store = {
     }
     return d;
   },
-  save(){ localStorage.setItem(CONFIG.storageKey, JSON.stringify(data)); },
+  save(){
+    if(IS_DEMO_MODE) return; // 演示模式：零持久化
+    localStorage.setItem(CONFIG.storageKey, JSON.stringify(data));
+  },
 };
 let data = store.load();
 let view = "home";
@@ -6162,17 +6175,21 @@ function renderDataCenter(){
     return act>0;
   }).length;
 
-  const cases = (data.product_cases||[]).slice(0,3);
-  const casesHTML = cases.length ? cases.map(c=>`
-    <div style="padding:10px 12px;border-radius:var(--radius-control);border:1px solid var(--border);background:var(--surface-card);margin-bottom:8px;">
+  const allCases = data.product_cases||[];
+  const caseCard = c => `<div style="padding:10px 12px;border-radius:var(--radius-control);border:1px solid var(--border);background:var(--surface-card);margin-bottom:8px;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">${esc(c.tag||"产品分析")}</span>
         <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">${esc(c.date||"")}</span>
       </div>
       <div style="font-size:13px;font-weight:700;">${esc(c.title||"未命名案例")}</div>
       <div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">${esc((c.insight||c.note||"").slice(0,48))}</div>
-    </div>`).join("") : `
+    </div>`;
+  const cases = allCases.slice(0,3);
+  const moreCases = allCases.slice(3);
+  const casesHTML = cases.length ? cases.map(caseCard).join("") : `
     <div style="padding:12px;border-radius:var(--radius-control);border:1px dashed var(--border);color:var(--text-tertiary);font-size:12px;font-weight:500;text-align:center;">暂无案例数据 · 在「产品案例」模块添加后将自动同步</div>`;
+  const moreHTML = moreCases.length ? moreCases.map(caseCard).join("") : "";
+  const caseBtnLabel = caseCount ? `+ 查看全部 ${caseCount} 个案例` : '去添加案例';
 
   $("#screen").innerHTML = `<div class="header"><div><h2>数据中心</h2><p>产品案例库 · 打卡热力图 · Notion 文章同步</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
   <div class="v4grid" style="grid-template-columns:repeat(12,1fr);">
@@ -6183,7 +6200,8 @@ function renderDataCenter(){
     <div class="card" style="grid-column:span 7;">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">💼</div><div style="font-size:14px;font-weight:700;">产品案例库</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">STAR 结构</span></div>
       ${casesHTML}
-      <button style="width:100%;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;" onclick="go('product_cases')">+ ${caseCount?('查看全部 '+caseCount+' 个案例'):'去添加案例'}</button>
+      <div id="case-more" style="display:none;">${moreHTML}</div>
+      <button data-open="− 收起案例列表" data-closed="${caseBtnLabel}" style="width:100%;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;" onclick="toggleCaseList(this)">${caseBtnLabel}</button>
     </div>
     <div class="card" style="grid-column:span 5;">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">🔥</div><div style="font-size:14px;font-weight:700;">打卡热力图</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">${heatActive} 天活跃</span></div>
@@ -6208,6 +6226,14 @@ function renderDataCenter(){
   </div>`;
 }
 
+function toggleCaseList(btn){
+  const el=document.getElementById("case-more");
+  if(!el) return;
+  const open=el.style.display!=="none";
+  el.style.display=open?"none":"block";
+  btn.textContent=open?btn.dataset.closed:btn.dataset.open;
+}
+
 /* ---------- MODULE VIEW ---------- */
 function jobItems(all, q){
   let it = all;
@@ -6220,7 +6246,8 @@ function jobItems(all, q){
 }
 
 function renderModule(key){
-  const m=modOf(key); const all=data[key]||[]; let it=all;
+  const m=modOf(key); if(!m){ renderDataCenter(); return; }
+  const all=data[key]||[]; let it=all;
   const t=today();
   const q=searchQ.trim().toLowerCase();
   if(m.type==="job") it=jobItems(all, q);
@@ -7211,11 +7238,11 @@ const PMCoach = {
    ============================================================ */
 const MewAI = {
   config: {
-    provider: localStorage.getItem('cat-news-mew-provider') || localStorage.getItem('cat-news-ai-provider') || 'mock',
-    apiKey: localStorage.getItem('cat-news-mew-api-key') || localStorage.getItem('cat-news-ai-api-key') || '',
-    proxyUrl: localStorage.getItem('cat-news-mew-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787',
-    model: localStorage.getItem('cat-news-mew-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro',
-    botId: localStorage.getItem('cat-news-coze-bot-id') || '', // 保留兼容旧版本Coze配置
+    provider: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-provider') || localStorage.getItem('cat-news-ai-provider') || 'mock'),
+    apiKey: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-api-key') || localStorage.getItem('cat-news-ai-api-key') || ''),
+    proxyUrl: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787'),
+    model: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro'),
+    botId: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-coze-bot-id') || ''), // 保留兼容旧版本Coze配置
     useMock: true  // 兼容旧字段，自动根据provider判断
   },
 
@@ -7668,7 +7695,7 @@ ${ctx}
     if(resultEl) resultEl.classList.remove('show');
 
     let items = [];
-    const useRealLLM = this.config.provider !== 'mock' && 
+    const useRealLLM = !IS_DEMO_MODE && this.config.provider !== 'mock' && 
                       (this.config.apiKey || this.config.provider === 'ollama');
 
     if(!useRealLLM){
@@ -7806,6 +7833,7 @@ ${ctx}
 
   // 通用LLM调用（支持OpenAI兼容格式：DeepSeek/豆包/Qwen/Ollama）
   async callLLM(messages, options = {}){
+    if(IS_DEMO_MODE) throw new Error('Demo mode'); // 演示模式禁止任何真实调用
     const provider = this.config.provider;
     const providerConfig = this.providers[provider];
     
@@ -7932,7 +7960,7 @@ ${ctx}
     ];
 
     const config = this.getApiConfigForAgent(this.currentAgent);
-    const useRealLLM = config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
+    const useRealLLM = !IS_DEMO_MODE && config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
 
     if(!useRealLLM){
       return null;
@@ -8018,7 +8046,7 @@ ${ctx}
 
     let reply = '';
     const config = this.getApiConfigForAgent(this.currentAgent);
-    const useRealLLM = config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
+    const useRealLLM = !IS_DEMO_MODE && config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
 
     if(!useRealLLM){
       await new Promise(r => setTimeout(r, 1000));
@@ -8471,7 +8499,7 @@ ${ctx}
         const systemPrompt = agent.systemPrompt(ctx);
         const config = this.getApiConfigForAgent(step.agentKey);
 
-        const useRealLLM = config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
+        const useRealLLM = !IS_DEMO_MODE && config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
 
         let response;
         if(useRealLLM){
@@ -8523,6 +8551,7 @@ ${ctx}
 
   // 使用指定配置调用LLM（预留多API支持）
   async callLLMWithConfig(messages, config, options = {}){
+    if(IS_DEMO_MODE) throw new Error('Demo mode'); // 演示模式禁止任何真实调用
     const provider = config.provider || this.config.provider;
     const proxyUrl = config.proxyUrl || this.config.proxyUrl;
     const apiKey = config.apiKey || this.config.apiKey;
@@ -8765,6 +8794,12 @@ const CloudSync = {
   },
 
   init(){
+    if(IS_DEMO_MODE){ // 演示模式：禁用云同步（不连接、不拉取、不推送）
+      this.config = { url:'', key:'', user:'', autoSync:false };
+      this.updateUI();
+      this.bindEvents();
+      return;
+    }
     const saved = localStorage.getItem('cat-news-supabase-config');
     if(saved){
       try {
@@ -9668,7 +9703,7 @@ const NotionSync = {
   activeModule: null,
 
   init(){
-    const saved = localStorage.getItem('cat-news-notion-config');
+    const saved = IS_DEMO_MODE ? null : localStorage.getItem('cat-news-notion-config');
     if(saved){
       try {
         this.config = JSON.parse(saved);
@@ -9688,7 +9723,7 @@ const NotionSync = {
     } else if(!this.config.mappings.job.fields || Object.keys(this.config.mappings.job.fields).length === 0){
       this.config.mappings.job.fields = JSON.parse(JSON.stringify(JOB_NOTION_MAPPING.fields));
     }
-    localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
+    if(!IS_DEMO_MODE) localStorage.setItem('cat-news-notion-config', JSON.stringify(this.config));
     this.updateUI();
     this.bindEvents();
   },

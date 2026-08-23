@@ -183,3 +183,86 @@ const CONFIG = {
       ] }
   ],
 };
+
+/* ============================================================
+   演示模式（?mode=demo）— 面试/展示专用：剧本数据 + 零持久化
+   普通模式（无参数）完全不受影响
+   ============================================================ */
+const IS_DEMO_MODE = new URLSearchParams(location.search).get('mode') === 'demo';
+
+function buildDemoData(){
+  const d = {};
+  CONFIG.modules.forEach(m => d[m.key] = structuredClone(m.seed || []));
+  const dayISO = i => { const t = new Date(); t.setDate(t.getDate() - i); return t.toISOString().slice(0,10); };
+  const days14 = Array.from({length:14}, (_,i) => dayISO(13 - i));
+  d.checkin.forEach(x => {
+    x.log = x.log || {};
+    days14.forEach((k,i) => {
+      if(x.type === 'word') x.log[k] = { time: 25, newWords: 18 + i, reviewWords: 12 + i };
+      else x.log[k] = true;
+    });
+  });
+  d.todo = (d.todo || []).concat([
+    { id: 14, title: "拆解小红书推荐算法：从信息流混排到破圈", priority: "P0", done: true, date: dayISO(1), note: "产出 STAR 结构案例" },
+    { id: 15, title: "拼多多「仅退款」策略的产品分析", priority: "P1", done: true, date: dayISO(3), note: "" },
+    { id: 16, title: "飞书多维表格 0 到 1 复盘", priority: "P1", done: true, date: dayISO(6), note: "" },
+    { id: 17, title: "雅思听力精听 1 套题", priority: "P2", done: true, date: dayISO(9), note: "" },
+    { id: 18, title: "整理面试 STAR 故事线", priority: "P0", done: false, date: "", note: "" },
+  ]);
+  d.note = (d.note || []).concat([
+    { id: 62, title: "灵感：AI 对话产品的开场白设计", content: "开场白决定用户对能力的预期：先给例子、再给承诺，比抽象介绍更有效。", mood: "开心", date: dayISO(2) },
+    { id: 63, title: "用户研究：为什么知识管理重度用户都爱表格", content: "表格是天然的流转管道，人和任务都能挂在上面，比纯文档更接近数据库。", mood: "平静", date: dayISO(5) },
+  ]);
+  d.hot = (d.hot || []).concat([
+    { id: 72, title: "AI 应用观察周报", content: "关注 AI 编程助手与知识库结合的新范式。", mood: "收藏", date: dayISO(4) },
+    { id: 73, title: "港科大 / 港中文 / NUS 申请节点", content: "网申开放时间与材料要求梳理。", mood: "收藏", date: dayISO(8) },
+  ]);
+  d.__application = {
+    school: "香港科技大学",
+    major: "MSc Information Systems",
+    season: "2026 Fall",
+    targetScore: 7.0,
+    timeline: [
+      { key:"school", name:"选校方案", status:"已确认", due:"2026-07-15", note:"港科大 · NUS · 港中文" },
+      { key:"docs",   name:"文书材料", status:"撰写中", due:"2026-09-01", note:"PS 第二稿打磨中" },
+      { key:"apply",  name:"网申提交", status:"未开始", due:"2026-10-15", note:"" },
+      { key:"interview", name:"面试", status:"未开始", date:"2026-12-01", note:"" },
+      { key:"visa",   name:"签证",   status:"未开始", due:"2027-04-01", note:"" },
+    ],
+    materials: [
+      { key:"ps", name:"个人陈述 PS", state:"已提交" },
+      { key:"cv", name:"简历 CV", state:"已提交" },
+      { key:"rl", name:"推荐信 RL", state:"进行中" },
+      { key:"transcript", name:"成绩单", state:"已提交" },
+      { key:"enroll", name:"在读证明", state:"已提交" },
+      { key:"recommend", name:"推荐信（机构）", state:"未提交" },
+      { key:"portfolio", name:"作品集", state:"进行中" },
+      { key:"other", name:"其他", state:"不适用" },
+    ],
+    scores: [
+      { date:"2026-05", listening:5.5, reading:5.5, writing:5.5, speaking:5.5, total:5.5 },
+      { date:"2026-06", listening:6.0, reading:6.0, writing:5.5, speaking:6.0, total:6.0 },
+      { date:"2026-07", listening:6.0, reading:6.5, writing:5.5, speaking:6.0, total:6.0 },
+      { date:"2026-08", listening:6.5, reading:6.5, writing:6.0, speaking:6.5, total:6.5 },
+    ],
+  };
+  d.product_cases = [
+    { id: 1, tag: "AI 产品", date: "2026-08-20", title: "小红书推荐算法拆解",
+      insight: "信息流混排里「好友赞过」的权重被严重低估，这是社区产品做破圈的关键杠杆。",
+      prd_content: "背景：小红书信息流以笔记曝光为核心，社区进入规模瓶颈期后，新用户破圈与老用户留存成为双重目标。问题：纯兴趣标签推荐的「信息茧房」效应明显，社区氛围的「围观感」减弱，笔记完播率与互动率下滑。方案：重新评估社交关系链在推荐中的权重——把「好友赞过」从低权重信号提升为破圈信号：当用户好友点赞某篇笔记时，在信息流中以「xx 赞过」的卡片形态插队曝光，同时辅以话题聚类，把熟人背书与兴趣发现结合。结果：测试组的新话题渗透率提升 18%，跨垂类笔记点击率提升 23%，且不牺牲核心兴趣内容的沉浸时长。复盘：社交信号不是简单的加权，而是要给用户「打开陌生内容」的正当理由，信任感才是破圈的最小成本。后续方向：把「好友赞过」与搜索意图、地点 LBS 结合，形成更立体的个性化推荐。" },
+    { id: 2, tag: "电商", date: "2026-08-15", title: "拼多多「仅退款」策略分析",
+      insight: "用确定性的规则换取用户信任感，把售后决策成本从用户端转移到平台端。",
+      prd_content: "背景：下沉市场用户对售后流程的耐心极低，「退货退款」的举证环节成为投诉重灾区，平台需要在不增加人工成本的前提下重建用户信任。方案：推出「仅退款」规则——针对低价高频商品（单价低于阈值），用户申请退款时无需寄回商品，系统依据订单金额、历史行为、商家服务分三因子自动审批；同时给商家保留申诉通道，用服务分约束商家行为。结果：售后客诉率下降 31%，复购率提升 9%，商家服务分体系成为平台治理的新抓手。复盘：「确定性」比「公平性」更被下沉用户感知，用规则把决策成本从用户端转移到平台端，本质是用算法购买信任。风险控制：仅退款需与商家保证金、信用分联动，防止薅羊毛成为系统性成本。" },
+    { id: 3, tag: "工具", date: "2026-08-10", title: "飞书多维表格 0 到 1",
+      insight: "「表格即产品」的关键不是把 Excel 搬到云端，而是让数据能被流程消费。",
+      prd_content: "背景：大量轻业务（招聘、采购、项目跟进）不需要重型 CRM/OA，传统 Excel 无法支撑多人协作与权限管控，存在信息孤岛。方案：多维表格以「数据库 + 表格视图」切入，支持视图切换（表格/看板/日历/甘特），字段类型可配置（单选、人员、关联、公式），与飞书文档、审批、消息打通，让数据在组织里流动起来。结果：上线后内部超过 60% 的业务表格迁移到多维表格，新功能迭代周期从季度缩短到周级别。复盘：「表格即产品」的关键不是把 Excel 搬到云端，而是让数据能够被流程消费——关联字段和自动化是真正产生粘性的部分。个人收获：B 端产品要贴着组织的工作流做，而不是贴着眼下的功能清单做。" },
+    { id: 4, tag: "AI 产品", date: "2026-08-05", title: "Notion AI 功能定位分析",
+      insight: "AI 能力必须附着在既有高频操作路径上，而不是做成独立入口。",
+      prd_content: "背景：Notion 作为 All-in-One 知识库，用户画像偏创作者与知识工作者，面临 AIGC 浪潮下「AI 只是插件」的竞争压力。方案：Notion AI 不做一个独立对话框，而是把生成能力嵌入既有高频操作路径——写作时联想续写、选中文字后可总结/翻译/改语气、数据库字段可一键生成摘要，让 AI 以「功能」而非「入口」的形态存在。结果：发布后付费转化率显著提升，用户停留在编辑态的时间变长，AI 调用成为深度用户的高频行为。复盘：AI 产品功能定位的黄金法则是「附着」——离用户正在做的事越近，被使用的概率越高；独立入口会带来新鲜感，但难以形成习惯。面试常被问「AI 怎么落地」，这个案例说明：先找高频动作，再谈模型能力。" },
+    { id: 5, tag: "社交", date: "2026-07-30", title: "微信状态的产品隐喻",
+      insight: "社交产品的功能设计要同时回答「表达成本」和「回应价值」两个问题。",
+      prd_content: "背景：朋友圈的强社交表达压力渐增，用户需要一种「低成本的在场感」。方案：微信状态允许用户用一个轻量短语加背景图表达此刻心情，24 小时自动过期，好友可在个人主页看到，可被点赞与互动。结果：状态成为日活用户的轻量表达入口，相比朋友圈发文，状态的门槛和社交压力都显著更低。复盘：产品隐喻很重要——「状态」不是内容的搬运工，而是情绪的壁纸：过期机制给了用户「不必负责」的安全感，互动机制又满足了「被看见」的需求。对产品经理的启示：社交产品的功能设计要同时回答「表达成本」和「回应价值」两个问题，任何一端失衡都会让功能沦为摆设。" },
+  ];
+  d.__trend = [6, 7, 6, 8, 7, 8, 9];
+  return d;
+}
