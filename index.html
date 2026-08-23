@@ -1298,6 +1298,13 @@
     /* 模块页：主内容 + 300px 侧栏 → 手机单列堆叠 */
     .mod-layout { grid-template-columns:1fr; }
     .mod-side { position:static; }
+    /* 今日概览：rings + 侧栏 堆叠，防止 300px 侧栏挤爆窄屏 */
+    .ov2-body { grid-template-columns:1fr; }
+    .ov2-side { padding:14px; gap:8px; }
+    /* rings 缩小：96px → 56px，防止 2 列下文字竖排重叠 */
+    .ring .dial { width:56px; height:56px; }
+    .ring .pct { font-size:15px; }
+    .ring { padding:10px 2px; gap:4px; }
     /* IELTS 首页卡片：纵向堆叠 + 科目 2×2，避免横向溢出 */
     .ielts-tile .ielts-body { flex-direction:column; gap:14px; }
     .ielts-tile .ielts-overview { justify-content:space-between; }
