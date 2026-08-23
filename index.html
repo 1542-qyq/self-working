@@ -6117,37 +6117,67 @@ function openScoreEditor(){
 }
 
 function renderDataCenter(){
+  const ap = data.__application;
+  const scores = ap.scores || [];
+  const latest = scores.length ? scores[scores.length-1] : null;
+  const target = ap.targetScore || 7.0;
+
+  const checkinData = data.checkin || [];
+  const hab = checkinData.filter(x=>x.type!=='word');
+  let maxStreak = 0;
+  hab.forEach(x=>{ maxStreak = Math.max(maxStreak, streak(x.log)); });
+  const todayCheckins = hab.filter(x=>x.log&&x.log[today()]).length;
+  const streakAlive = maxStreak > 0 && todayCheckins > 0;
+
+  const caseCount = (data.product_cases||[]).length;
+  const prdWords = (data.product_cases||[]).reduce((s,c)=>s+((c.prd_content||"").length),0);
+
+  const levelColor = lvl => ["var(--surface-nested)","#dcfce7","#86efac","#22c55e","#16a34a"][lvl] || "var(--surface-nested)";
+  const levelOf = act => act<=0 ? 0 : act===1 ? 1 : act<=3 ? 2 : act<=5 ? 3 : 4;
+  const days = [];
+  for(let i=13;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push(d.toISOString().slice(0,10)); }
+  const heatCells = days.map(d=>{
+    let act = 0;
+    hab.forEach(x=>{ if(x.log && x.log[d]) act += 1; });
+    if((data.todo||[]).some(t=>t.done && (t.date||"")===d)) act += 1;
+    if((data.note||[]).concat(data.hot||[]).some(n=>(n.date||"")===d)) act += 1;
+    const lvl = levelOf(act);
+    return `<div title="${d}：${act} 次活跃" style="aspect-ratio:1;border-radius:3px;background:${levelColor(lvl)};"></div>`;
+  }).join("");
+  const heatActive = days.filter(d=>{
+    let act=0; hab.forEach(x=>{ if(x.log&&x.log[d]) act+=1; });
+    if((data.todo||[]).some(t=>t.done&&(t.date||"")===d)) act+=1;
+    if((data.note||[]).concat(data.hot||[]).some(n=>(n.date||"")===d)) act+=1;
+    return act>0;
+  }).length;
+
+  const cases = (data.product_cases||[]).slice(0,3);
+  const casesHTML = cases.length ? cases.map(c=>`
+    <div style="padding:10px 12px;border-radius:var(--radius-control);border:1px solid var(--border);background:var(--surface-card);margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">${esc(c.tag||"产品分析")}</span>
+        <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">${esc(c.date||"")}</span>
+      </div>
+      <div style="font-size:13px;font-weight:700;">${esc(c.title||"未命名案例")}</div>
+      <div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">${esc((c.insight||c.note||"").slice(0,48))}</div>
+    </div>`).join("") : `
+    <div style="padding:12px;border-radius:var(--radius-control);border:1px dashed var(--border);color:var(--text-tertiary);font-size:12px;font-weight:500;text-align:center;">暂无案例数据 · 在「产品案例」模块添加后将自动同步</div>`;
+
   $("#screen").innerHTML = `<div class="header"><div><h2>数据中心</h2><p>产品案例库 · 打卡热力图 · Notion 文章同步</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
   <div class="v4grid" style="grid-template-columns:repeat(12,1fr);">
-    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--accent);">12</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">已分析产品</div><div style="font-size:11px;color:var(--success);font-weight:600;margin-top:4px;">↑ 本周 +3</div></div></div>
-    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--success);">15</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">连续打卡天</div><div style="font-size:11px;color:var(--success);font-weight:600;margin-top:4px;">🔥 保持中</div></div></div>
-    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--warning);">8.5k</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">PRD 累计字数</div><div style="font-size:11px;color:var(--success);font-weight:600;margin-top:4px;">↑ +1.2k 本周</div></div></div>
-    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--brand-500);">6.5</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">最新雅思分数</div><div style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-top:4px;">目标 7.0</div></div></div>
+    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--accent);">${caseCount||"—"}</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">已分析产品</div><div style="font-size:11px;color:var(--text-tertiary);font-weight:600;margin-top:4px;">${caseCount?"STAR 结构记录":"示例数据"}</div></div></div>
+    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--success);">${maxStreak}</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">最长连续打卡</div><div style="font-size:11px;color:${streakAlive?'var(--success)':'var(--text-tertiary)'};font-weight:600;margin-top:4px;">${streakAlive?"🔥 保持中":"暂无连击"}</div></div></div>
+    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--warning);">${prdWords?prdWords.toLocaleString():"0"}</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">PRD 累计字数</div><div style="font-size:11px;color:var(--text-tertiary);font-weight:600;margin-top:4px;">${prdWords?"来自案例库":"示例数据"}</div></div></div>
+    <div style="grid-column:span 3;"><div class="card" style="text-align:center;padding:18px;"><div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;font-family:var(--font-mono);color:var(--brand-500);">${latest?latest.total.toFixed(1):"—"}</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:4px;">最新雅思分数</div><div style="font-size:11px;color:var(--text-secondary);font-weight:600;margin-top:4px;">目标 ${target.toFixed(1)}</div></div></div>
     <div class="card" style="grid-column:span 7;">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">💼</div><div style="font-size:14px;font-weight:700;">产品案例库</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">STAR 结构</span></div>
-      <div style="padding:10px 12px;border-radius:var(--radius-control);border:1px solid var(--border);background:var(--surface-card);margin-bottom:8px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">产品分析</span><span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-08-20</span></div>
-        <div style="font-size:13px;font-weight:700;">抖音评论区设计分析</div><div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">通过「热评」机制降低消费门槛，用「神回复」激励创作者互动</div>
-      </div>
-      <div style="padding:10px 12px;border-radius:var(--radius-control);border:1px solid var(--border);background:var(--surface-card);margin-bottom:8px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">PRD 练习</span><span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-08-18</span></div>
-        <div style="font-size:13px;font-weight:700;">为老年群体设计短视频「一键转发」功能</div><div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">简化分享路径，降低操作步骤从 4 步到 1 步</div>
-      </div>
-      <div style="padding:10px 12px;border-radius:var(--radius-control);border:1px solid var(--border);background:var(--surface-card);margin-bottom:8px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#fffbeb;color:var(--warning);border:1px solid #fde68a;">竞品对比</span><span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-08-15</span></div>
-        <div style="font-size:13px;font-weight:700;">小红书 vs 抖音：内容分发逻辑对比</div><div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">双列发现 vs 单列沉浸，对应不同用户心智模型</div>
-      </div>
-      <button style="width:100%;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;">+ 查看全部 12 个案例</button>
+      ${casesHTML}
+      <button style="width:100%;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;" onclick="go('product_cases')">+ ${caseCount?('查看全部 '+caseCount+' 个案例'):'去添加案例'}</button>
     </div>
     <div class="card" style="grid-column:span 5;">
-      <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">🔥</div><div style="font-size:14px;font-weight:700;">打卡热力图</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">15 天连击</span></div>
-      <div style="font-size:11px;color:var(--text-secondary);font-weight:500;margin-bottom:10px;">最近两周活跃度</div>
-      <div style="display:grid;grid-template-columns:repeat(14,1fr);gap:3px;">
-        <div style="aspect-ratio:1;border-radius:3px;background:var(--surface-nested);"></div><div style="aspect-ratio:1;border-radius:3px;background:#dcfce7;"></div><div style="aspect-ratio:1;border-radius:3px;background:#86efac;"></div><div style="aspect-ratio:1;border-radius:3px;background:#22c55e;"></div>
-        <div style="aspect-ratio:1;border-radius:3px;background:var(--surface-nested);"></div><div style="aspect-ratio:1;border-radius:3px;background:#dcfce7;"></div><div style="aspect-ratio:1;border-radius:3px;background:#86efac;"></div><div style="aspect-ratio:1;border-radius:3px;background:var(--surface-nested);"></div>
-        <div style="aspect-ratio:1;border-radius:3px;background:#dcfce7;"></div><div style="aspect-ratio:1;border-radius:3px;background:#86efac;"></div><div style="aspect-ratio:1;border-radius:3px;background:#22c55e;"></div><div style="aspect-ratio:1;border-radius:3px;background:#86efac;"></div>
-        <div style="aspect-ratio:1;border-radius:3px;background:#dcfce7;"></div><div style="aspect-ratio:1;border-radius:3px;background:var(--surface-nested);"></div>
-      </div>
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">🔥</div><div style="font-size:14px;font-weight:700;">打卡热力图</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">${heatActive} 天活跃</span></div>
+      <div style="font-size:11px;color:var(--text-secondary);font-weight:500;margin-bottom:10px;">最近两周活跃度（打卡 / 待办 / 笔记）</div>
+      <div style="display:grid;grid-template-columns:repeat(14,1fr);gap:3px;">${heatCells}</div>
       <div style="display:flex;align-items:center;gap:12px;margin-top:12px;font-size:11px;color:var(--text-secondary);font-weight:500;">
         <span>活跃度：</span>
         <div style="display:flex;align-items:center;gap:3px;"><div style="width:10px;height:10px;border-radius:3px;background:var(--surface-nested);"></div>无</div>
