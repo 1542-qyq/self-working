@@ -958,7 +958,7 @@
 
   /* 悬浮AI助手按钮 - 方案三：圆形徽章，和网站favicon统一风格（侧脸铅笔小猫） */
   .mew-fab { position:fixed; right:20px; bottom:20px; width:48px; height:48px; border-radius:999px;
-    background:var(--surface-card); border:1px solid var(--border); cursor:pointer;
+    background:var(--surface-card); border:1px solid var(--border); cursor:grab; user-select:none; touch-action:none;
     box-shadow:0 2px 10px rgba(0,0,0,.06); z-index:70; display:grid; place-items:center; padding:0; overflow:hidden;
     transition:all .18s cubic-bezier(.4,0,.2,1); }
   .mew-fab:hover { background:var(--surface-nested); border-color:var(--accent);
@@ -977,7 +977,9 @@
   .mew-chat.open { transform:translateY(0); opacity:1; pointer-events:auto; }
 
   /* 极简头部：无背景分隔线，紧凑留白 */
-  .mew-chat-head { background:transparent; padding:18px 20px 12px; display:flex; align-items:center; gap:10px; border-bottom:none; }
+  .mew-chat-head { background:transparent; padding:18px 20px 12px; display:flex; align-items:center; gap:10px; border-bottom:none; cursor:grab; user-select:none; touch-action:none; }
+  .mew-chat-head.dragging, .mew-fab.dragging { cursor:grabbing; }
+  .mew-chat[data-dragged], .mew-chat[data-dragged].open { transform:none !important; }
   .mew-chat-head .c-ava { width:24px; height:24px; border-radius:0; background:transparent; display:grid; place-items:center; flex:0 0 auto; padding:0; overflow:hidden; }
   .mew-chat-head .c-ava img { width:20px; height:20px; display:block; opacity:.7; }
   .mew-chat-head .c-info { flex:1; }
@@ -9828,6 +9830,89 @@ function debounce(fn, ms){
 })();
 </script>
 
+<script>
+/* 拖拽：AI助手浮动按钮 & 聊天面板 */
+(function(){
+  function makeDraggable(el, handle, storageKey, opts){
+    if(!el || !handle) return;
+    opts = opts || {};
+    const exclude = opts.exclude || 'select,input,textarea,a,label';
+    let dragging = false, moved = false, sx, sy, sl, st;
 
+    // 恢复保存的位置
+    const saved = localStorage.getItem(storageKey);
+    if(saved){
+      try{
+        const p = JSON.parse(saved);
+        el.style.right = 'auto'; el.style.bottom = 'auto';
+        el.style.left = p.left + 'px'; el.style.top = p.top + 'px';
+        el.dataset.dragged = '1';
+      }catch(e){}
+    }
 
-<div class="light"><div class="trae-browser-inspect-highlight-tag"></div><div class="trae-browser-inspect-highlight-tag"></div><div class="trae-browser-inspect-highlight-box"></div><div class="trae-browser-inspect-highlight-box trae-browser-inspect-select-highlight-box" style="cursor: grab; pointer-events: auto;"></div><div class="trae-browser-inspect-overlay" style="display: none;"></div><div class="trae-browser-inspect-comment-card-container"></div><div class="trae-browser-inspect-drop-indicator" style="position: fixed; pointer-events: none; z-index: 999999; display: none; background: linear-gradient(90deg, rgb(0, 102, 255), rgb(0, 170, 255)); box-shadow: rgba(0, 102, 255, 0.4) 0px 0px 4px 1px, rgba(0, 102, 255, 0.3) 0px 0px 8px 2px, rgba(0, 102, 255, 0.2) 0px 0px 12px 3px; transition: transform 0.15s, width 0.15s, height 0.15s;"></div></div><div class="trae-browser-inspect-text-selection-container light"><div class="trae-browser-inspect-comment-card-container"></div></div><div class="trae-browser-inspect-operation light"></div></body></html>
+    function start(e){
+      if(e.target.closest(exclude)) return;
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      dragging = true; moved = false;
+      sx = cx; sy = cy;
+      const r = el.getBoundingClientRect();
+      if(!el.dataset.dragged){
+        el.style.right = 'auto'; el.style.bottom = 'auto';
+        el.style.left = r.left + 'px'; el.style.top = r.top + 'px';
+      }
+      sl = parseFloat(el.style.left) || r.left;
+      st = parseFloat(el.style.top) || r.top;
+      handle.classList.add('dragging');
+      el.style.transition = 'none';
+      if(e.type === 'touchstart') e.preventDefault();
+    }
+
+    function move(e){
+      if(!dragging) return;
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = cx - sx, dy = cy - sy;
+      if(Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+      el.style.left = (sl + dx) + 'px';
+      el.style.top = (st + dy) + 'px';
+      if(e.type === 'touchmove') e.preventDefault();
+    }
+
+    function end(e){
+      if(!dragging) return;
+      dragging = false;
+      handle.classList.remove('dragging');
+      el.style.transition = '';
+      if(moved){
+        el.dataset.dragged = '1';
+        localStorage.setItem(storageKey, JSON.stringify({
+          left: parseInt(el.style.left), top: parseInt(el.style.top)
+        }));
+        handle.dataset.justDragged = '1';
+      }
+    }
+
+    handle.addEventListener('mousedown', start);
+    handle.addEventListener('touchstart', start, {passive:false});
+    window.addEventListener('mousemove', move);
+    window.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('mouseup', end);
+    window.addEventListener('touchend', end);
+
+    // 拖拽后阻止点击冒泡
+    handle.addEventListener('click', function(e){
+      if(handle.dataset.justDragged){
+        delete handle.dataset.justDragged;
+        e.stopImmediatePropagation();
+        e.preventDefault();
+      }
+    }, true);
+  }
+
+  makeDraggable(document.getElementById('mewChat'), document.querySelector('.mew-chat-head'), 'mewChatPos');
+  makeDraggable(document.getElementById('mewFab'), document.getElementById('mewFab'), 'mewFabPos', { exclude: 'select,input,textarea,a,label' });
+})();
+</script>
+
+</body></html>
