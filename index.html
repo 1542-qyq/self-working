@@ -4897,6 +4897,37 @@ const store = {
         }
       });
     });
+    // Migrate: 申请追踪面板（非 CONFIG 模块，独立命名空间）
+    if(!d.__application){
+      d.__application = {
+        school: "香港科技大学",
+        major: "MSc Information Systems",
+        season: "2026 Fall",
+        targetScore: 7.0,
+        timeline: [
+          { key:"school", name:"选校方案", status:"已确认", due:"2026-07-15", note:"" },
+          { key:"docs",   name:"文书材料", status:"撰写中", due:"2026-09-01", note:"" },
+          { key:"apply",  name:"网申提交", status:"未开始", due:"2026-10-15", note:"" },
+          { key:"interview", name:"面试", status:"未开始", date:"", note:"" },
+          { key:"visa",   name:"签证",   status:"未开始", due:"2027-04-01", note:"" },
+        ],
+        materials: [
+          { key:"ps", name:"个人陈述 PS", state:"已提交" },
+          { key:"cv", name:"简历 CV", state:"已提交" },
+          { key:"rl", name:"推荐信 RL", state:"未提交" },
+          { key:"transcript", name:"成绩单", state:"未提交" },
+          { key:"enroll", name:"在读证明", state:"未提交" },
+          { key:"recommend", name:"推荐信（机构）", state:"未提交" },
+          { key:"portfolio", name:"作品集", state:"进行中" },
+          { key:"other", name:"其他", state:"不适用" },
+        ],
+        scores: [
+          { date:"2026-06", listening:6.0, reading:6.0, writing:5.5, speaking:6.0, total:6.0 },
+          { date:"2026-07", listening:6.0, reading:6.5, writing:5.5, speaking:6.0, total:6.0 },
+          { date:"2026-08", listening:6.5, reading:6.5, writing:6.0, speaking:6.5, total:6.5 },
+        ],
+      };
+    }
     return d;
   },
   save(){ localStorage.setItem(CONFIG.storageKey, JSON.stringify(data)); },
@@ -5916,53 +5947,173 @@ function renderPMGrowth(){
 }
 
 function renderApplication(){
+  const ap = data.__application;
+  const tl = ap.timeline, mats = ap.materials, scores = ap.scores;
+  const tlDone = tl.filter(n=>["已确认","已提交","已付费","已完成","已递交"].includes(n.status)).length;
+  const matDone = mats.filter(m=>m.state==="已提交"||m.state==="不适用").length;
+  const latest = scores.length ? scores[scores.length-1] : null;
+
+  const tlStatusColor = s => (s==="未开始") ? "var(--text-secondary)" : (["已确认","已提交","已付费","已完成","已递交","材料准备中"].includes(s) ? "var(--success)" : "var(--accent)");
+  const tlDotStyle = n => {
+    const c = tlStatusColor(n.status);
+    if(n.status==="未开始") return `border:2px solid var(--border);background:var(--surface-card);`;
+    if(c==="var(--success)") return `border:2px solid var(--success);background:var(--success);`;
+    return `border:2px solid var(--accent);background:var(--accent);box-shadow:0 0 0 3px var(--accent-muted);`;
+  };
+  const tlDateLabel = n => n.date ? `日期：${esc(n.date)}` : (n.due ? `截止：${esc(n.due)}` : "");
+
+  const timelineHTML = tl.map(n=>`
+    <div data-tl="${n.key}" style="position:relative;padding:8px 0 ${n.key===tl[tl.length-1].key?'0':'14px'};cursor:pointer;">
+      <div style="position:absolute;left:-19px;top:10px;width:10px;height:10px;border-radius:50%;${tlDotStyle(n)}"></div>
+      <div style="font-size:13px;font-weight:700;">${esc(n.name)}</div>
+      <div style="font-size:11.5px;font-weight:500;color:${tlStatusColor(n.status)};">${n.status==="未开始"?"○ ":"✓ "}${esc(n.status)}</div>
+      ${tlDateLabel(n)?`<div style="font-size:11px;color:var(--text-tertiary);font-weight:500;">${tlDateLabel(n)}</div>`:""}
+      ${n.note?`<div style="font-size:11px;color:var(--text-secondary);font-weight:500;margin-top:2px;">${esc(n.note)}</div>`:""}
+    </div>`).join("");
+
+  const maxScore = Math.max(ap.targetScore, ...scores.map(s=>s.total), 7.0);
+  const chartHTML = scores.map(s=>{
+    const h = Math.max(4, Math.round(s.total / maxScore * 100));
+    return `<div style="flex:1;background:var(--accent);border-radius:4px 4px 0 0;opacity:0.85;height:${h}%;position:relative;"><span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text);">${s.total.toFixed(1)}</span></div>`;
+  }).join("");
+  const chartLabels = scores.map(s=>`<span>${esc(s.date.replace(/^\d{4}-/,'')).replace('-','月')}月</span>`).join("") + `<span>目标</span>`;
+
+  const matColor = st => st==="已提交" ? ["var(--success)","#ecfdf5","#a7f3d0"]
+    : st==="不适用" ? ["var(--text-tertiary)","var(--surface-nested)","var(--border)"]
+    : st==="进行中" ? ["var(--accent)","var(--accent-muted)","var(--border)"]
+    : ["var(--warning)","#fffbeb","#fde68a"];
+  const materialsHTML = mats.map(m=>{
+    const [c,bd,bc] = matColor(m.state);
+    const done = m.state==="已提交";
+    return `<div data-mat="${m.key}" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-control);background:var(--surface-nested);font-size:12.5px;cursor:pointer;">
+      <div style="width:16px;height:16px;border:1.5px solid ${done?'var(--success)':'var(--border)'};border-radius:4px;background:${done?'var(--success)':'transparent'};flex:0 0 auto;"></div>
+      <div style="flex:1;font-weight:500;${done?'text-decoration:line-through;color:var(--text-tertiary);':''}">${esc(m.name)}</div>
+      <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:${bd};color:${c};border:1px solid ${bc};">${esc(m.state)}</span>
+    </div>`;
+  }).join("");
+
   $("#screen").innerHTML = `<div class="header"><div><h2>申请追踪</h2><p>留学进度监督 · 雅思分数 · 材料清单</p></div><div class="spacer"></div><span class="date-chip">${icon("calendar",14)} ${dateStr()}</span></div>
   <div class="v4grid" style="grid-template-columns:repeat(12,1fr);">
     <div class="card ap-hero" style="grid-column:span 12;display:flex;align-items:center;gap:16px;padding:14px 18px;">
       <div style="font-size:26px;">🏫</div>
-      <div><div style="font-size:15px;font-weight:700;">目标学校：香港科技大学 · MSc Information Systems</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:2px;">申请季：2026 Fall</div></div>
+      <div><div style="font-size:15px;font-weight:700;">目标学校：${esc(ap.school)} · ${esc(ap.major)}</div><div style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-top:2px;">申请季：${esc(ap.season)}</div></div>
       <div style="margin-left:auto;display:flex;gap:8px;">
         <span style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">申请中</span>
         <span style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;background:#fffbeb;color:var(--warning);border:1px solid #fde68a;">待提交文书</span>
       </div>
     </div>
     <div class="card" style="grid-column:span 4;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">📍</div><div style="font-size:14px;font-weight:700;">申请进度</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">2/5 完成</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">📍</div><div style="font-size:14px;font-weight:700;">申请进度</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">${tlDone}/${tl.length} 完成</span></div>
       <div style="position:relative;padding-left:22px;">
         <div style="position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:var(--border);border-radius:1px;"></div>
-        <div style="position:relative;padding:8px 0 14px;"><div style="position:absolute;left:-19px;top:10px;width:10px;height:10px;border-radius:50%;border:2px solid var(--success);background:var(--success);"></div><div style="font-size:13px;font-weight:700;">选校方案</div><div style="font-size:11.5px;color:var(--success);font-weight:500;">✓ 已确认</div><div style="font-size:11px;color:var(--text-tertiary);font-weight:500;">2026-07-15</div></div>
-        <div style="position:relative;padding:8px 0 14px;"><div style="position:absolute;left:-19px;top:10px;width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);background:var(--accent);box-shadow:0 0 0 3px var(--accent-muted);"></div><div style="font-size:13px;font-weight:700;">文书材料</div><div style="font-size:11.5px;color:var(--accent);font-weight:500;">● 撰写中</div><div style="font-size:11px;color:var(--text-tertiary);font-weight:500;">截止：2026-09-01</div></div>
-        <div style="position:relative;padding:8px 0 14px;"><div style="position:absolute;left:-19px;top:10px;width:10px;height:10px;border-radius:50%;border:2px solid var(--border);background:var(--surface-card);"></div><div style="font-size:13px;font-weight:700;">网申提交</div><div style="font-size:11.5px;color:var(--text-secondary);font-weight:500;">○ 未开始</div><div style="font-size:11px;color:var(--text-tertiary);font-weight:500;">预计：2026-10-15</div></div>
-        <div style="position:relative;padding:8px 0 14px;"><div style="position:absolute;left:-19px;top:10px;width:10px;height:10px;border-radius:50%;border:2px solid var(--border);background:var(--surface-card);"></div><div style="font-size:13px;font-weight:700;">面试</div><div style="font-size:11.5px;color:var(--text-secondary);font-weight:500;">○ 未开始</div></div>
-        <div style="position:relative;padding:8px 0 0;"><div style="position:absolute;left:-19px;top:10px;width:10px;height:10px;border-radius:50%;border:2px solid var(--border);background:var(--surface-card);"></div><div style="font-size:13px;font-weight:700;">签证</div><div style="font-size:11.5px;color:var(--text-secondary);font-weight:500;">○ 未开始</div></div>
+        ${timelineHTML}
       </div>
+      <p class="sub" style="margin:10px 0 0;font-size:11px;">点击任意节点可编辑状态 / 截止日期 / 备注</p>
     </div>
     <div class="card" style="grid-column:span 4;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">📊</div><div style="font-size:14px;font-weight:700;">雅思趋势</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">保留模块</span></div>
       <div style="height:120px;background:var(--surface-nested);border-radius:var(--radius-control);display:flex;align-items:flex-end;justify-content:space-around;padding:16px 12px 8px;gap:8px;">
-        <div style="flex:1;background:var(--accent);border-radius:4px 4px 0 0;opacity:0.8;height:60%;position:relative;"><span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text);">6.0</span></div>
-        <div style="flex:1;background:var(--accent);border-radius:4px 4px 0 0;opacity:0.8;height:60%;position:relative;"><span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text);">6.0</span></div>
-        <div style="flex:1;background:var(--accent);border-radius:4px 4px 0 0;opacity:0.8;height:75%;position:relative;"><span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text);">6.5</span></div>
-        <div style="flex:1;background:var(--accent);border-radius:4px 4px 0 0;opacity:0.3;height:85%;position:relative;"><span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text);">7.0</span></div>
+        ${chartHTML}
+        <div style="flex:1;background:var(--border);border-radius:4px 4px 0 0;opacity:0.6;height:${Math.round(ap.targetScore/maxScore*100)}%;position:relative;"><span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text-secondary);">${ap.targetScore.toFixed(1)}</span></div>
       </div>
-      <div style="display:flex;justify-content:space-around;margin-top:8px;font-size:10.5px;color:var(--text-tertiary);font-weight:500;"><span>6月</span><span>7月</span><span>8月</span><span>目标</span></div>
+      <div style="display:flex;justify-content:space-around;margin-top:8px;font-size:10.5px;color:var(--text-tertiary);font-weight:500;">${chartLabels}</div>
       <div style="display:flex;gap:8px;margin-top:12px;">
-        <div style="flex:1;text-align:center;padding:8px;background:var(--surface-nested);border-radius:var(--radius-sm);"><div style="font-size:16px;font-weight:700;font-family:var(--font-mono);">6.5</div><div style="font-size:10px;color:var(--text-secondary);font-weight:500;">当前总分</div></div>
-        <div style="flex:1;text-align:center;padding:8px;background:var(--surface-nested);border-radius:var(--radius-sm);"><div style="font-size:16px;font-weight:700;font-family:var(--font-mono);">7.0</div><div style="font-size:10px;color:var(--text-secondary);font-weight:500;">目标分数</div></div>
+        <div style="flex:1;text-align:center;padding:8px;background:var(--surface-nested);border-radius:var(--radius-sm);"><div style="font-size:16px;font-weight:700;font-family:var(--font-mono);">${latest?latest.total.toFixed(1):"—"}</div><div style="font-size:10px;color:var(--text-secondary);font-weight:500;">当前总分</div></div>
+        <div style="flex:1;text-align:center;padding:8px;background:var(--surface-nested);border-radius:var(--radius-sm);"><div style="font-size:16px;font-weight:700;font-family:var(--font-mono);">${ap.targetScore.toFixed(1)}</div><div style="font-size:10px;color:var(--text-secondary);font-weight:500;">目标分数</div></div>
       </div>
-      <button style="width:100%;margin-top:10px;padding:7px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-card);font-size:12px;font-weight:600;color:var(--text);cursor:pointer;">+ 添加分数</button>
+      <button id="ap-add-score" style="width:100%;margin-top:10px;padding:7px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--surface-card);font-size:12px;font-weight:600;color:var(--text);cursor:pointer;">+ 添加分数</button>
     </div>
     <div class="card" style="grid-column:span 4;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">📋</div><div style="font-size:14px;font-weight:700;">材料清单</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">4/8 完成</span></div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-control);background:var(--surface-nested);font-size:12.5px;"><div style="width:16px;height:16px;border:1.5px solid var(--success);border-radius:4px;background:var(--success);flex:0 0 auto;"></div><div style="flex:1;font-weight:500;text-decoration:line-through;color:var(--text-tertiary);">个人陈述 PS</div><span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">已提交</span></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-control);background:var(--surface-nested);font-size:12.5px;"><div style="width:16px;height:16px;border:1.5px solid var(--success);border-radius:4px;background:var(--success);flex:0 0 auto;"></div><div style="flex:1;font-weight:500;text-decoration:line-through;color:var(--text-tertiary);">简历 CV</div><span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">已提交</span></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-control);background:var(--surface-nested);font-size:12.5px;"><div style="width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;flex:0 0 auto;"></div><div style="flex:1;font-weight:500;">推荐信 RL</div><span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:#fffbeb;color:var(--warning);border:1px solid #fde68a;">待联系导师</span></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-control);background:var(--surface-nested);font-size:12.5px;"><div style="width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;flex:0 0 auto;"></div><div style="flex:1;font-weight:500;">成绩单</div><span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--surface-nested);color:var(--text-secondary);border:1px solid var(--border);">未开始</span></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-control);background:var(--surface-nested);font-size:12.5px;"><div style="width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;flex:0 0 auto;"></div><div style="flex:1;font-weight:500;">作品集</div><span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">进行中</span></div>
-      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">📋</div><div style="font-size:14px;font-weight:700;">材料清单</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">${matDone}/${mats.length} 完成</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px;">${materialsHTML}</div>
+      <p class="sub" style="margin:10px 0 0;font-size:11px;">点击材料可循环切换：未提交 → 进行中 → 已提交 → 不适用</p>
     </div>
   </div>`;
+
+  tl.forEach(n=>{
+    const node = $("#screen").querySelector(`[data-tl="${n.key}"]`);
+    if(node) node.onclick = ()=>editTimelineNode(n);
+  });
+  $("#ap-add-score").onclick = openScoreEditor;
+  mats.forEach(m=>{
+    const el = $("#screen").querySelector(`[data-mat="${m.key}"]`);
+    if(el) el.onclick = ()=>cycleMaterial(m);
+  });
+}
+
+const AP_MAT_CYCLE = ["未提交","进行中","已提交","不适用"];
+function cycleMaterial(m){
+  const i = AP_MAT_CYCLE.indexOf(m.state);
+  m.state = AP_MAT_CYCLE[(i+1) % AP_MAT_CYCLE.length];
+  persist();
+}
+
+function editTimelineNode(n){
+  const statusByKey = {
+    school:["未开始","进行中","已确认"],
+    docs:["未开始","撰写中","已提交"],
+    apply:["未开始","已提交","已付费"],
+    interview:["未开始","已邀约","已完成"],
+    visa:["未开始","材料准备中","已递交"],
+  };
+  const opts = statusByKey[n.key] || ["未开始","进行中","已完成"];
+  const overlay = document.createElement("div"); overlay.className="overlay";
+  overlay.innerHTML = `<div class="modal"><h3>编辑 · ${esc(n.name)}</h3>
+    <div class="field"><label>状态</label><div class="seg" id="ap-tl-status">${opts.map(s=>`<div class="opt ${s===n.status?'on':''}" data-v="${s}">${s}</div>`).join("")}</div></div>
+    <div class="field"><label>${n.date!==undefined&&n.date!==""?"日期":"截止日期"}</label><input id="ap-tl-due" type="date" value="${n.date||n.due||isoToday()}"/></div>
+    <div class="field"><label>备注</label><textarea id="ap-tl-note" placeholder="补充信息">${esc(n.note||'')}</textarea></div>
+    <div class="modal-actions"><div class="spacer"></div>
+      <button class="btn ghost" id="m-cancel">取消</button><button class="btn" id="m-save">保存</button></div></div>`;
+  document.body.appendChild(overlay);
+  const close = ()=>overlay.remove();
+  overlay.onclick = e=>{ if(e.target===overlay) close(); };
+  overlay.querySelector("#m-cancel").onclick = close;
+  overlay.querySelector(".seg").querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
+    overlay.querySelector(".seg").querySelectorAll(".opt").forEach(x=>x.classList.remove("on"));
+    o.classList.add("on");
+  });
+  overlay.querySelector("#m-save").onclick = ()=>{
+    const seg = id => { const el = overlay.querySelector(id+" .on"); return el?el.dataset.v:undefined; };
+    const val = id => { const el = overlay.querySelector(id); return el?el.value:""; };
+    n.status = seg("#ap-tl-status") || n.status;
+    if(n.date!==undefined) n.date = val("#ap-tl-due");
+    else n.due = val("#ap-tl-due");
+    n.note = (val("#ap-tl-note")||"").trim();
+    persist(); close();
+  };
+}
+
+function openScoreEditor(){
+  const overlay = document.createElement("div"); overlay.className="overlay";
+  overlay.innerHTML = `<div class="modal"><h3>添加雅思分数</h3>
+    <div class="field"><label>考试日期</label><input id="ap-s-date" type="month" value="${isoToday().slice(0,7)}"/></div>
+    <div class="frow">
+      <div class="field"><label>听力</label><input id="ap-s-l" type="number" min="0" max="9" step="0.5" placeholder="0-9"/></div>
+      <div class="field"><label>阅读</label><input id="ap-s-r" type="number" min="0" max="9" step="0.5" placeholder="0-9"/></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label>写作</label><input id="ap-s-w" type="number" min="0" max="9" step="0.5" placeholder="0-9"/></div>
+      <div class="field"><label>口语</label><input id="ap-s-s" type="number" min="0" max="9" step="0.5" placeholder="0-9"/></div>
+    </div>
+    <div class="modal-actions"><div class="spacer"></div>
+      <button class="btn ghost" id="m-cancel">取消</button><button class="btn" id="m-save">保存</button></div></div>`;
+  document.body.appendChild(overlay);
+  const close = ()=>overlay.remove();
+  overlay.onclick = e=>{ if(e.target===overlay) close(); };
+  overlay.querySelector("#m-cancel").onclick = close;
+  overlay.querySelector("#m-save").onclick = ()=>{
+    const num = id => { const el = overlay.querySelector(id); return el&&el.value!==""?Number(el.value):null; };
+    const l=num("#ap-s-l"), r=num("#ap-s-r"), w=num("#ap-s-w"), sp=num("#ap-s-s");
+    if(l===null||r===null||w===null||sp===null){ showToast("请填写四科分数","warn"); return; }
+    const total = +(((l+r+w+sp)/4).toFixed(1));
+    const month = overlay.querySelector("#ap-s-date").value;
+    const ap = data.__application;
+    const exists = ap.scores.find(s=>s.date===month);
+    if(exists){ exists.listening=l; exists.reading=r; exists.writing=w; exists.speaking=sp; exists.total=total; }
+    else { ap.scores.push({ date:month, listening:l, reading:r, writing:w, speaking:sp, total }); ap.scores.sort((a,b)=>a.date<b.date?-1:1); }
+    persist(); close();
+    showToast("分数已记录","ok");
+  };
 }
 
 function renderDataCenter(){
