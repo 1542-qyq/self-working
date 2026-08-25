@@ -6180,6 +6180,10 @@ function renderDataCenter(){
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">${esc(c.tag||"产品分析")}</span>
         <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;">${esc(c.date||"")}</span>
+        <span style="margin-left:auto;display:flex;gap:6px;">
+          <button onclick="openCaseEditor(${c.id})" title="编辑案例" style="width:24px;height:24px;border:1px solid var(--border);border-radius:6px;background:var(--surface-nested);font-size:12px;line-height:1;color:var(--text-secondary);cursor:pointer;">✏️</button>
+          <button onclick="confirmDelete('product_cases',${c.id})" title="删除案例" style="width:24px;height:24px;border:1px solid var(--border);border-radius:6px;background:var(--surface-nested);font-size:12px;line-height:1;color:var(--danger);cursor:pointer;">🗑️</button>
+        </span>
       </div>
       <div style="font-size:13px;font-weight:700;">${esc(c.title||"未命名案例")}</div>
       <div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px;font-weight:500;">${esc((c.insight||c.note||"").slice(0,48))}</div>
@@ -6201,7 +6205,10 @@ function renderDataCenter(){
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">💼</div><div style="font-size:14px;font-weight:700;">产品案例库</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--border);">STAR 结构</span></div>
       ${casesHTML}
       <div id="case-more" style="display:none;">${moreHTML}</div>
-      <button data-open="− 收起案例列表" data-closed="${caseBtnLabel}" style="width:100%;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;" onclick="toggleCaseList(this)">${caseBtnLabel}</button>
+      <div style="display:flex;gap:8px;">
+        <button id="case-add" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:var(--radius-control);background:var(--accent-muted);font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;">＋ 新增案例</button>
+        <button data-open="− 收起案例列表" data-closed="${caseBtnLabel}" style="flex:1;padding:8px;border:1px dashed var(--border);border-radius:var(--radius-control);background:transparent;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;" onclick="toggleCaseList(this)">${caseBtnLabel}</button>
+      </div>
     </div>
     <div class="card" style="grid-column:span 5;">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><div style="width:30px;height:30px;border-radius:var(--radius-control);background:var(--accent-muted);display:grid;place-items:center;font-size:14px;color:var(--accent);">🔥</div><div style="font-size:14px;font-weight:700;">打卡热力图</div><span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#ecfdf5;color:var(--success);border:1px solid #a7f3d0;">${heatActive} 天活跃</span></div>
@@ -6224,6 +6231,56 @@ function renderDataCenter(){
       </div>
     </div>
   </div>`;
+  const caseAddBtn = document.getElementById("case-add");
+  if(caseAddBtn) caseAddBtn.onclick = ()=>openCaseEditor();
+}
+
+function openCaseEditor(id){
+  const cases = (data.product_cases = data.product_cases || []);
+  const isNew = id === undefined || id === null;
+  const c = isNew ? null : cases.find(x=>x.id === id);
+  if(!isNew && !c) return;
+  const target = isNew
+    ? { tag:"产品分析", date: today(), title:"", insight:"", prd_content:"" }
+    : { tag:c.tag||"产品分析", date:c.date||today(), title:c.title||"", insight:c.insight||c.note||"", prd_content:c.prd_content||"" };
+  const tags = ["产品分析","AI 产品","社交","电商","效率工具","其他"];
+  const overlay = document.createElement("div"); overlay.className="overlay";
+  overlay.innerHTML = `<div class="modal" style="width:540px;max-width:94vw;"><h3>${isNew?"新增产品案例":"编辑 · "+esc(target.title)}</h3>
+    <div class="field"><label>案例标题</label><input id="ce-title" placeholder="如：抖音评论区设计分析" value="${esc(target.title)}"/></div>
+    <div class="frow">
+      <div class="field"><label>标签</label><input id="ce-tag" list="ce-tags" value="${esc(target.tag)}"/><datalist id="ce-tags">${tags.map(t=>`<option value="${t}">`).join("")}</datalist></div>
+      <div class="field"><label>日期</label><input id="ce-date" type="date" value="${target.date}"/></div>
+    </div>
+    <div class="field"><label>洞察 / 结论</label><textarea id="ce-insight" placeholder="一句话总结核心洞察（展示在案例卡片上）">${esc(target.insight)}</textarea></div>
+    <div class="field"><label>PRD 内容 · STAR 结构</label><textarea id="ce-prd" style="min-height:120px;" placeholder="Situation / Task / Action / Result 完整记录">${esc(target.prd_content)}</textarea></div>
+    <div class="modal-actions"><div class="spacer"></div>${isNew?"":`<button class="btn danger" id="ce-del">删除</button>`}<button class="btn ghost" id="m-cancel">取消</button><button class="btn" id="m-save">保存</button></div></div>`;
+  document.body.appendChild(overlay);
+  const close = ()=>overlay.remove();
+  overlay.onclick = e=>{ if(e.target===overlay) close(); };
+  overlay.querySelector("#m-cancel").onclick = close;
+  const delBtn = overlay.querySelector("#ce-del");
+  if(delBtn) delBtn.onclick = ()=>{
+    const i = cases.findIndex(x=>x.id===c.id);
+    if(i>=0){ cases.splice(i,1); persist(); }
+    close(); showToast("案例已删除","ok");
+  };
+  overlay.querySelector("#m-save").onclick = ()=>{
+    const title = (overlay.querySelector("#ce-title").value||"").trim();
+    if(title.length < 2){ showToast("请填写案例标题","warn"); return; }
+    const tag = (overlay.querySelector("#ce-tag").value||"").trim() || "产品分析";
+    const date = overlay.querySelector("#ce-date").value || today();
+    const insight = (overlay.querySelector("#ce-insight").value||"").trim();
+    const prd_content = overlay.querySelector("#ce-prd").value || "";
+    if(isNew){
+      const nid = cases.reduce((mx,x)=>Math.max(mx, x.id||0), 0) + 1;
+      cases.unshift({ id:nid, tag, date, title, insight, prd_content });
+      showToast("案例已添加","ok");
+    } else {
+      c.tag=tag; c.date=date; c.title=title; c.insight=insight; c.prd_content=prd_content;
+      showToast("案例已更新","ok");
+    }
+    persist(); close();
+  };
 }
 
 function toggleCaseList(btn){
@@ -7158,10 +7215,38 @@ const PMCoach = {
 
     await new Promise(r => setTimeout(r, 900));
 
-    const reply = this._demoReply(text);
+    const reply = (this.persona === 'pm' && text.trim().includes('记录为案例'))
+      ? this._recordCase(text)
+      : this._demoReply(text);
     this.msgs.push({ role:'bot', text: reply, time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) });
     msgsEl.innerHTML = this.msgsHTML();
     msgsEl.scrollTop = msgsEl.scrollHeight;
+  },
+
+  _recordCase(text){
+    const cases = (data.product_cases = data.product_cases || []);
+    const prev = [...this.msgs].reverse().find(m => m.role === 'user' && m.text !== text);
+    const explicit = text.match(/记录为案例[：:]\s*(.{2,20})/);
+    let title = '';
+    if(explicit) title = explicit[1].trim();
+    else if(prev){
+      const m = prev.text.match(/分析(?:\s*的|下|一下|其|它|他的)?\s*([\u4e00-\u9fa5A-Za-z][\u4e00-\u9fa5A-Za-z0-9]{1,9})/);
+      if(m) title = m[1] + ' 分析';
+      else title = prev.text.replace(/^[帮我请给设计一个]*/,'').replace(/的?(评论区|设计|功能|机制|玩法|算法|产品)$/,'').slice(0,12);
+    }
+    if(title.length < 2) title = '产品分析案例';
+    const id = cases.reduce((mx,c)=>Math.max(mx, c.id||0), 0) + 1;
+    cases.unshift({
+      id,
+      tag: /AI|算法|模型/i.test(title) ? 'AI 产品' : (/小红书|抖音|微信|微博|社交|社区/.test(title) ? '社交' : (/淘宝|拼多多|电商|下单/.test(title) ? '电商' : '产品分析')),
+      date: today(),
+      title,
+      insight: '基于「用户-场景-需求-方案-指标」框架拆解，核心机制与交互设计要点待补充（可在数据中心编辑完整版）。',
+      prd_content: ''
+    });
+    persist();
+    const prdChars = cases.reduce((s,c)=>s+((c.prd_content||'').length),0);
+    return `⭐ 已收录案例「${esc(title)}」<br><br>📊 案例库现有 <b>${cases.length}</b> 个案例 · PRD 累计 ${prdChars.toLocaleString()} 字<br><br>可在「数据中心」查看 / 编辑 / 补充 PRD，也可以继续对话分析下一个产品。`;
   },
 
   _demoReply(text){
