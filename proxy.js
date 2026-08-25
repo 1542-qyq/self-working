@@ -12,7 +12,13 @@ const TARGETS = {
   qwen: { host: 'dashscope.aliyuncs.com', basePath: '/compatible-mode/v1' },
   ollama: { host: 'localhost', port: 11434, basePath: '' },
   duannao: { host: 'cephalon.cloud', basePath: '/user-center/v1/model' },
-  notion: { host: 'api.notion.com', basePath: '/v1' }
+  notion: { host: 'api.notion.com', basePath: '/v1' },
+  // 自定义目标：通过环境变量指定，例如
+  //   CUSTOM_LLM_HOST=my-llm.example.com CUSTOM_LLM_BASE_PATH=/v1 node proxy.js
+  custom: {
+    host: process.env.CUSTOM_LLM_HOST || 'api.example.com',
+    basePath: process.env.CUSTOM_LLM_BASE_PATH || '/v1'
+  }
 };
 
 const server = http.createServer((req, res) => {
@@ -106,6 +112,8 @@ server.listen(PORT, () => {
 ║   • 豆包/方舟:    http://localhost:${PORT}/doubao           ║
 ║   • 通义千问:     http://localhost:${PORT}/qwen             ║
 ║   • 端脑云:       http://localhost:${PORT}/duannao          ║
+║   • 自定义模型:   http://localhost:${PORT}/custom           ║
+║     目标由环境变量配置: CUSTOM_LLM_HOST / CUSTOM_LLM_BASE_PATH ║
 ║   • Ollama本地:  http://localhost:${PORT}/ollama           ║
 ║   • Notion:      http://localhost:${PORT}/notion           ║
 ║                                                            ║

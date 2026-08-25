@@ -8331,6 +8331,12 @@ ${ctx}
         <input type="text" id="cfg-model" value="${this.config.model}" placeholder="留空使用默认模型"/>
       </div>
 
+      <div class="field" id="cfg-baseurl-wrap" style="display:none">
+        <label>接口地址（自定义模型专用）</label>
+        <input type="text" id="cfg-base-url" value="${this.config.customBaseUrl}" placeholder="https://api.example.com/v1"/>
+        <div>填写后直接连该地址（OpenAI 兼容）；留空则走上方「代理地址」+ /custom/chat/completions</div>
+      </div>
+
       <div id="cfg-proxy-help" style="display:none;padding:10px 0;border-top:1px solid var(--border);margin-top:12px;font-size:11px;line-height:1.6;color:var(--text-secondary)">
         <b>还没启动本地代理？</b><br>
         在项目目录运行：<code>node proxy.js</code>
@@ -8353,6 +8359,8 @@ ${ctx}
       const key = providerSelect.value;
       const p = this.providers[key];
       descEl.textContent = p.desc;
+      const baseUrlWrap = overlay.querySelector('#cfg-baseurl-wrap');
+      baseUrlWrap.style.display = (key === 'custom') ? 'block' : 'none';
       
       if(key === 'mock'){
         apiKeyWrap.style.display = 'none';
@@ -8360,6 +8368,10 @@ ${ctx}
       } else if(key === 'ollama'){
         apiKeyWrap.style.display = 'none';
         keyHintEl.textContent = '本地运行Ollama不需要API Key，确保ollama serve已启动';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'block';
+      } else if(key === 'custom'){
+        apiKeyWrap.style.display = 'block';
+        keyHintEl.innerHTML = '直连：接口地址填 <code>https://api.xxx.com/v1</code> 并填 API Key；走本地代理：接口地址留空，代理地址填 <code>http://localhost:8787</code>';
         overlay.querySelector('#cfg-proxy-help').style.display = 'block';
       } else if(key === 'deepseek' || key === 'deepseek_flash'){
         apiKeyWrap.style.display = 'block';
@@ -8385,6 +8397,7 @@ ${ctx}
       this.config.apiKey = overlay.querySelector('#cfg-api-key').value.trim();
       this.config.proxyUrl = overlay.querySelector('#cfg-proxy-url').value.trim();
       this.config.model = overlay.querySelector('#cfg-model').value.trim() || this.providers[this.config.provider]?.model || '';
+      this.config.customBaseUrl = overlay.querySelector('#cfg-base-url').value.trim();
       this.config.useMock = this.config.provider === 'mock'; // 兼容旧逻辑
       
       // 保存到localStorage（用新的mew前缀，同时保留旧key兼容）
@@ -8392,11 +8405,13 @@ ${ctx}
       localStorage.setItem('cat-news-mew-api-key', this.config.apiKey);
       localStorage.setItem('cat-news-mew-proxy', this.config.proxyUrl);
       localStorage.setItem('cat-news-mew-model', this.config.model);
+      localStorage.setItem('cat-news-mew-base-url', this.config.customBaseUrl);
       // 保留旧ai前缀兼容
       localStorage.setItem('cat-news-ai-provider', this.config.provider);
       localStorage.setItem('cat-news-ai-api-key', this.config.apiKey);
       localStorage.setItem('cat-news-ai-proxy', this.config.proxyUrl);
       localStorage.setItem('cat-news-ai-model', this.config.model);
+      localStorage.setItem('cat-news-ai-base-url', this.config.customBaseUrl);
       
       close();
       this.updateSidebarStatus();
@@ -8717,8 +8732,11 @@ ${ctx}
     const providerCfg = this.providers[provider];
     if(!providerCfg) throw new Error(`未知的AI提供商: ${provider}`);
 
-    const endpoint = proxyUrl + (providerCfg.path || '/chat/completions');
     const isOllama = provider === 'ollama';
+    const customBaseUrl = config.customBaseUrl || this.config.customBaseUrl;
+    const endpoint = (provider === 'custom' && customBaseUrl)
+      ? customBaseUrl.replace(/\/+$/, '')
+      : (proxyUrl + (providerCfg.path || '/chat/completions'));
 
     let payload;
     if(isOllama){
