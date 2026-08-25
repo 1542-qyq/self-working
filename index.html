@@ -7213,14 +7213,37 @@ const PMCoach = {
     msgsEl.appendChild(typing);
     msgsEl.scrollTop = msgsEl.scrollHeight;
 
-    await new Promise(r => setTimeout(r, 900));
-
     const reply = (this.persona === 'pm' && text.trim().includes('记录为案例'))
       ? this._recordCase(text)
-      : this._demoReply(text);
+      : await this._getReply(text);
     this.msgs.push({ role:'bot', text: reply, time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) });
     msgsEl.innerHTML = this.msgsHTML();
     msgsEl.scrollTop = msgsEl.scrollHeight;
+  },
+
+  _useRealLLM(){
+    if(IS_DEMO_MODE) return false;
+    const config = MewAI.getApiConfigForAgent(this.persona);
+    return config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
+  },
+
+  async _getReply(text){
+    if(!this._useRealLLM()){
+      await new Promise(r => setTimeout(r, 900));
+      return this._demoReply(text);
+    }
+    try {
+      const history = this.msgs
+        .filter(m => m.text)
+        .map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text.replace(/<br>/g,'\n').replace(/<[^>]+>/g,'') }));
+      history.pop();
+      const reply = await MewAI.callLLMChat(text, history, this.persona);
+      if(!reply) return this._demoReply(text);
+      return reply.replace(/\n/g, '<br>');
+    } catch(e){
+      console.error('PM 教练真实AI调用失败:', e);
+      return '喵～ AI 服务暂不可用（' + e.message + '）<br>已退回本地回复：<br><br>' + this._demoReply(text);
+    }
   },
 
   _recordCase(text){
@@ -7587,7 +7610,54 @@ ${ctx}
 - 听力常考Section：${topSection || '暂无'}`;
         },
         quickQuestions: ['听力薄弱点分析', '写作Task2建议', '口语Part2练习']
-      }
+      },
+
+    pm: {
+      key: 'pm',
+      name: 'PM 成长教练',
+      title: '产品思维教练·案例分析',
+      color: '#7aa2f7',
+      tags: ['产品分析', 'PRD', '竞品对比', '案例积累'],
+      systemPrompt: (ctx) => `你是 MewHub 的 PM 成长教练，一位资深产品经理导师。你的目标是训练用户的产品思维，帮助用户积累作品集案例。
+用户当前的作品集数据：${ctx}
+回答要求：
+- 用「用户-场景-需求-方案-指标」框架分析产品或需求，结论要有结构、分点清晰；
+- 指出产品的核心机制与交互设计要点；
+- 竞品对比时给出维度化对比表与结论建议；
+- 用户说「记录为案例」时，引导其将本次分析沉淀为 STAR 案例；
+- 适度的 emoji 与结构化排版。`,
+      getContextData: () => {
+        const cases = data.product_cases || [];
+        const prdChars = cases.reduce((s,c)=>s+((c.prd_content||'').length),0);
+        const top3 = cases.slice(0,3).map(c=>c.title).join('、');
+        return `已收录案例 ${cases.length} 个（PRD 累计 ${prdChars} 字）${top3 ? '，最近：' + top3 : ''}。`;
+      },
+      quickQuestions: ['帮我分析抖音的评论区设计', '为老年群体写一个短视频转发PRD']
+    },
+
+    butler: {
+      key: 'butler',
+      name: '申请管家',
+      title: '留学申请进度管家',
+      color: '#41d3a2',
+      tags: ['申请进度', '雅思', '材料清单'],
+      systemPrompt: (ctx) => `你是 MewHub 的申请管家，负责追踪用户的留学申请进度、雅思成绩和材料清单。了解当前状态：${ctx}
+回答要求：
+- 用户报雅思分数时，对比目标给出差距与建议；
+- 用户汇报申请进展/材料时，回显并确认当前进度，提醒未完成项；
+- 提醒临近截止日期的节点；
+- 简洁、有条理、带 emoji。`,
+      getContextData: () => {
+        const ap = data.__application || {};
+        const tl = ap.timeline || [], mats = ap.materials || [], scores = ap.scores || [];
+        const tlDone = tl.filter(n=>["已确认","已提交","已付费","已完成","已递交"].includes(n.status)).length;
+        const matDone = mats.filter(m=>m.state==="已提交"||m.state==="不适用").length;
+        const latest = scores.length ? scores[scores.length-1] : null;
+        const tlInfo = tl.map(n=>`${n.name}(${n.status}${n.due ? '，截止'+n.due : ''})`).join('；');
+        return `申请季 ${ap.season||'?'} · ${ap.school||'?'} ${ap.major||'?'}；时间线 ${tlDone}/${tl.length} 完成：${tlInfo}；材料 ${matDone}/${mats.length} 已提交；雅思最近 ${latest ? latest.total+' 分' : '暂无记录'}，目标 ${ap.targetScore || 7.0} 分。`;
+      },
+      quickQuestions: ['雅思：听力 7.0', '进展：文书已交初稿']
+    }
   },
 
   // 当前激活的 Agent（用于 Mew 助手切换）
@@ -8033,8 +8103,8 @@ ${ctx}
   },
 
   // 通用聊天（不带工具调用，用于AI助手对话）
-  async callLLMChat(userMessage, history = []){
-    const agent = this.agents[this.currentAgent] || this.agents.chief;
+  async callLLMChat(userMessage, history = [], agentKey){
+    const agent = this.agents[agentKey || this.currentAgent] || this.agents.chief;
     const ctx = agent.getContextData ? agent.getContextData() : this.getDataSummary();
     const systemPrompt = agent.systemPrompt(ctx);
     
@@ -8044,7 +8114,7 @@ ${ctx}
       { role: "user", content: userMessage }
     ];
 
-    const config = this.getApiConfigForAgent(this.currentAgent);
+    const config = this.getApiConfigForAgent(agentKey || this.currentAgent);
     const useRealLLM = !IS_DEMO_MODE && config.provider !== 'mock' && (config.apiKey || config.provider === 'ollama');
 
     if(!useRealLLM){

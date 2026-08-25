@@ -919,14 +919,14 @@ GET /api/public/stats 响应：
 | 技术栈 | React + Vite + Tailwind | 原生 JS 单文件 | 复用现有 `index.html`，零构建、零依赖 |
 | 数据库 | Supabase 12 张表 | localStorage 单对象 `data` | 数据存于 `data.__application` / `data.product_cases` 等键，无后端 |
 | 导航 | 顶部/底部 Tab | 侧边栏（去掉了冗余顶部 Tab） | 用户确认「只保留侧边栏」|
-| Agent 后端 | 端脑云 Hermes + SSE | 前端 `_demoReply()` 模拟回复 | AI 真实接入点已在 `PMCoach.send()` 预留 `// TODO real API` |
+| Agent 后端 | 端脑云 Hermes + SSE | 前端真实模型调用（多模型可选），未配置/失败时回落 `_demoReply()` | PM/管家双人格已注册为 MewAI Agent，走 `MewAI.callLLMChat()` 复用统一多模型路由 |
 | 申请追踪数据源 | `applications` / `application_materials` / `ielts_scores` 表 | `data.__application` 内联对象 | 字段对齐方案（节点状态、材料三态、雅思四科）|
 | 案例库 / PRD | `product_cases` 表 | `data.product_cases`（已有录入闭环）| PM 对话「记录为案例」自动提取标题入库存 + 数据中心新增 / 编辑 / 删除表单 |
 | Notion 文章 | Notion API 拉取 | 静态示例卡片 + 占位 | 明确标注为后续 API 接入点，无本地数据时不伪造 |
 
 ### 15.4 尚未实现 / 后续待办
 
-- [ ] **AI 真实接入**：将 `PMCoach.send()` 的 `_demoReply()` 替换为端脑云 Hermes / 真实模型 SSE 流式调用
+- [x] **AI 真实接入**：PM 成长教练 / 申请管家对话接入真实 LLM（DeepSeek / 豆包 / 端脑云 / Ollama，复用 MewAI 统一多模型路由，`PMCoach.send()` → `MewAI.callLLMChat()`）；未配置、demo 模式或调用失败时自动回落本地模拟回复
 - [x] **案例库录入入口**：PM 对话「记录为案例」落库 + 数据中心 CRUD 表单（见 §15.2）
 - [ ] **Notion 集成**：实现 `/api/notion/pages` 拉取并渲染真实文章（当前为占位）
 - [ ] **公开 API + 网站联动**：打通方案已确定为「一键发布快照」（见 §16 · 文案 v4.2），数据契约沿用 §7.2 / §7.3，无需后端；待实现：工作台「发布到网站」按钮 + 网站「成长直播」区块
@@ -935,7 +935,7 @@ GET /api/public/stats 响应：
 
 ### 15.5 验收结论
 
-方案 §10 Phase 1 验收标准（能对话、能追踪、能积累）在当前前端增量版本中**已实现可交互骨架**：对话界面可用（模拟回复）、申请追踪可编辑、数据中心接真实数据，且**案例积累闭环已补齐**（PM 对话「记录为案例」落库 + 数据中心 CRUD 表单）。待 §15.4 的 AI 接入与 Notion 数据源打通后，即可达成方案完整能力。
+方案 §10 Phase 1 验收标准（能对话、能追踪、能积累）在当前前端增量版本中**已实现可交互骨架**：对话界面可用（真实 AI 对话，未配置 API Key / demo 模式 / 调用失败时自动回落本地模拟回复）、申请追踪可编辑、数据中心接真实数据，且**案例积累闭环已补齐**（PM 对话「记录为案例」落库 + 数据中心 CRUD 表单）。待 §15.4 的 Notion 数据源打通后，即可达成方案完整能力。
 
 ## 十六、网站打通实施路径（文案 v4.2）
 
