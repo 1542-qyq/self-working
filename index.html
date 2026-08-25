@@ -7350,6 +7350,7 @@ const MewAI = {
     apiKey: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-api-key') || localStorage.getItem('cat-news-ai-api-key') || ''),
     proxyUrl: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787'),
     model: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro'),
+    customBaseUrl: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-base-url') || localStorage.getItem('cat-news-ai-base-url') || ''),
     botId: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-coze-bot-id') || ''), // 保留兼容旧版本Coze配置
     useMock: true  // 兼容旧字段，自动根据provider判断
   },
@@ -7384,7 +7385,8 @@ const MewAI = {
     deepseek_flash: { name: "DeepSeek V4 Flash", desc: "V4快速版，响应更快，成本更低", model: "deepseek-v4-flash", path: "/deepseek/chat/completions" },
     doubao: { name: "豆包 Pro", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/chat/completions" },
     duannao: { name: "端脑云", desc: "一个Key调多模型（DeepSeek/GPT/Claude等），国内版OpenRouter，限时免费", model: "deepseek-v4-pro", path: "/duannao/chat/completions" },
-    ollama: { name: "Ollama本地", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
+    ollama: { name: "Ollama本地", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" },
+    custom: { name: "自定义", desc: "任意 OpenAI 兼容模型服务：填写接口地址直连，或留空接口地址经本地代理 /custom 转发", path: "/custom/chat/completions" }
   },
 
   // Multi-Agent 注册表：每个 Agent 有独立 System Prompt + 专属数据上下文
