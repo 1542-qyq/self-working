@@ -937,6 +937,20 @@ GET /api/public/stats 响应：
 
 方案 §10 Phase 1 验收标准（能对话、能追踪、能积累）在当前前端增量版本中**已实现可交互骨架**：对话界面可用（真实 AI 对话，未配置 API Key / demo 模式 / 调用失败时自动回落本地模拟回复）、申请追踪可编辑、数据中心接真实数据，且**案例积累闭环已补齐**（PM 对话「记录为案例」落库 + 数据中心 CRUD 表单）。待 §15.4 的 Notion 数据源打通后，即可达成方案完整能力。
 
+### 15.6 首页与雅思模块恢复（2026-08-26）
+
+> 事件背景：清理旧版模块时误删了首页（home）与 IELTS 备考模块的渲染代码、导航入口与样式。用户确认**选择性恢复**（保留删掉 agents / insight / job 导航入口的意图，但恢复首页与雅思全部功能），数据层（`data.job*`、`data.ielts_*` 等键）未受影响。
+
+| 恢复项 | 说明 | 验证 |
+|--------|------|------|
+| 首页视图 | `renderHome()` / `wireHome()` 完整恢复：时钟、今日节奏、AI Planner（真实模型调用 + 番茄钟联动）、今日概览、习惯打卡、IELTS PREP 磁贴、收支总览、RAG 提问卡 | ✅ 渲染完整、console 零错误 |
+| IELTS 模块 | MODULE VIEW 渲染（`renderModule` / `recHTML` / `sideStats` / `wireModule` / `openEditor` / `newItem`）全链路恢复，覆盖 `ielts_read` / `ielts_speaking` / `ielts_record` 三分支字段 | ✅ 新建→保存→侧栏统计→编辑→删除全流程通过，数据持久化正常 |
+| MewAI planner / rag | 13 个方法恢复（plannerTileHTML / ragTileHTML / mockRAGAnswer / mockPlan / renderPlanResult / planGoal / getPlannerSystemPrompt / getToolDefinitions / callLLM / callLLMPlan / applyPlan / wirePlannerEvents / wireRAGEvents） | ✅ 首页 AI Planner / RAG 磁贴可用 |
+| 路由与导航 | `render()` 增加 home 分支 + `else renderModule(view)` 兜底；`buildNav()` 重建为「首页 / 成长主线 / 猫生日常（普通模块）/ IELTS 备考 / 其他」分组，**隐藏 agents / insight / job 入口**（数据与渲染保留）；移动端底部标签栏新增首页按钮；`go()` 函数重插（此前误删） | ✅ 6 个页面切换 + 移动端标签栏均正常 |
+| 语法与回归 | 9 个内联脚本分段 `node --check` 全部通过；浏览器回归：首页 / PM 成长 / 申请追踪 / 数据中心 / 普通模块 / IELTS 模块渲染与交互验证通过 | ✅ |
+
+**决策记录**：本次为选择性恢复而非整体回退——`agents` / `insight` / `job` 仅隐藏导航入口（满足"删掉这几个部分"的意图），其模块数据、渲染函数与 `renderModule` 兜底路由全部保留，避免再次数据丢失。
+
 ## 十六、网站打通实施路径（文案 v4.2）
 
 > 本节补上 §7.2 / §7.3（目标产物）与 Phase 3（任务名）之间缺失的**实施路径**。「打通」的含义：twcz1542.cn 从静态作品集变为「动态成长直播」——网站能展示 MewHub 里持续产生的案例、打卡、PRD 字数、雅思趋势，且**不引入任何后端**。
@@ -1183,3 +1197,4 @@ round((prop("听力") + prop("阅读") + prop("写作") + prop("口语")) / 4 * 
 *打通文案 v4.2 · 2026-08-26 · 一键发布快照 · 静态 JSON 快照 + CF Pages 自动部署 · 无后端*
 *Notion 数据形态 v4.2 · 2026-08-26 · 作品集库补字段复用 · 文章走 #mewhub 标签 · 雅思复用备考记录库*
 *Notion 数据形态 v4.3 · 2026-08-26 · 三块合并完整版 · 作品集 7 字段 + 5 示例数据 · 备考 +6 字段含总分公式 · 文章父页面已建 · 含真实 ID 与落地记录*
+*首页与雅思恢复 v4.4 · 2026-08-26 · 选择性恢复（非整体回退）· 首页/IELTS/MewAI planner-rag 全链路恢复 · agents/insight/job 仅隐藏导航入口 · 见 §15.6*
