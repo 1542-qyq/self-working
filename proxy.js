@@ -13,6 +13,12 @@ const TARGETS = {
   ollama: { host: 'localhost', port: 11434, basePath: '' },
   duannao: { host: 'cephalon.cloud', basePath: '/user-center/v1/model' },
   notion: { host: 'api.notion.com', basePath: '/v1' },
+  // 端脑 Hermes Agent：通过环境变量指定实例地址，例如
+  //   HERMES_UPSTREAM_HOST=xxx HERMES_UPSTREAM_BASE_PATH=/v1 node proxy.js
+  hermes: {
+    host: process.env.HERMES_UPSTREAM_HOST || 'your-hermes-instance.example.com',
+    basePath: process.env.HERMES_UPSTREAM_BASE_PATH || '/v1'
+  },
   // 自定义目标：通过环境变量指定，例如
   //   CUSTOM_LLM_HOST=my-llm.example.com CUSTOM_LLM_BASE_PATH=/v1 node proxy.js
   custom: {
@@ -112,6 +118,8 @@ server.listen(PORT, () => {
 ║   • 豆包/方舟:    http://localhost:${PORT}/doubao           ║
 ║   • 通义千问:     http://localhost:${PORT}/qwen             ║
 ║   • 端脑云:       http://localhost:${PORT}/duannao          ║
+║   • 端脑 Hermes:  http://localhost:${PORT}/hermes           ║
+║     目标由环境变量配置: HERMES_UPSTREAM_HOST / HERMES_UPSTREAM_BASE_PATH ║
 ║   • 自定义模型:   http://localhost:${PORT}/custom           ║
 ║     目标由环境变量配置: CUSTOM_LLM_HOST / CUSTOM_LLM_BASE_PATH ║
 ║   • Ollama本地:  http://localhost:${PORT}/ollama           ║

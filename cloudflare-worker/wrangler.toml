@@ -4,3 +4,10 @@ compatibility_date = "2025-01-01"
 
 # mewAI API Proxy
 # 部署后地址类似: https://mewai-proxy.your-subdomain.workers.dev
+
+# 端脑 Hermes Agent 托管实例上游地址（在端脑云控制台获取）
+# 拿到地址后取消注释并填入，例如:
+#   HERMES_UPSTREAM_HOST = "your-hermes-instance.xxxx.xxx"
+[vars]
+HERMES_UPSTREAM_HOST = "hermes.placeholder.invalid"
+HERMES_UPSTREAM_BASE_PATH = "/v1"

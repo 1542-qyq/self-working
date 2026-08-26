@@ -4,6 +4,7 @@ const TARGETS = {
   doubao: { host: 'ark.cn-beijing.volces.com', basePath: '/api/v3' },
   qwen: { host: 'dashscope.aliyuncs.com', basePath: '/compatible-mode/v1' },
   duannao: { host: 'cephalon.cloud', basePath: '/user-center/v1/model' },
+  hermes: { host: 'hermes.placeholder.invalid', basePath: '/v1' },
   notion: { host: 'api.notion.com', basePath: '/v1' }
 };
 
@@ -15,7 +16,7 @@ const CORS_HEADERS = {
 };
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     // CORS preflight
@@ -40,13 +41,18 @@ export default {
     }
 
     const targetKey = parts[0];
-    const target = TARGETS[targetKey];
+    const target = { ...TARGETS[targetKey] };
     
     if (!target) {
       return jsonResponse({ 
         error: `Unknown target: ${targetKey}`, 
         supported: Object.keys(TARGETS) 
       }, 404);
+    }
+
+    if (targetKey === 'hermes') {
+      if (env?.HERMES_UPSTREAM_HOST) target.host = env.HERMES_UPSTREAM_HOST;
+      if (env?.HERMES_UPSTREAM_BASE_PATH) target.basePath = env.HERMES_UPSTREAM_BASE_PATH.replace(/\/+$/, '');
     }
 
     // 构建目标路径

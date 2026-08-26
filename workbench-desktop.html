@@ -3251,10 +3251,10 @@ $("#avatarInput").onchange = e => {
    ============================================================ */
 const MewAI = {
   config: {
-    provider: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-provider') || localStorage.getItem('cat-news-ai-provider') || 'mock'),
+    provider: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-provider') || localStorage.getItem('cat-news-ai-provider') || 'hermes'),
     apiKey: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-api-key') || localStorage.getItem('cat-news-ai-api-key') || ''),
     proxyUrl: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-mew-proxy') || localStorage.getItem('cat-news-ai-proxy') || 'http://localhost:8787'),
-    model: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-model') || localStorage.getItem('cat-news-ai-model') || 'deepseek-v4-pro'),
+    model: IS_DEMO_MODE ? 'mock' : (localStorage.getItem('cat-news-mew-model') || localStorage.getItem('cat-news-ai-model') || 'hermes'),
     botId: IS_DEMO_MODE ? '' : (localStorage.getItem('cat-news-coze-bot-id') || ''), // 保留兼容旧版本Coze配置
     useMock: true  // 兼容旧字段，自动根据provider判断
   },
@@ -3279,6 +3279,13 @@ const MewAI = {
       if(this.config.provider.startsWith('deepseek') && !['deepseek-v4-pro','deepseek-v4-flash'].includes(this.config.model)){
         this.config.model = p.model;
       }
+      // 非deepseek提供商（如hermes/doubao/ollama）仍残留旧的deepseek默认模型时，对齐为当前提供商默认
+      else if(!this.config.provider.startsWith('deepseek') && this.config.model === 'deepseek-v4-pro'){
+        this.config.model = p.model;
+        localStorage.setItem('cat-news-mew-model', this.config.model);
+        localStorage.setItem('cat-news-ai-model', this.config.model);
+        console.log('MewAI: 已对齐模型名为当前提供商默认');
+      }
     }
   },
 
@@ -3289,6 +3296,7 @@ const MewAI = {
     deepseek_flash: { name: "DeepSeek V4 Flash", icon: "⚡", desc: "V4快速版，响应更快，成本更低", model: "deepseek-v4-flash", path: "/deepseek/chat/completions" },
     doubao: { name: "豆包 Pro", icon: "🫘", desc: "字节跳动大模型，面试字节加分，有免费额度", model: "ep-20241224xxxxxx", path: "/doubao/chat/completions" },
     duannao: { name: "端脑云", icon: "🌐", desc: "一个Key调多模型（DeepSeek/GPT/Claude等），国内版OpenRouter，限时免费", model: "deepseek-v4-pro", path: "/duannao/chat/completions" },
+    hermes: { name: "Hermes 智能体", icon: "🤖", desc: "接入你的 Hermes Agent（OpenAI 兼容）：实例地址经本地代理 /hermes 或 Cloudflare Worker 转发，用环境变量 HERMES_UPSTREAM_HOST 指定", model: "hermes", path: "/hermes/chat/completions" },
     ollama: { name: "Ollama本地", icon: "💻", desc: "完全本地运行，零成本，隐私安全", model: "qwen2.5:14b", path: "/ollama/api/chat" }
   },
 
@@ -4107,7 +4115,8 @@ ${ctx}
       <div class="sub">选择AI提供商，接入大模型获得个性化任务规划能力</div>
 
       <div class="hint-box">
-        <b>最快接入：</b> 本地运行 <code>node proxy.js</code>，到 <a href="https://platform.deepseek.com/" target="_blank">DeepSeek</a> 获取API Key即可使用
+        <b>Hermes 接入：</b> 本地运行 <code>node proxy.js</code>（8787端口），用环境变量指定实例：<code>HERMES_UPSTREAM_HOST=你的实例地址 HERMES_UPSTREAM_BASE_PATH=/v1 node proxy.js</code>；部署到 Cloudflare Worker 则配置同名变量<br>
+        <b>最快体验：</b> 到 <a href="https://platform.deepseek.com/" target="_blank">DeepSeek</a> 获取API Key即可使用
       </div>
 
       <div class="field">
@@ -4153,11 +4162,19 @@ ${ctx}
     const descEl = overlay.querySelector('#cfg-provider-desc');
     const keyHintEl = overlay.querySelector('#cfg-api-key-hint');
     const apiKeyWrap = overlay.querySelector('#cfg-api-key-wrap');
+    const modelInput = overlay.querySelector('#cfg-model');
+    let curProviderDefault = this.providers[providerSelect.value]?.model || '';
     
     const updateProviderDesc = () => {
       const key = providerSelect.value;
       const p = this.providers[key];
       descEl.textContent = p.desc;
+
+      // 切换提供商时，若模型仍是上一个提供商的默认值（未自定义），自动对齐为当前默认
+      if(modelInput.value && p.model && modelInput.value === curProviderDefault){
+        modelInput.value = p.model;
+      }
+      curProviderDefault = p.model || '';
       
       if(key === 'mock'){
         apiKeyWrap.style.display = 'none';
@@ -4177,6 +4194,10 @@ ${ctx}
       } else if(key === 'duannao'){
         apiKeyWrap.style.display = 'block';
         keyHintEl.innerHTML = '在 <a href="https://cephalon.cloud" target="_blank">端脑云 cephalon.cloud</a> 的「API 管理」页生成密钥；一个 Key 可调多模型';
+        overlay.querySelector('#cfg-proxy-help').style.display = 'block';
+      } else if(key === 'hermes'){
+        apiKeyWrap.style.display = 'block';
+        keyHintEl.innerHTML = '填你的 Hermes 实例 API Key；实例地址由代理环境变量配置：本地 proxy.js 用 <code>HERMES_UPSTREAM_HOST</code> / <code>HERMES_UPSTREAM_BASE_PATH</code>，Cloudflare Worker 用同名变量';
         overlay.querySelector('#cfg-proxy-help').style.display = 'block';
       }
     };
